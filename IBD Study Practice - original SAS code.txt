@@ -1,0 +1,886 @@
+
+
+
+
+dm 'log' clear;
+;
+
+/**/
+/*                      PROC IMPORT  OUT= IBD*/
+/*                                  DATAFILE=  "E:\Kevin\Data by Project\Misc\Rabinowitz IBD Exploratory\IBD Disparities 5-30.txt"*/
+/*                                      DBMS=TAB REPLACE ;*/
+/*                               GETNAMES=YES;*/
+/*                               DATAROW=2; */
+/*                          RUN;*/
+
+
+
+                        PROC IMPORT OUT=  IBD
+                                    DATAFILE= "E:\Kevin\Data by Project\Misc\Rabinowitz IBD Exploratory\IBD Disparities 5-30.xlsx"
+                                    DBMS=XLSX REPLACE;
+                                    GETNAMES=YES;
+                                    DATAROW=2;
+                                    SHEET = "USA EXPORT";
+                        RUN;
+
+
+
+                        data ANALYSIS_FILE / view=ANALYSIS_FILE;
+                            set IBD (rename=( Included_International_Sites__Y_ = INTL_SITES Were_pregnant_breastfeeding_wome= PREG_EXCL VAR36= RACE_REPORTED ));
+                            format CD UC IBDU 1. CATEGORY INTERVENTION FUNDING $20. LOCATIONS2 $300. ANALYZED FEMALE_N 6. PREG_EXCL $2. RACE_REPORTED $1.  WHT NONWHT BLK NONBLK ASN NONASN AIA NONAIA HPI NONHPI MIX NONMIX UNK NONUNK HIS NONHIS comma5.2
+
+                                    AGECAT 1. CONT_MEAN COMMA5.2  AGE_GE65 AGE_GE85 $1.;
+
+
+                            /*Diagnostic Groups */
+
+                            if index(VAR3,'CD') gt 0 then CD=1; else CD=0;
+                            if index(VAR3,'UC') gt 0 then UC=1; else UC=0;
+                            if index(VAR3,'IB') gt 0 then IBDU=1; else IBDU=0;
+
+                            array X{*}   CD UC IBDU;
+
+                            if sum(of X{*}) =3 then CATEGORY = 'CD, UC, IBDU';
+                            else if sum(of X{*}) =1 then do i=1 to dim(X);
+                                if X{i}=1 then CATEGORY = vname( X{i} );
+                            end;
+                            else if sum (of X{*}) =2 then do i=1 to dim(X);
+                                IF x{i} = 1 then CATEGORY =  trim(CATEGORY)||', '||vname(X{i}) ;
+
+                            end;
+
+                            if sum(of X{*}) = 2 then CATEGORY = substr(CATEGORY,4);
+
+
+                            /* Interventions */
+                            INTERVENTION = upcase(trim(scan(INTERVENTIONS,1,':')));
+
+
+                            /* Funding Sources */
+
+                            if scan(FUNDED_BY,1,'-') = 'Industry' then FUNDING = "INDUSTRY";
+                                else if scan(FUNDED_BY,1,'-') = 'NIH' then FUNDING = "NIH";
+                                else if scan(FUNDED_BY,1,'-') = 'Other' then do;
+                                
+                                    if index( FUNDED_BY,'Industry') gt 0 then FUNDING = "INDUSTRY";
+                                     else if index( FUNDED_BY ,'Hospital') gt 0 OR index( FUNDED_BY ,'Clinic') gt 0  OR index( FUNDED_BY ,'Health Care') gt 0  OR index( FUNDED_BY ,'Medical Center') gt 0
+                                         OR index( FUNDED_BY ,'Health') gt 0 OR index( FUNDED_BY ,'NIH') gt 0 gt 0 then FUNDING = "NIH/HOSPITAL";
+                                     else if index( FUNDED_BY ,'College') gt 0 OR index( FUNDED_BY ,'University') gt 0 OR index( FUNDED_BY ,'NIH') gt 0 gt 0
+                                        then FUNDING = "NIH/UNIVERSITY";
+                                     else if index( FUNDED_BY ,'NIH') gt 0 then FUNDING = "NIH/HOSPITAL";
+
+                            end;
+
+                            WHT = input(WHITE_N,5.);  NONWHT = ANALYZED - WHT;
+                            BLK = input(Black_or_African_American_N,5.); NONBLK = ANALYZED - BLK;
+                            ASN = input( ASIAN_N,5.); NONASN = ANALYZED - ASN;
+                            AIA = input(American_Indian_Alaska_Native_N,5.); NONAIA = ANALYZED - AIA;
+                            HPI = input(Native_Hawaiian_Pacific_Islander,5.); NONHPI = ANALYZED - HPI;
+                            MIX = input(More_than_One_Race_Reported_N,5.);  NONMIX = ANALYZED - MIX;
+                            HIS = input(Hispanic_N,5.);  NONHIS = ANALYZED - HIS;
+							UNK = input(Unknown_Not_Reported_N,5.); NONUNK = ANALYZED - UNK;
+
+                            if index(VAR23,'Child') gt 0 and index(VAR23,'Adult') gt 0 then AGECAT =3;
+                                else if index(VAR23,'Child') gt 0 then  AGECAT = 1;
+                                else if index(VAR23,'Adult') gt 0 then AGECAT= 2;
+
+
+                            CONT_MEAN = Age_Continuous__Mean_ ;
+                            AGE_GE65 = VAR24;  AGE_GE85 = VAR25;
+							if VAR24 = "Y" then AGE_GE65_N = input(_65_N,4.) ; else AGE_GE65_n=0;
+
+							if RACE_REPORTED= "Y" then RACE_REPORTED = "Y"; else RACE_REPORTED= "N";
+
+
+                            keep title category var3 CD UC IBDU CATEGORY INTERVENTION FUNDED_BY FUNDING INTL_SITES LOCATIONS2 ANALYZED FEMALE_N PREG_EXCL RACE_REPORTED WHT--NONHIS AGECAT CONT_MEAN AGE_GE65 AGE_GE65_N AGE_GE85;
+
+                        run;
+
+
+
+                        proc format;
+                            value   $ibdcat 'CD' = '1. CD'
+                                            'UC' = '2. UC'
+                                            'IBDU' = '3. IBDU'
+											/*
+                                            'CD, UC' = '4. CD, UC'
+                                            'CD, UC, IBDU' = '5. CD, UC, IBDU'*/
+											OTHER = '4. COMBO'
+
+
+											;
+
+                            value   agecat  1 = 'Children Only'
+                                            2 = 'Adults Only'
+                                            3 = 'Children & Adults';
+                        run;
+
+                        ods html close; ods html;
+                        proc freq data= ANALYSIS_FILE order=formatted ;
+                            Title 'Table 1. Diagnostic groups among registered IBD trials';
+                            format CATEGORY $ibdcat.;
+                            table CATEGORY / norow nocum totpct ;
+
+                        run;title;
+
+
+
+                        proc freq data= ANALYSIS_FILE order=internal ;
+                            Title 'Table 2. Primary intervention group of registered IBD trials';
+                            table INTERVENTION / norow nocum totpct ;
+
+                        run;title;
+
+
+
+                        proc freq data= ANALYSIS_FILE order=internal ;
+                            Title 'Table 3. Funding Source';
+                            table FUNDING / norow nocum totpct missing;
+
+                        run;title;
+
+
+
+                        proc freq data= ANALYSIS_FILE order=internal ;
+                            Title 'Table 4. Included international sites?';
+                            table INTL_SITES / norow nocum totpct missing;
+
+                        run;title;
+
+
+
+/****/
+
+
+data TEST;
+    format TRIAL $8.;
+    set IBD;
+    format LOCOUNT 2. SITES $100.;
+
+    LOCOUNT = count ( LOCATIONS2,"," )+ 1;
+
+    y+1;
+
+    do i=1 to LOCOUNT;
+        SITES = trim (left(scan ( LOCATIONS2, i, "," ) ));
+        TRIAL = trim (left(y));
+        output;
+    end;
+
+keep TITLE LOCATIONS LOCATIONS2 LOCOUNT TRIAL SITES;
+
+run;
+
+*OPTIONS	fmtsearch=(sashelp.mapfmts);
+
+
+
+    proc freq data= TEST order= FREQ  ;
+        table SITES / nocum totpct;
+       ods output ONEWAYFREQS=  FREQS (drop= F_SITES);
+    run;
+
+    proc rank data= FREQS out=FREQS percent;
+        var PERCENT;
+        ranks PERCENTILE;
+    run;
+    data X;
+        set MYMAPS.GLCID_MASTER (rename=(COUNTRY= START COUNTRY3=LABEL));
+        retain FMTNAME '$GLC';
+        keep START LABEL FMTNAME;
+    proc format cntlin= X lib=FORMATS;
+        run;
+
+	data Y;
+        set MYMAPS.GLCID_MASTER (rename=(COUNTRY= START COUNTRY2=LABEL));
+        retain FMTNAME '$GLCID' ;
+        keep START LABEL FMTNAME;
+    proc format cntlin= Y lib=FORMATS;
+		run;
+
+
+    data FREQS;
+        label PERCENTILE = "Percentile_Rank"; format PERCENTILE 5.1 ID 4. GLC $3.;
+        set FREQS;
+
+        GLC = put(SITES, $GLC.);
+		ID =  input(put(SITES, $GLCID.),4.);
+
+        if PERCENTILE lt 25 then QUARTILE =1;
+            else if PERCENTILE lt 50 then QUARTILE =2;
+            else if PERCENTILE lt 75 then QUARTILE =3;
+            else  QUARTILE =4;
+    run;
+
+
+    proc print data= FREQS;
+        var Table SITES ID GLC FREQUENCY PERCENT PERCENTILE QUARTILE;
+        title 'Table 5. Registered IBD clinicial trials by country';
+    run;
+    title;
+
+
+
+
+/****/
+
+
+proc sort data= ANALYSIS_FILE out=TEST;
+    by CATEGORY;
+proc summary data= TEST sum;
+    format CATEGORY $ibdcat.;
+    by CATEGORY;
+    var ANALYZED FEMALE_N;
+    output OUT=TEST (drop = _TYPE_ rename=(_FREQ_= FREQ) ) sum=;
+run;
+proc sort; by CATEGORY;
+data TEST;
+    format CATEGORY $20. FREQ ANALYZED FEMALE_N comma5. PCT_FEMALE percent7.1;
+    set TEST;
+
+    PCT_FEMALE = FEMALE_N / ANALYZED;
+run;
+
+
+
+    proc report data= TEST NOWD headline headskip split='/' ;
+        title 'Table 6. Female adult participants in US-based IBD trials';
+        title2 ' ';
+        title3 "The REPORT Procedure" ;
+        columns CATEGORY FREQ ANALYZED FEMALE_N PCT_FEMALE ;
+
+        define CATEGORY /   group 'Category' f=$ibdcat. order=formatted;
+        define FREQ /       sum 'Trials/N' f=5.;
+        define  Analyzed /  sum 'Total/Subjects/N' f=comma7.;
+        define  Female_n /  sum 'Female/N' f=comma7.;
+        define  PCT_FEMALE  /       computed 'Pct/Female' f=percent7.1;
+
+
+
+        rbreak after / summarize skip;
+
+        compute PCT_FEMALE;
+            PCT_FEMALE = FEMALE_N.SUM / ANALYZED.SUM;
+        endcomp;
+
+
+    run;
+
+
+
+
+                                    /**/
+                                    /*  */
+                                    /*ODS HTML CLOSE; ODS HTML;*/
+                                    /**/
+                                    /*TITLE;*/
+                                    /**/
+                                    /*ODS HTML CLOSE; ODS HTML;*/
+                                    /*  */
+                                    /*   proc gmap data= MAPS.WORLD map= MAPS.WORLD;*/
+                                    /*   Where cont ne 97;*/
+                                    /*   id ID;*/
+                                    /*   choro ID / levels=1 nolegend;*/
+                                    /*   run;*/
+                                    /*   quit;*/
+                                    /**/
+                                    /*options fmtsearch=(sashelp.mapfmts);*/
+                                    /**/
+                                    /**/
+                                    /**/
+                                    /*data WORLD2;*/
+                                    /*  format COUNTRY $50. COUNTRY2 3. COUNTRY3 $3.;*/
+                                    /*  set MAPS.WORLD;*/
+                                    /**/
+                                    /**/
+                                    /*  COUNTRY = put(ID, glcnsu.);*/
+                                    /*  COUNTRY2 = input(put(COUNTRY,$isosun.),3.);*/
+                                    /*  COUNTRY3 = put( COUNTRY2 ,ison3a.);*/
+                                    /**/
+                                    /*run;*/
+                                    /**/
+                                    /**/
+                                    /*  proc sort data=WORLD2;*/
+                                    /*      by COUNTRY;*/
+                                    /*  proc summary data= WORLD2 ;*/
+                                    /*      by COUNTRY COUNTRY2 COUNTRY3 ID;*/
+                                    /*  OUTPUT OUT= x (drop= _TYPE_ _FREQ_);*/
+                                    /*  RUN;*/
+                                    /**/
+                                    /**/
+                                    /**/
+                                    /*  proc sql;*/
+                                    /*  insert into X*/
+                                    /*       SET  COUNTRY = "BOSNIA-HERZEGOVINA", COUNTRY2= 70, COUNTRY3= "BIH", ID = 185*/
+                                    /*       SET COUNTRY = "BOSNIA & HERZEGOVINA", COUNTRY2= 70, COUNTRY3= "BIH", ID = 185*/
+                                    /*       SET COUNTRY = "CZECHIA", COUNTRY2= 203, COUNTRY3= "CZE", ID= 310*/
+                                    /*       SET COUNTRY = "KOREA", COUNTRY2= 410, COUNTRY3= "KOR", ID= 515*/
+                                    /*       SET COUNTRY = "UK", COUNTRY2= 826, COUNTRY3= "GBR", ID=925*/
+                                    /*       SET COUNTRY= "USA", COUNTRY2= 840, COUNTRY3= "USA", ID=926 ;QUIT;*/
+                                    /**/
+                                    /**/
+                                    /*  data X1;*/
+                                    /*      set X (rename=(COUNTRY= START ID= LABEL));*/
+                                    /*      retain FMTNAME 'GLCID';*/
+                                    /**/
+                                    /*      TYPE='I';*/
+                                    /**/
+                                    /*      KEEP START LABEL FMTNAME TYPE;*/
+                                    /*  run;*/
+                                    /*  proc format cntlin=X1 lib=FORMATS;*/
+                                    /*  RUN;*/
+                                    /**/
+
+
+
+
+/****/
+
+
+    proc freq data = ANALYSIS_FILE order=formatted;
+        format CATEGORY $ibdcat.;
+        Title 'Table 7. Were pregnant & breastfeeding women excluded from trial?';
+        table CATEGORY * PREG_EXCL / nocol nocum totpct missing;
+    run; title;
+
+
+/*****/
+
+
+
+
+%MACRO RACE;
+
+
+%do i=1 %to 7;
+
+
+
+
+        %let var1=  WHT;    %let WHT= White;
+        %let var2=  BLK;    %let BLK= Black/African American;
+        %let var3 = ASN;    %let ASN= Asian;
+        %let var4 = AIA;    %let AIA= American Indian/Alaskan Native;
+        %let var5=  HPI;    %let HPI= Hawaiian/Pacific Islander;
+        %let var6=  MIX;    %let MIX= Mixed Race/Multi-Ethnic;
+        %let var7=  HIS;    %let HIS= Hispanic/Latino;
+
+        %let alphabet=  ABCDEFGHIJKLMNOPQRSTUVWXYZ;
+
+        %let modver =       %qsysfunc(left(%substr(&alphabet,&i,1)));
+
+
+
+
+
+        data X;
+            set ANALYSIS_FILE;
+            format RACECAT $15.;
+
+            if &&var&i eq . then RACECAT = '2. NOT REPORTED';
+                else RACECAT = '1. REPORTED';
+        proc sort data= X;
+            by RACECAT CATEGORY;
+        proc summary data= X sum;
+            format CATEGORY $ibdcat.;
+            by RACECAT CATEGORY;
+            var &&var&i NON&&var&i;
+        output out=X (drop = _type_) sum=;
+        run;
+
+
+
+
+
+
+
+
+    proc report data= X NOWD headline headskip split='/' ;
+        title "Table 8&modver.. Racial & ethnic makeup of US-based registered IBD clinical trials";
+        title2 "Race = &&&&&&var&i";
+
+        columns RACECAT CATEGORY _FREQ_ &&var&i NON&&var&i PCT&&var&i;
+
+        define RACECAT /        group 'Race/Category';
+        define CATEGORY /       group 'Category' f=$ibdcat. order=formatted;
+        define _FREQ_   /       sum 'Trials/N' f=5.;
+        define  &&var&i /       sum "Total/&&var&i/N" f=comma7.;
+        define  NON&&var&i /    sum "Total/NON&&var&i/N" f=comma7.;
+        define  PCT&&var&i  /   computed "Pct/&&var&i" f=percent7.1;
+
+        break after RACECAT / summarize skip;
+
+        rbreak after / summarize skip;
+
+        compute PCT&&VAR&i;
+            PCT&&var&i = &&var&i...SUM / (&&var&i...SUM+ NON&&var&i...SUM);
+        endcomp;
+    run;
+
+%end;
+
+%MEND;
+%race;
+
+
+
+
+/*****/
+
+    proc sort data= ANALYSIS_FILE OUT=X;
+        by AGECAT CATEGORY;
+    proc sql noprint;
+    select count(title) into :missing from X where CONT_MEAN IS NULL;quit;
+    proc means data= X sum sumwgt mean ORDER=FORMATTED maxdec=2;
+    title 'Table 9A.  Age makeup of US-based registered IBD trials (PROC MEANS)';
+    footnote "Note:  &missing studies did not report mean age data";
+        where CONT_MEAN ne .;
+        by AGECAT;
+        format CATEGORY $ibdcat. AGECAT agecat.;
+        class CATEGORY;
+        var CONT_MEAN;
+        WGT ANALYZED;run;
+
+
+
+	data X1;
+		set X;
+		format WGTD_MEAN comma9.2;
+		WGTD_MEAN = CONT_MEAN*ANALYZED;
+	run;
+
+    proc report data= X1 (WHERE=(cont_mean ne .))  NOWD headline headskip split='/' ;
+    title 'Table 9.  Age makeup of US-based registered IBD trials (PROC REPORT)';
+	title2 ' ';
+	title3 'The REPORT Procedure';
+    footnote "Note:  &missing studies did not report mean age data";
+        columns AGECAT CATEGORY N PCT WGTD_MEAN ANALYZED WMEAN ;
+
+        define AGECAT   /   group 'Age Category' f=agecat. order=internal left;
+        define CATEGORY /   group 'Category' f=$ibdcat. order=formatted;
+		define N /			'Trials/N' format=comma7.;
+		define PCT / 		computed 'Trials/Pct' format=percent7.1;;
+		define WGTD_MEAN / 	sum 'Sums' format=comma12.2;
+		define ANALYZED /  	sum 'Sum/Weights' format=comma7.;
+		define WMEAN /		computed 'Weighted/Mean' format=comma9.2;
+
+
+
+        break after AGECAT / summarize skip;
+		rbreak after / summarize skip dol dul;
+
+        compute before AGECAT;
+            X = N ;
+        endcomp;
+		compute before;
+			Y = N;
+		endcomp;
+
+		compute PCT;
+			PCT = N / X;
+		endcomp;
+		compute after;
+			PCT = N / Y;
+		endcomp;
+
+		compute WMEAN;
+			WMEAN = WGTD_MEAN.sum / ANALYZED.sum;
+		endcomp;
+
+    run;title; footnote;
+
+
+
+
+
+
+				/****/
+
+			ods html close; ods html;
+
+				footnote;
+				proc freq data=ANALYSIS_FILE order=formatted compress;
+					TITLE 'Table 10a. Trials included patients over 65?';
+					Title2 '(Excludes Child-Only Studies, n=13)';
+					format AGECAT agecat. CATEGORY $ibdcat.;
+					where AGECAT ne 1;
+					table CATEGORY * AGE_GE65 / nocum nocol  totpct ;
+
+				run;title;
+
+
+
+			    proc report data= ANALYSIS_FILE (where=(AGE_GE65_N ne .))  NOWD headline headskip split='/' missing ;
+			    title 'Table 10b. Trials inlcuded patients over 65? ';
+				title2 '(Excludes Child-Only Studies, n=13)';
+				title3 ' ';
+				title4 'The REPORT Procedure';
+			    footnote "Note:  7 studies did not explicitly report the number of subjects over 65 (only that they were included in the total analyzed N)";
+
+					where AGECAT ne 1;
+			        columns  CATEGORY N ANALYZED AGE_GE65_N PCT  ;
+
+			        define CATEGORY /   group 'Category' f=$ibdcat. order=formatted;
+					define N /			'Trials/N' format=comma7.;
+					define ANALYZED /  	sum 'Total/Subjects' format=comma7.;
+					define AGE_GE65_N /  sum 'Total/65+' format=comma7.;
+					define PCT / 		computed 'Trials/Pct' format=percent7.1;
+
+					rbreak after / summarize skip dol dul;
+
+					compute PCT;
+						PCT = AGE_GE65_N.sum / analyzed.sum;
+					endcomp;
+
+			    run;title; footnote;
+
+
+				
+
+
+			    proc report data= ANALYSIS_FILE (where=(AGE_GE65 = 'Y' and AGE_GE65_N ne . ))  NOWD headline headskip split='/' missing ;
+			    title 'Table 10c. Trials inlcuded patients over 65? ';
+				title2 '(Includes Adult/Adult-Child Studies with senior Representation, n=52)';
+				title3 ' ';
+				title4 'The REPORT Procedure';
+			    footnote "Note:  7 studies did not explicitly report the number of subjects over 65 (only that they were included in the total analyzed N)";
+
+					where AGECAT ne 1;
+			        columns  CATEGORY N ANALYZED AGE_GE65_N PCT  ;
+
+			        define CATEGORY /   group 'Category' f=$ibdcat. order=formatted;
+					define N /			'Trials/N' format=comma7.;
+					define ANALYZED /  	sum 'Total/Subjects' format=comma7.;
+					define AGE_GE65_N /  sum 'Total/65+' format=comma7.;
+					define PCT / 		computed 'Trials/Pct' format=percent7.1;
+
+					rbreak after / summarize skip dol dul;
+
+					compute PCT;
+						PCT = AGE_GE65_N.sum / analyzed.sum;
+					endcomp;
+
+			    run;title; footnote;
+
+
+				
+			    proc report data= X1 NOWD headline headskip split='/' ;
+			    title 'Table 12.  Percentage of Female Subjects by Agecat';
+				title2 ' ';
+				title3 'The REPORT Procedure';
+			        columns AGECAT CATEGORY N ANALYZED FEMALE_N PCT ;
+
+			        define AGECAT   /   group 'Age Category' f=agecat. order=internal left;
+			        define CATEGORY /   group 'Category' f=$ibdcat. order=formatted;
+					define N /			'Trials/N' format=comma7.;
+					define ANALYZED /  	sum 'Total/Subjects' format=comma7.;
+					define FEMALE_N /  	sum 'Total/Female' format=comma7.;
+					define PCT / 		computed 'Pct/Female' format=percent7.1;;
+
+
+
+			        break after AGECAT / summarize skip;
+					rbreak after / summarize skip dol dul;
+
+			        compute before AGECAT;
+			            X = analyzed.sum ;
+			        endcomp;
+					compute before;
+						Y = analyzed.sum;
+					endcomp;
+
+					compute PCT;
+						PCT = FEMALE_N.SUM / ANALYZED.SUM;
+					ENDCOMP;
+
+					compute after AGECAT ;
+						PCT = FEMALE_N.sum / X;
+					endcomp;
+					compute after;
+						PCT = FEMALE_N.sum / Y;
+					endcomp;
+
+			    run;title; footnote;
+
+
+
+
+
+
+
+
+/**/
+/**/
+/*	proc freq data= X (where=( CONT_MEAN ne .)) order=formatted compress;*/
+/*		format AGECAT agecat. CATEGORY $ibdcat.;*/
+/*		by AGECAT;*/
+/*		table CATEGORY / nocum ;*/
+/**/
+/*	run;title; footnote;*/
+
+/**/
+/*	proc sql noprint;*/
+/*		select count(title) into :child from X where CONT_MEAN ne . and AGECAT=1;*/
+/*	proc sql noprint;*/
+/*		select count(title) into :adult from X where CONT_MEAN ne . and AGECAT=2;*/
+/*	proc sql noprint;*/
+/*		select count(title) into :both from X where CONT_MEAN ne . and AGECAT=3;*/
+/*	data TEST (rename=( CATEGORY2=CATEGORY));*/
+/*		format AGECAT agecat. CATEGORY2 $20. TRIALS comma5. PCT_TRIALS percent8.1 SUM comma7.2 SUMWGTS comma7.2 MEAN COMMA6.2;*/
+/*		set X (where=(CONT_MEAN ne .));*/
+/**/
+/**/
+/*		retain X Y Z 0  a b c 0;*/
+/*		array TEMP X Y Z;*/
+/*		array TOTS A B C;*/
+/**/
+/**/
+/*		CATEGORY2 = PUT(CATEGORY,$ibdcat.);*/
+/*		by AGECAT CATEGORY;*/
+/*	*/
+/*		if first.AGECAT then do over TOTS;*/
+/*			TOTS=0;*/
+/*		end;*/
+/*		if first.CATEGORY then do over TEMP;*/
+/*				TEMP = 0;*/
+/*		end;*/
+/**/
+/*		/*Category line totals */*/
+/*		X+1; /* number of studies */*/
+/*		Y + (CONT_MEAN * ANALYZED);  /* weighted mean */*/
+/*		Z + ANALYZED;   /* weighted pool */*/
+/**/
+/*		/*Agecat subtotals */*/
+/*		A+1; /* number of studies */*/
+/*		B + (CONT_MEAN * ANALYZED);  /* weighted mean */*/
+/*		C + ANALYZED;   /* weighted pool */*/
+/**/
+/*		if last.CATEGORY then do;*/
+/*			TRIALS = X;*/
+/*			SUM = Y;*/
+/*			SUMWGTS = Z;*/
+/*			MEAN = SUM / SUMWGTS;*/
+/*			if AGECAT =1 then PCT_TRIALS = TRIALS / &child;*/
+/*				else if AGECAT =2 then PCT_TRIALS = TRIALS / &adult;*/
+/*				else if AGECAT =3 then PCT_TRIALS = TRIALS / &both;*/
+/*			output;*/
+/**/
+/*		end;*/
+/**/
+/*		if last.AGECAT then do;*/
+/*			AGECAT = .; 
+/*			CATEGORY2 = " "; PCT_TRIALS=1; SUM=.; SUMWGTS=.; MEAN=.;*/
+/*			TRIALS = A;*/
+/*			SUM = B;*/
+/*			SUMWGTS = C;*/
+/*			MEAN = SUM / SUMWGTS;*/
+/*			output;*/
+/*		end;;*/
+/**/
+/*		keep AGECAT -- MEAN;*/
+/*	run;*/
+/*	*/
+/*	proc print noobs;*/
+/*	run;*/
+/**/
+/**/
+
+
+	/****/
+
+
+	footnote;
+	proc freq data=ANALYSIS_FILE order=formatted compress;
+		TITLE 'Tabe 10. Trials included patients over 65?';
+		format AGECAT agecat. CATEGORY $ibdcat.;
+		table CATEGORY * AGE_GE65 / nocum nocol  totpct ;
+
+	run;title;
+
+
+
+	/****/
+
+
+	footnote;
+	proc freq data=ANALYSIS_FILE order=formatted compress;
+		TITLE 'Table 11. Trials included patients over 85?';
+		format AGECAT agecat. CATEGORY $ibdcat.;
+		table CATEGORY * AGE_GE85 / nocum nocol  totpct ;
+
+	run;title;
+
+
+
+
+
+
+
+
+proc sort data= FREQS out= FREQS2(keep=ID GLC QUARTILE );
+	by ID;
+	data FREQS2;
+		format  ISO $3.;
+		set FREQS2;
+		ISO = put(ID,Z3.);
+	run;
+
+	
+filename ODSOUT "E:\Kevin\My SAS Files\Programming Codes\ODS GRAPHICS";
+goptions reset= global cback=white colors = (black) border;
+
+
+ODS LISTING CLOSE;
+ODS HTML path= ODSOUT body= "ibdmap.htm" style= SASWEB;
+
+	pattern1 value = solid color= CXcceac4; /* DARK BLUE */
+	pattern2 value = solid color= CX73cdbb; /* MED BLUE */
+	pattern3 value = solid color= CX368fc0; /* MED GREEN */
+	pattern4 value = solid color= CX045a8d; /* LT GREEN */
+	* pattern5 value = solid color= CXd1abdd; /* MED GRAY */
+
+	goptions gunit=pct htitle=16pt ftitle= "Calibri/Bold" htext=12pt ftext="Calibri" XMAX=15in ymax = 8in noborder ;
+
+	legend1 label=none shape=bar(1,2) value= (justify=center "Quartile 1"
+															 "Quartile 2"
+															 "Quartile 3"
+															 "Quartile 4")
+				across=1 mode=share;
+
+ods html;
+
+			 proc gmap data= FREQS2 map= MAPSGFK.WORLD (where=( upcase(put(cont, contfmt.)) ne 'ANTARCTICA' )) all;
+			 title 'Countries Participating in US-based Registered IBD Clinical Trials';
+			 title2 '(Total Trials n=146)';
+			  id iso;
+			    choro quartile / discrete cdefault= "CXf6f7fa" cempty=BLACK ;
+			 run;QUIT;
+
+
+
+ ODS HTML CLOSE;
+
+
+
+
+
+
+
+
+
+
+
+/* Cross-Check Analyses */
+
+
+
+ods html close; ods html;
+
+	proc freq data=  ANALYSIS_FILE;
+		format AGECAT agecat.;
+		label RACE_REPORTED = ' ';
+
+		table INTL_SITES * RACE_REPORTED / nocum nopercent chisq fisher;
+
+	run;
+
+
+
+
+	data TEST;
+		set ANALYSIS_FILE;
+		format  R1_WHT
+				R2_BLK
+				R3_ASN
+				R4_AIA
+				R5_HPI
+				R6_MIX
+				R7_UNK  TOT_RACES 3. RACES $50.;
+
+
+
+		array A		WHT BLK ASN AIA HPI MIX UNK;
+		array B		R1_WHT R2_BLK R3_ASN R4_AIA R5_HPI R6_MIX R7_UNK;
+
+		RACES = ' ';
+
+		if RACE_REPORTED = 'Y' then do over B;
+			if A ne . then do;
+				B = 1; 
+				RACES = catx('-',races, substr(vname(B),4,3));
+			end;
+			else B = 0;
+
+		end;
+
+		TOT_RACES = SUM(OF B{*});
+
+		where RACE_REPORTED='Y';
+
+run;
+
+
+
+
+
+proc sort data= TEST;
+	by TOT_RACES R1_WHT--R7_UNK;
+proc summary data= TEST sum;
+	class RACE_REPORTED TOT_RACES;
+	var R1_WHT -- R7_UNK;
+
+output out=TEST2 (drop= _type_ _freq_) sum=;
+run;
+
+
+proc sql;
+select RACE_REPORTED label=' ',
+	   count(*) as STUDY_N,
+	   TOT_RACES,
+	   RACES
+
+from TEST
+group by 1,3,4;QUIT;
+
+
+
+
+
+
+/*  Pivot data by Title, Category, Race, Count */
+
+
+data TEST2 (where=( COUNT ne .));
+	format TITLE $1000. CATEGORY $20. RACE $3. COUNT COMMA5.;
+	set ANALYSIS_FILE;
+
+	array X  	WHT BLK ASN AIA HPI MIX UNK;
+
+	do over X;
+		RACE = vname(X);
+		COUNT = X;
+		output;
+	end;
+
+	
+	keep TITLE CATEGORY RACE COUNT;
+
+run;
+
+
+
+proc sql;
+select RACE,
+		sum(COUNT) 
+
+from TEST2
+group by 1;
+QUIT;
+
+
+data TEMP.IBD_BY_CATEGORY;
+	set TEST2;
+run;
+
+
+

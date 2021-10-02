@@ -1,0 +1,3011 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>IBD Presentation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kevin Williams" />
+    <meta name="date" content="2021-10-02" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/_css/kevin_css.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: title-slide, bottom, left, inverse, hide-count
+background-image: url(libs/_images/cells-unsplash.jpeg)
+background-size: cover
+
+# Investigating IBD Clinical Trial Disparities
+### (Rabinowitz, Silver et al.)
+### &lt;br&gt;
+### USING THE R PROGRAMMING LANGUAGE
+##### Prepared by Kevin Williams  | Preliminary Findings   |   September 14, 2021
+#### &lt;br&gt;
+#### &lt;br&gt;
+
+
+
+
+
+
+
+
+&lt;style type="text/css"&gt;
+.hide-count .remark-slide-number {
+  display: none;
+}
+
+.hide-count-title .title-slide-number {
+  display: none;
+}
+
+&lt;/style&gt;
+
+
+
+
+---
+layout: true
+background-image: url(libs/_images/harvard-bil.png)
+background-position: 3% 98.5%
+background-size: 110px 65px
+
+---
+## So why Redo this in R?
+
+
+&lt;center&gt;&lt;img src="libs/_images/Rlogo.png" height="350px" /&gt;&lt;/center&gt;
+
+---
+## So why Redo this in R?
+
+- Excellent &lt;font color="#006cc5"&gt;**learning opportunity**&lt;/font color&gt;
+
+--
+
+- Provides another chance to &lt;font color="#006cc5"&gt;**validate SAS results**&lt;/font color&gt; prior to publication
+
+--
+
+- R provides a wider variety of add-on packages that can enhance prelminary output - &lt;font color="#006cc5"&gt;**makes sharing with collaborators fun**&lt;/font color&gt;
+
+--
+
+- Data scientists have made a marked &lt;font color="#006cc5"&gt;**shift to R and Python**&lt;/font color&gt; and away from SAS and SPSS
+
+&lt;br&gt;
+
+
+&lt;!-- ![](libs/_images/dsVSpap.png) --&gt;
+
+&lt;center&gt;&lt;img src="libs/_images/dsVSpap3.png" height="330px" /&gt;&lt;/center&gt;
+
+---
+class: hide-count, inverse
+background-image: url(libs/_images/keyboard-unsplash.jpeg)
+background-size: cover
+
+
+## Task No. 1
+### Import and cleanse IBD data file downloaded by Authors from the [ClinicalTrials.gov](https://clinicaltrials.gov/ct2/results?cond=IBD&amp;cntry=US&amp;Search=Apply&amp;recrs=e&amp;age_v=&amp;gndr=&amp;type=&amp;rslt=With) website.
+
+
+---
+## Data Clean-Up
+
+.panelset[
+.panel[.panel-name[Import Data]
+
+
+```r
+require(readxl)
+require(readr)  # use if importing a comma- or tab-delimited dataset #
+require(haven)  # if importing a SAS dataset #
+
+*IBD &lt;- read_excel("../IBD Clinical Trials Paper/IBD Disparities 5-30.xlsx")
+
+
+# make.names function essentially replaces all spaces and non-standard characters
+# (parens, brackets, etc.) with a series of periods
+
+
+*names(IBD)&lt;-  make.names( names(IBD), unique = TRUE )
+```
+
+]
+
+.panel[.panel-name[Cleanse Data]
+
+Here's area few codes nippets from the  &lt;font color="#006cc5"&gt;**dplyr**&lt;/font color&gt; and &lt;font color="#006cc5"&gt;**broom**&lt;/font color&gt; packages that helped clean our data
+
+```r
+require(dplyr)
+require(broom)  
+require(tidyverse)  
+
+# loading tidyverse package would actually install dplyr and other dependent packages #
+```
+
+
+
+
+
+
+
+
+
+
+
+```r
+# Create smaller data table that has only the variables of interest
+
+IBD2 &lt;-  # the &lt;- operator assigns what follows to the new dataset name on the opposite side
+  
+  IBD %&gt;%
+     select(  # select variables of interest from IBD file ) %&gt;%
+     rename(  # rename theses variables to suit your working style)  %&gt;%
+     mutate(  # [1] mutate existing variables to change their content or structure, or
+              # [2] create brand new variables based on existing variables ))
+```
+
+
+&lt;center&gt;Note the use of the pipe &lt;font color="#006cc5"&gt;( %&gt;% )&lt;/font color&gt;  operator&lt;/center&gt; #&lt;&lt;
+
+]
+.panel[.panel-name[Final Data Frame]
+
+```r
+glimpse (IBD2)
+```
+
+&lt;center&gt;&lt;img src="libs/_images/IBD2-clean.png" height="410px" /&gt;&lt;/center&gt;
+]
+
+.panel[.panel-name[Sample Summary Stats]
+
+
+```r
+require(kableExtra)
+
+ IBD2 %&gt;% 
+    select( RACE_REPORTED, WHT:UNK, FEMALES, AGE_GE65_N) %&gt;% 
+    mutate_each( funs(replace(., which(is.na(.)), 0))) %&gt;%
+    mutate( OTHER = sum(BLK,ASN,AIA,HPI,MIX,UNK) ) %&gt;% 
+    select( RACE_REPORTED, WHT, OTHER, FEMALES, AGE_GE65_N) %&gt;% 
+    group_by( RACE_REPORTED) %&gt;% 
+    summarise( n = n(), WHT = sum(WHT), OTHER = sum(OTHER), FEMALES = sum(FEMALES), 
+               SENIORS = sum(AGE_GE65_N) )  %&gt;% 
+    arrange( desc(RACE_REPORTED) ) %&gt;% 
+    rbind( summarise_all(., ~if(is.numeric(.)) sum(.) else "Grand Total"))  %&gt;%    
+   
+*  . . .  other statements fed to KableExtra table rendering package
+```
+
+&lt;!-- # ```{r echo=F, fig.align="right", out.width="100px", fig.show='asis'} --&gt;
+&lt;!-- # knitr::include_graphics("libs/_images/skinny-arrow.png") --&gt;
+&lt;!-- # ``` --&gt;
+
+&lt;center&gt;&lt;img src="libs/_images/Kable-summary1.png" height="180px" /&gt;&lt;/center&gt;
+&lt;!-- &lt;img src="libs/_images/skinny-arrow.png" height="50px",  background-position= 0%, 100% /&gt; --&gt;
+]
+
+]
+
+---
+class: inverse, hide-count
+background-image: url(libs/_images/codeblue-unsplash.jpeg)
+background-size: cover
+
+
+## Task No. 2
+### Produce a series of &lt;font color="#ef8de4"&gt;descriptive summary tables&lt;/font color&gt; as part of exploratory analysis.
+
+---
+## Select Summary Tables
+
+.panelset[
+.panel[.panel-name[Trial Interventions]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;IBD Trials by Type of Intervention being Investigated&lt;/font color\&gt;
+
+```r
+ IBD2 %&gt;%
+   mutate(INTERVENTION = toupper(INTERVENTION) ) %&gt;% 
+   group_by( INTERVENTION ) %&gt;% 
+   summarise( FREQUENCY = n() ) %&gt;% 
+   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %&gt;% 
+   arrange ( INTERVENTION )  %&gt;% 
+  
+*  . . .  other statements fed to KableExtra
+*         table rendering package
+```
+]
+.pull-right[
+&lt;center&gt;&lt;img src="libs/_images/Kable-summary2.png" height="410px" style="padding-top: 55px" /&gt;&lt;/center&gt;  ]
+]
+
+.panel[.panel-name[Funding Sources]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;IBD Trials by Funding Source&lt;/font color\&gt;
+
+```r
+ IBD2 %&gt;% 
+   group_by( FUNDING ) %&gt;% 
+   summarise( FREQUENCY = n() ) %&gt;% 
+   mutate (PCT = percent( FREQUENCY / sum(FREQUENCY)) ) %&gt;%
+    arrange ( FUNDING )  %&gt;% 
+  
+*  . . .  other statements fed to KableExtra
+*         table rendering package
+```
+]
+.pull-right[
+&lt;center&gt;&lt;img src="libs/_images/Kable-summary3.png" height="220px" style="padding-top: 55px"/&gt;&lt;/center&gt;  ]
+]
+
+
+.panel[.panel-name[Female Representation]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;Female Representation in IBD Trials&lt;/font color\&gt;
+
+```r
+IBD2  %&gt;%
+  select( CATEGORY, ANALYZED, FEMALES) %&gt;%
+    group_by( CATEGORY )  %&gt;%
+    summarise( Trials_N = n(), Total_Subjects_N = sum(ANALYZED), Female_N = sum(FEMALES) , 
+               Pct_Female = Female_N / Total_Subjects_N ) %&gt;%
+    arrange( as.character(CATEGORY) ) %&gt;%
+    rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Grand Total"))  %&gt;%
+    mutate( Pct_Female = case_when ( CATEGORY == "Grand Total" ~ Female_N / Total_Subjects_N,
+                                     TRUE ~ Pct_Female )) %&gt;%
+    mutate( Total_Subjects_N = prettyNum(Total_Subjects_N, big.mark=","),
+            Female_N = prettyNum( Female_N, big.mark=","),
+            Pct_Female = percent( Pct_Female ) )   %&gt;% 
+  
+*  . . .  other statements fed to KableExtra
+*         table rendering package
+```
+]
+.pull-right[
+&lt;center&gt;&lt;img src="libs/_images/Kable-summary5.png" height="320px" width="700px" style="padding-top: 25px"/&gt;&lt;/center&gt;  ]
+]
+
+.panel[.panel-name[Pregnancy Exclusion]
+
+#### &lt;font color="#006cc5"&gt;IBD Trials Excluding Pregnant Subjects&lt;/font color\&gt;
+.pull-left[
+
+```r
+*require(sjPlot)
+
+IBD2$CAT2 &lt;-  factor(as.character(IBD2$CATEGORY))
+levels(IBD2$CAT2) &lt;- c("1. CD", "2. UC", 
+                       "3. OTHER", "3. OTHER")
+             
+plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row", 
+          bar.pos = "stack", coord.flip = TRUE, 
+          axis.titles = c('Clinical Trials Category'), 
+          legend.title= "Excluded?",
+          geom.colors = c("#006cc5","#cbcccb"), 
+          show.summary = TRUE )+ 
+          set_theme(base= theme_classic()) 
+```
+]
+.pull-right[
+
+&lt;center&gt;&lt;img src="libs/_images/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/&gt;&lt;/center&gt;  ]
+
+]
+
+.panel[.panel-name[Intl Sites]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;IBD Trials Recruiting Internationally&lt;/font color\&gt;
+
+```r
+ IBD2 %&gt;% 
+   group_by( INTL_SITES ) %&gt;% 
+   summarise( Frequency = n() ) %&gt;% 
+   mutate (Pct = percent( Frequency / sum(Frequency)) ) %&gt;%
+   arrange ( desc(INTL_SITES)  )  %&gt;%
+  
+*  . . .  other statements fed to KableExtra
+*         table rendering package
+```
+]
+.pull-right[
+&lt;center&gt;&lt;img src="libs/_images/Kable-summary4.png" height="200px" style="padding-top: 55px"/&gt;&lt;/center&gt;  ]
+]
+
+
+
+```
+
+
+
+
+
+
+
+
+
+.panel[.panel-name[Site List &amp; Percentiles]
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:4.25in; "&gt;&lt;table class=" lightable-material lightable-hover" style='font-size: 18px; font-family: "Source Sans Pro", helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+&lt;caption style="font-size: initial !important;"&gt;
+&lt;br&gt;&lt;center&gt;&lt;strong&gt;Countries Recruiting Subjects for US-based IBD Clinical Trials&lt;/strong&gt;&lt;/center&gt;
+&lt;br&gt;
+&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"&gt; Country &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Trials&lt;br&gt;N &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Percent &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Percentile &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Quartile &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; USA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 146 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 12.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 100.00 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; CANADA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 82 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 6.88% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 98.21 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; POLAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.87% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 96.43 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; HUNGARY &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 53 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.45% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 94.64 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; BELGIUM &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 52 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.36% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 92.86 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; GERMANY &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.28% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 91.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; CZECHIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.86% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 89.29 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; FRANCE &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 44 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.69% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 87.50 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; NETHERLANDS &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 42 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.52% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 85.71 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; AUSTRALIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 37 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.10% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 83.04 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ISRAEL &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 37 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.10% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 83.04 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SPAIN &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 33 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.77% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 80.36 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; AUSTRIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 32 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 78.57 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ITALY &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.60% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 76.79 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; NEW ZEALAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.18% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 74.11 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SLOVAKIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.18% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 74.11 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; RUSSIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.10% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 71.43 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; BULGARIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; DENMARK &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SOUTH AFRICA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; UKRAINE &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SERBIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 22 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.85% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 62.50 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; KOREA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.68% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 60.71 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; UK &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.59% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 58.93 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ROMANIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.51% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 57.14 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; JAPAN &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.43% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 55.36 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; BRAZIL &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.26% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 53.57 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SWEDEN &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.17% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 51.79 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SWITZERLAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.01% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 50.00 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; CROATIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ESTONIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; LATVIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; GREECE &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.76% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 41.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; NORWAY &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.76% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 41.96 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; LITHUANIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.67% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 39.29 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; INDIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; IRELAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; MEXICO &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; PUERTO RICO &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ARGENTINA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.42% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 29.46 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; TAIWAN &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.42% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 29.46 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SINGAPORE &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; COLOMBIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; PORTUGAL &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; BELARUS &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; BOSNIA-HERZEGOVINA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; GEORGIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; HONG KONG &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; ICELAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; MALAYSIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; TURKEY &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; CHILE &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; MOLDOVA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; SLOVENIA &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; FINLAND &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.08% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; PERU &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.08% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+]
+
+
+
+]
+---
+
+## &lt;font color="#006cc5"&gt;Site Map&lt;/font color\&gt;
+#### &lt;center&gt;Countries (56) with Recruitment Sites for US-based IBD Clinical Trials&lt;/center&gt;
+
+&lt;img src="IBD-Slideshow_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
+
+
+
+---
+class: inverse, hide-count
+background-image: url(libs/_images/codeblue-unsplash.jpeg)
+background-size: cover
+
+
+## Task No. 3
+### Report the &lt;font color="#ef8de4"&gt;race/ethnicity demographics&lt;/font color&gt; obtained from those IBD trials where such information was collected.
+
+---
+### Did Most Studies Collect Race Data?
+
+&lt;img src="IBD-Slideshow_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
+
+&lt;center&gt; Only 43% of studies (n=63) collected race data - and even then, not all races necessarily participated in trials.  It is also unclear from available data whether there was consistency among trials in terms how "race" was defined.&lt;/center&gt;
+
+
+---
+### &lt;font color="#006cc5"&gt;How Was Race/Ethnicity Reported?&lt;/font color&gt;
+.pull-left[
+<div id="utrcazhuxy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#utrcazhuxy .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 10pt;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_title {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: bold;
+  padding-top: 8pt;
+  padding-bottom: 8pt;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#utrcazhuxy .gt_subtitle {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 10pt;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#utrcazhuxy .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#utrcazhuxy .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#utrcazhuxy .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#utrcazhuxy .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#utrcazhuxy .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#utrcazhuxy .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#utrcazhuxy .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#utrcazhuxy .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#utrcazhuxy .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#utrcazhuxy .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#utrcazhuxy .gt_stub {
+  color: #333333;
+  background-color: #E6EFFC;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#utrcazhuxy .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#utrcazhuxy .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#utrcazhuxy .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#utrcazhuxy .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 8pt;
+}
+
+#utrcazhuxy .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#utrcazhuxy .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#utrcazhuxy .gt_left {
+  text-align: left;
+}
+
+#utrcazhuxy .gt_center {
+  text-align: center;
+}
+
+#utrcazhuxy .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#utrcazhuxy .gt_font_normal {
+  font-weight: normal;
+}
+
+#utrcazhuxy .gt_font_bold {
+  font-weight: bold;
+}
+
+#utrcazhuxy .gt_font_italic {
+  font-style: italic;
+}
+
+#utrcazhuxy .gt_super {
+  font-size: 65%;
+}
+
+#utrcazhuxy .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px">
+  <colgroup>
+    <col style="width:100px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+  </colgroup>
+  <thead class="gt_header">
+    <tr>
+      <th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style><strong>Race = WHITE</strong></th>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-family: Cabin;"><strong>Category</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Trials<bR>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Total<br>Subjects</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Whites</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Non-Whites</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>%<br>White</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">22</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,973</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,385</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">588</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">90.2&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">33</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,296</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7,912</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1,384</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">85.1&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">79</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">77</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">97.5&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,879</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,547</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">332</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">88.5&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">63</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">18,227</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">15,921</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">2,306</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">87.3&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">43</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">10,392</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">31</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">11,690</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">126</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">83</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">31,961</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">Grand Total</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">146</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">50,188</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">15,921</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,306</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">31.7&percnt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+].pull-right[
+<div id="uudvvmeztu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#uudvvmeztu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 10pt;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_title {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: bold;
+  padding-top: 8pt;
+  padding-bottom: 8pt;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#uudvvmeztu .gt_subtitle {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 10pt;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#uudvvmeztu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#uudvvmeztu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#uudvvmeztu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#uudvvmeztu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#uudvvmeztu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#uudvvmeztu .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#uudvvmeztu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#uudvvmeztu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#uudvvmeztu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#uudvvmeztu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#uudvvmeztu .gt_stub {
+  color: #333333;
+  background-color: #E6EFFC;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#uudvvmeztu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uudvvmeztu .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#uudvvmeztu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#uudvvmeztu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 8pt;
+}
+
+#uudvvmeztu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#uudvvmeztu .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#uudvvmeztu .gt_left {
+  text-align: left;
+}
+
+#uudvvmeztu .gt_center {
+  text-align: center;
+}
+
+#uudvvmeztu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#uudvvmeztu .gt_font_normal {
+  font-weight: normal;
+}
+
+#uudvvmeztu .gt_font_bold {
+  font-weight: bold;
+}
+
+#uudvvmeztu .gt_font_italic {
+  font-style: italic;
+}
+
+#uudvvmeztu .gt_super {
+  font-size: 65%;
+}
+
+#uudvvmeztu .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px">
+  <colgroup>
+    <col style="width:100px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+  </colgroup>
+  <thead class="gt_header">
+    <tr>
+      <th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style><strong>Race = ASIAN</strong></th>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-family: Cabin;"><strong>Category</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Trials<bR>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Total<br>Subjects</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Asians</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Non-Asians</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>%<br>Asian</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">22</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,973</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">305</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,602</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5.2&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">33</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,296</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">869</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">8,391</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9.4&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">79</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">0</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">79</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">0.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,879</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">198</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,681</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">6.9&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">63</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">18,227</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">1,372</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">16,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">7.6&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">43</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">10,392</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">31</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">11,690</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">126</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">83</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">31,961</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">Grand Total</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">146</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">50,188</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1,372</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">16,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2.7&percnt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+]
+
+
+---
+### &lt;font color="#006cc5"&gt;How Was Race/Ethnicty Reported, cont.?&lt;/font color&gt;
+.pull-left[
+<div id="deqtpwuorc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#deqtpwuorc .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 10pt;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_title {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: bold;
+  padding-top: 8pt;
+  padding-bottom: 8pt;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#deqtpwuorc .gt_subtitle {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 10pt;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#deqtpwuorc .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#deqtpwuorc .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#deqtpwuorc .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#deqtpwuorc .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#deqtpwuorc .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#deqtpwuorc .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#deqtpwuorc .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#deqtpwuorc .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#deqtpwuorc .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#deqtpwuorc .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#deqtpwuorc .gt_stub {
+  color: #333333;
+  background-color: #E6EFFC;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#deqtpwuorc .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#deqtpwuorc .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#deqtpwuorc .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#deqtpwuorc .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 8pt;
+}
+
+#deqtpwuorc .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#deqtpwuorc .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#deqtpwuorc .gt_left {
+  text-align: left;
+}
+
+#deqtpwuorc .gt_center {
+  text-align: center;
+}
+
+#deqtpwuorc .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#deqtpwuorc .gt_font_normal {
+  font-weight: normal;
+}
+
+#deqtpwuorc .gt_font_bold {
+  font-weight: bold;
+}
+
+#deqtpwuorc .gt_font_italic {
+  font-style: italic;
+}
+
+#deqtpwuorc .gt_super {
+  font-size: 65%;
+}
+
+#deqtpwuorc .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px">
+  <colgroup>
+    <col style="width:100px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+  </colgroup>
+  <thead class="gt_header">
+    <tr>
+      <th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style><strong>Race = BLACK</strong></th>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-family: Cabin;"><strong>Category</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Trials<bR>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Total<br>Subjects</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Blacks</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Non-Blacks</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>%<br>Black</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">22</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,973</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">239</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,734</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">4.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">33</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,296</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">257</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">8,424</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">3.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">79</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">78</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1.3&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,879</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">85</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,794</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">3.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">63</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">18,227</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">582</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">17,030</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">3.3&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">43</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">10,392</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">31</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">11,690</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">126</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">83</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">31,961</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">Grand Total</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">146</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">50,188</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">582</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">17,030</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1.2&percnt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+].pull-right[
+<div id="cgpvgiccgk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#cgpvgiccgk .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 10pt;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_title {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: bold;
+  padding-top: 8pt;
+  padding-bottom: 8pt;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#cgpvgiccgk .gt_subtitle {
+  color: #333333;
+  font-size: 12pt;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 10pt;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#cgpvgiccgk .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#cgpvgiccgk .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#cgpvgiccgk .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#cgpvgiccgk .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#cgpvgiccgk .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#cgpvgiccgk .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#cgpvgiccgk .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#cgpvgiccgk .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#cgpvgiccgk .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#cgpvgiccgk .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#cgpvgiccgk .gt_stub {
+  color: #333333;
+  background-color: #E6EFFC;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#cgpvgiccgk .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cgpvgiccgk .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cgpvgiccgk .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#cgpvgiccgk .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 8pt;
+}
+
+#cgpvgiccgk .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cgpvgiccgk .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#cgpvgiccgk .gt_left {
+  text-align: left;
+}
+
+#cgpvgiccgk .gt_center {
+  text-align: center;
+}
+
+#cgpvgiccgk .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#cgpvgiccgk .gt_font_normal {
+  font-weight: normal;
+}
+
+#cgpvgiccgk .gt_font_bold {
+  font-weight: bold;
+}
+
+#cgpvgiccgk .gt_font_italic {
+  font-style: italic;
+}
+
+#cgpvgiccgk .gt_super {
+  font-size: 65%;
+}
+
+#cgpvgiccgk .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px">
+  <colgroup>
+    <col style="width:100px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+    <col style="width:70px;"/>
+  </colgroup>
+  <thead class="gt_header">
+    <tr>
+      <th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style><strong>Ethnicity = HISPANIC</strong></th>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-family: Cabin;"><strong>Category</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Trials<bR>N</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Total<br>Subjects</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Hispanics</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>Non-Hispanics</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-family: Cabin; text-align: right;"><strong>%<br>Hispanic</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">22</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5,973</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">126</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">4,207</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2.9&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">33</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,296</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">441</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">8,447</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">5.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">79</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">0</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">0</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,879</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">80</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2,611</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">3.0&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">63</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">18,227</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">647</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">15,265</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">4.1&percnt;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">1. CD</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">43</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">10,392</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">2. UC</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">31</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">11,690</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">3. IBDU</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">2</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">126</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">4. COMBO</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">7</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">9,753</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin; font-style: italic;">Subtotal</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">83</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">31,961</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right; font-style: italic;">&mdash;</td></tr>
+    <tr><td class="gt_row gt_left" style="font-family: Cabin;">Grand Total</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">146</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">50,188</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">647</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">15,265</td>
+<td class="gt_row gt_right" style="font-family: Cabin; text-align: right;">1.3&percnt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+]
+
+---
+### Racial Composition of IBD Clinical Trials Compared to US Census
+
+.panelset[
+.panel[.panel-name[Census Comparison]
+
+&lt;img src="IBD-Slideshow_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
+]
+.panel[.panel-name[Adjusted Confidence Intervals]
+
+&lt;center&gt;Simultaneous confidence intervals for multinomial proportions were computed using the methods proposed by [Sison &amp; Glaz (1995)](https://www.tandfonline.com/doi/abs/10.1080/01621459.1995.10476521), which are similar to those adapted for SAS by [May &amp; Johnson (1997)](https://www.sciencedirect.com/science/article/abs/pii/S0169260797018099)&lt;/center&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;table class=" lightable-material lightable-hover" style='font-family: "Source Sans Pro", helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Race &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Participants&lt;br&gt;N &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Proportion&lt;br&gt;% &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Lower&lt;br&gt;CI &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Upper&lt;br&gt;CI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; Amer Indian Alaskan Native &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.28% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.00% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.73% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 1,372 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 7.63% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 7.19% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 8.08% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; Black &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 582 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 3.24% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 2.80% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 3.69% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; Hawaiian Pacific Islander &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.07% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.00% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.52% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; Mixed Race &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.19% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.00% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 0.64% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 4cm; "&gt; White &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 15,921 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 88.58% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 88.14% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 1cm; "&gt; 89.03% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+]
+]
+---
+### No Apparent Gender Gap was Noted in the Trials Examined
+
+&lt;img src="IBD-Slideshow_files/figure-html/unnamed-chunk-23-1.png" width="100%" /&gt;
+&lt;center&gt;&lt;small&gt;Women were slightly over-represented, while men were slightly under-represented, relative to census data&lt;/small&gt; &lt;/center&gt;
+
+---
+## Test Slide
+
+.panelset[
+.panel[.panel-name[Trial Interventions]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;IBD Trials by Type of Intervention being Investigated&lt;/font color\&gt;
+
+```r
+IBD2 %&gt;% 
+   mutate(INTERVENTION = toupper(INTERVENTION) ) %&gt;% 
+   group_by( INTERVENTION ) %&gt;% 
+   summarise( FREQUENCY = n() ) %&gt;% 
+   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %&gt;%
+   arrange ( INTERVENTION )  %&gt;% 
+ 
+*  kbl(booktabs = T, format= "html", linesep='', padding=0,
+*      align= c('l','r','r','r','r'), escape=F,
+*      col.names= linebreak(c("Type of Intervention",
+*                             "Frequency","Percent"))) %&gt;%
+*  kable_material(full_width = F, "hover",
+*                 font_size=16) %&gt;%
+*                 column_spec(1, width = "7cm")
+```
+]
+.pull-right[
+&lt;br&gt;
+&lt;table class=" lightable-material lightable-hover" style='font-size: 16px; font-family: "Source Sans Pro", helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Type of Intervention &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Frequency &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; BEHAVIORAL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.37% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; BIOLOGICAL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.53% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; DEVICE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.48% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; DIAGNOSTIC TEST &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.68% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; DIETARY SUPPLEMENT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.37% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; DRUG &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 113 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77.40% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; OTHER &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.42% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; PROCEDURE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.05% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.68% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+]
+
+
+.panel[.panel-name[Funding Sources]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;IBD Trials by Funding Source&lt;/font color\&gt;
+
+```r
+ IBD2 %&gt;% 
+   group_by( FUNDING ) %&gt;% 
+   summarise( FREQUENCY = n() ) %&gt;% 
+   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %&gt;%
+    arrange ( FUNDING )  %&gt;% 
+ 
+*   kbl(booktabs = T, format= "html",
+*       align= c('l','r','r','r','r'), escape=F,
+*       col.names= linebreak(c("Funding Source",
+*                    "Frequency", "Percent"))) %&gt;%
+*      kable_material(full_width = F, "hover",
+*                     font_size=16) %&gt;%
+*                     column_spec(1, width = "7cm")
+```
+]
+.pull-right[
+&lt;br&gt;
+&lt;br&gt;
+&lt;table class=" lightable-material lightable-hover" style='font-size: 16px; font-family: "Source Sans Pro", helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Funding Source &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Frequency &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; INDUSTRY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 119 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81.51% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; NIH/HOSPITAL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.70% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 7cm; "&gt; NIH/UNIVERSITY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.79% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+]
+
+.panel[.panel-name[Female Representation]
+.pull-left[
+#### &lt;font color="#006cc5"&gt;Female Representation in IBD Trials&lt;/font color\&gt;
+
+```r
+  IBD2  %&gt;%
+    select( CATEGORY, ANALYZED, FEMALES) %&gt;%
+      group_by( CATEGORY )  %&gt;%
+      summarise( Trials_N = n(), Total_Subjects_N = sum(ANALYZED), Female_N = sum(FEMALES) , 
+                   Pct_Female = Female_N / Total_Subjects_N ) %&gt;%
+      arrange( as.character(CATEGORY) ) %&gt;%
+      rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Grand Total"))  %&gt;%
+      mutate( Pct_Female = case_when ( CATEGORY == "Grand Total" ~ Female_N / Total_Subjects_N, TRUE ~ Pct_Female )) %&gt;%
+      mutate( Total_Subjects_N = prettyNum(Total_Subjects_N, big.mark=","),
+                  Female_N = prettyNum( Female_N, big.mark=","),
+                  Pct_Female = percent( Pct_Female ) )   %&gt;% 
+
+      kbl( booktabs = T, format= "html",
+           align= c('l','r','r','r','r'), escape=F, 
+         col.names = linebreak(c("Category", 
+                                 "Trials&lt;br&gt;N", 
+                                 "Total&lt;br&gt;Subjects&lt;br&gt;N", 
+                                 "Female&lt;br&gt;N", 
+                                 "Pct&lt;br&gt;Female"))) %&gt;% 
+         kable_material(full_width = F, "hover") %&gt;% 
+                        column_spec(1, width = "8cm") %&gt;% 
+                        row_spec( 5, bold=T ) 
+```
+]
+.pull-right[
+&lt;table class=" lightable-material lightable-hover" style='font-family: "Source Sans Pro", helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Category &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Trials&lt;br&gt;N &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Total&lt;br&gt;Subjects&lt;br&gt;N &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Female&lt;br&gt;N &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Pct&lt;br&gt;Female &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; 1. CD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16,365 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8,872 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 54.21% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; 2. UC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 64 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20,986 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9,309 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 44.36% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; 3. IBDU &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 103 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.24% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; "&gt; 4. COMBO &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12,632 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7,615 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60.28% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 8cm; font-weight: bold;"&gt; Grand Total &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 146 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 50,188 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 25,899 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 51.60% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+]
+
+
+]
+
+---
+# Left-Column Headings
+
+.left-column[
+## First
+
+## Second
+
+## Third
+]
+
+.right-column[
+Dolor quis aptent mus a dictum ultricies egestas.
+
+Amet egestas neque tempor fermentum proin massa!
+
+Dolor elementum fermentum pharetra lectus arcu pulvinar.
+]
+
+---
+### Code Blocks
+
+#### R Code
+
+
+```r
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp, size = pop, color = country) +
+  geom_point() +
+  facet_wrap(~year)
+```
+
+---
+## Square Animated .gif
+
+&lt;center&gt;&lt;img src="libs/_images/Gapminder.gif" height="400px" /&gt;&lt;/center&gt;
+
+.footnote[&lt;center&gt;GitHub Octocat&lt;/center&gt;]
+
+---
+layout: false
+## Two images
+
+.pull-left[
+![](https://octodex.github.com/images/motherhubbertocat.png)
+]
+
+.pull-right[
+&lt;img src="libs/_images/kevinround.jpg" height="400px" /&gt;
+]
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true,
+"highlightStyle": "github",
+"highlightSpans": true,
+"ratio": "16:9",
+"slideNumberFormat": "%current%",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

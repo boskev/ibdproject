@@ -1,0 +1,1129 @@
+---
+title:  "IBD Clinical Trial Analysis (Rabinowitz-Silver)"
+author: "Kevin Willliams"
+lab:    "Barbados Nutrition Study"
+date:   "September 14, 2021"
+output: 
+  html_document:
+    theme: default
+
+
+
+---
+
+```{r SETUP-KNITR, setup, include=FALSE}
+      knitr::opts_chunk$set(echo = TRUE)
+
+```
+  
+<br>
+
+## Introduction
+
+This is a synopsis of the steps undertaken to remediate the SAS code used in the initial analysis supporting the manuscript, ***"Assessment of the inclusion of female racial/ethnic minority, female, and older individuals in inflammatory bowel disease clinical trials"*** **(Rabinowitz, Silver et al.)**, into the R programming language.  Where appropriate, samples of the exact R syntax used will be displayed, along with the corresponding output (tabular data, graphical plots, maps, etc.).
+
+<br>
+
+***
+
+### Analytic Tasks
+
+* Import .xlsx file into R
+* Scrub data, ensuring that variables such as "Interventions," "Funded by" and "Category" are consistently represented
+* Run series of requested descriptive statistics on various variables of interest
+* Produce a chloropleth map showing the countries assisting in the referenced US-based IBD clinical trials
+* Tests various hypotheses around the racial, age and gender distributions of the participants enrolled in these trials
+
+<br>
+
+***
+
+#### Task 1:  Import data from Excel, save it as `IBD` and remove problematic characaters from all variable names.
+
+<br>
+
+
+```{r IMPORT-DATA-FROM-EXCEL}
+
+require(xlsx)
+require(tidyverse)
+require(dplyr)
+require(broom)
+
+IBD <- read_excel("~/Documents/R/IBD Clinical Trials Paper/IBD Disparities 5-30.xlsx")
+
+
+# make.names function essentially replaces all spaces and non-standard characters (parens, brackets, etc.) with a series of periods
+
+names(IBD)<-  make.names(names(IBD),unique = TRUE)
+
+```
+  
+
+<br>
+
+Here's a glimpse of the structure of the resulting dataset -- where only the column names were modified -- which was named `IBD`:
+  
+  
+```{r GLIMPSE-1 }
+  
+glimpse(IBD)
+
+```
+
+<br>
+
+***
+#### Task 2: Reduce dataset to include only essential variables and use those variables to create *additional* variables for later analyses 
+
+
+```{r SUBSET-IMPORTED-EXCEL-DATA, echo=T}
+
+
+
+# Create smaller data table that has only the variables of interest
+
+IBD2 <-
+  
+    IBD %>%
+  
+  
+  select( "Title", "Category..CD..UC..IBD.", "Interventions", 
+          "Funded.By", "Age.Continuous..Mean.", 
+          "Analyzed", "Female.N", "Included.International.Sites..Y.N.",
+          "Race.Reported..Y.N...Race..American.Indian.or.Alaska.Native..Asian..Black.or.African.American..Native.Hawaiian.or.Other.Pacific.Islander..and.White..",
+          'Were.pregnant.breastfeeding.women.excluded.from.trial.',
+          "Ethnicity.Reported..Y.N...Ethnicity..Hispanic.or.Latino..and..Not.Hispanic.or.Latino....", 
+          "White.N", "Black.or.African.American.N", "Asian.N",
+          "American.Indian.Alaska.Native.N", "Native.Hawaiian.Pacific.Islander.N", 
+          "More.than.One.Race.Reported.N", "Unknown.Not.Reported.N","Hispanic.N",
+          "Age..0.18.child..18...Adult.", 
+          "Included...65.years..Y.N.", 
+          "Included....85..Y.N.", 
+          "X.65.N",
+          "LOCATIONS2") %>%
+
+
+
+      rename( CATEGORY = "Category..CD..UC..IBD.", 
+              Funding = "Funded.By", Intervention= "Interventions", 
+              CONT_MEAN = "Age.Continuous..Mean.", 
+              FEMALES = "Female.N" , 
+              AGE_RANGE = "Age..0.18.child..18...Adult.", 
+              PLUS65= "Included...65.years..Y.N.", 
+              PLUS85= "Included....85..Y.N.",
+              INTL_SITES = "Included.International.Sites..Y.N.", 
+              PREGNANT_EXCL = 'Were.pregnant.breastfeeding.women.excluded.from.trial.',
+              RACE_REPORTED = "Race.Reported..Y.N...Race..American.Indian.or.Alaska.Native..Asian..Black.or.African.American..Native.Hawaiian.or.Other.Pacific.Islander..and.White..",
+              ETHNICITY_REPORTED = "Ethnicity.Reported..Y.N...Ethnicity..Hispanic.or.Latino..and..Not.Hispanic.or.Latino....",
+              WHT = "White.N", 
+              BLK = "Black.or.African.American.N",
+              ASN = "Asian.N", AIA = "American.Indian.Alaska.Native.N", 
+              HPI = "Native.Hawaiian.Pacific.Islander.N", 
+              MIX= "More.than.One.Race.Reported.N",
+              UNK = "Unknown.Not.Reported.N", 
+              HIS= "Hispanic.N",
+              LOCATIONS  = "LOCATIONS2")  %>%
+  
+      rename_all (toupper) %>%
+  
+      mutate(CATEGORY = str_replace(str_replace_all(CATEGORY, "IBDU", "IBD"), "IBD", "IBDU"))   %>%
+      mutate(RACE_REPORTED = ifelse( (RACE_REPORTED == "not reported" | RACE_REPORTED == "N"), "N", "Y"))  %>%
+  
+      rowwise() %>%
+  
+      mutate(CATEGORY = paste(sort(unlist(strsplit( CATEGORY, ", ", fixed = TRUE))), collapse = ", ") ) %>%
+      mutate( INTERVENTION =   str_replace(str_trim(str_sub( INTERVENTION, 1, str_locate( INTERVENTION, ":")[1] ),"both"),":","") ) %>%
+  
+      mutate( FUNDING =  case_when (  str_trim(word(FUNDING, 1, sep=("-")), "both") == "Industry"  ~ "INDUSTRY",
+                                        str_trim(word(FUNDING, 1, sep=("-")), "both") == "Other" ~ 
+                                        
+                                        case_when( str_locate(FUNDING, "Industry")[1] >0 ~ "INDUSTRY",
+                                                   str_locate(FUNDING, "Hospital")[1] >0 | str_locate(FUNDING, "Clinic")[1] >0  |
+                                                   str_locate(FUNDING, "Health Care")[1] >0 | str_locate(FUNDING, "Medical Center")[1] >0 | str_locate(FUNDING, "Health")[1] >0 |
+                                                   str_locate(FUNDING, "NIH")[1] >0 ~ "NIH/HOSPITAL",
+                                                   str_locate(FUNDING, "College")[1] >0 |  str_locate(FUNDING, "University")[1] >0 | str_locate(FUNDING, "NIH")[1] >0 ~ "NIH/UNIVERSITY",
+                                                   str_locate(FUNDING, "NIH")[1] >0 ~ "NIH/HOSPITAL",
+                                                   TRUE ~ "ZZZ"), TRUE ~ "NIH/HOSPITAL")) %>%
+  
+      mutate (AGECAT =   case_when (str_locate( AGE_RANGE, ",")[1] >0 ~ 3,
+                                    str_locate( AGE_RANGE, "Adult")[1] >0 ~ 2,
+                                    str_locate( AGE_RANGE, "Child")[1] >0 ~ 1,
+                                    TRUE ~ 99 )) %>%
+  
+      mutate (AGECAT = recode_factor ( AGECAT,
+                                       "1" = "Children Only",
+                                       "2" = "Adults Only",
+                                       "3" = "Children & Adults"))  %>%
+  
+       mutate (CATEGORY = recode_factor ( CATEGORY,
+                                   "CD" = "1. CD",
+                                   "UC" = "2. UC",
+                                   "IBDU" = "3. IBDU",
+                                   .default = "4. COMBO"))  %>%
+  
+
+      mutate( PLUS65 = ifelse( PLUS65=="N/A", "N", PLUS65)) %>%
+      mutate( PLUS85 = ifelse( PLUS85=="N/A", "N", PLUS85)) %>%
+      mutate(AGE_GE65_N = ifelse( X.65.N >= 0, X.65.N, 0)) %>%
+      select ( -X.65.N)
+
+  # reorder the factor levels of categorical variable "CATEGORY"
+
+  IBD2$CATEGORY <- factor( IBD2$CATEGORY, levels= c("1. CD", '2. UC', '3. IBDU', '4. COMBO')) 
+
+        
+
+```
+
+<br>
+
+Here's a glimpse of the modified dataset, which was named `IBD2`:
+
+```{r GLIMPSE-2 }
+
+glimpse (IBD2)
+
+```
+
+<br>
+
+***
+
+#### Task 3:  The variable *LOCATIONS* contains character strings of country names that are delimited by commas. This variable needs to be saved as its own file `SITES`, pivoted using a "for loop" so that each country's participation details can be reported.
+
+<br>
+
+```{r SCRUB-LOCATIONS-COLLAPSE-TO-SITES }
+
+# Create new data frame with just the LOCATIONS variable
+LOCATIONS <-   IBD2 %>% select(LOCATIONS) %>% tbl_df
+
+
+# Create a second data frame that will be used the store the pivoted data
+SITES <- data.frame( ID= character(0), COUNTRY=character(0), STUDIES= numeric(0)  )
+
+
+# for loop in action that takes every value in COUNTRY delimited by a comma and sets that value in its own row:
+
+for (j in 1: nrow(LOCATIONS) ){
+  
+    y <- 0
+    loccount<- str_count( LOCATIONS$LOCATIONS[j], ",")+1 
+    
+    temp  <- data.frame(  ID= character(0), COUNTRY=character(0), STUDIES= numeric(0) )
+    
+    # print( paste("j", j, sep="="))
+    # print( paste("countries", loccount, sep="="))
+  
+  
+  for (i in 1:loccount ){
+
+  a <- str_trim(word( LOCATIONS$LOCATIONS[j], i, sep=(",")))
+  y <- 1
+  
+  temp[i, 1:2] = c( paste("TRIAL", j, sep=" "), a )
+  temp[i, 3]   = y
+
+  }   
+    
+  SITES = rbind(SITES, temp) 
+  
+  if (j==nrow(LOCATIONS)){ rm( a, i, j, loccount, y, temp ) }
+  
+}
+
+
+```
+
+<br>
+
+One additional set of "piped" ` %>% ` commands is needed to collapse the newly created `SITES` data frame compute new variablews: *COUNT, PERCENT* and *QUARTILE* variables:
+
+```{r COLLAPSE-SITES-TO-SITES2, warning=FALSE}
+
+require(kableExtra)
+ 
+  SITES2 <-
+    SITES %>% group_by( COUNTRY ) %>% 
+    summarise( COUNT = n()) %>% 
+    arrange( desc(COUNT) ) %>% 
+    mutate( PERCENT = percent(COUNT / sum(COUNT)) ) %>% 
+    mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,2) ) %>% 
+    mutate (QUARTILE = ntile( (COUNT ), 4)) %>% 
+    arrange ( desc(QUARTILE, COUNT) ) %>% tbl_df
+  
+  kbl(SITES2, booktabs = T, format= "html", 
+      caption = "<center><strong>Countries Recruiting Subjects for US-based IBD Clinical Trials</strong></center>",
+      align= c('l','r','r','r','r'), escape=F, 
+      col.names = linebreak(c("Country", "Trials<br>N", "Percent", "Percentile", "Quartile"))) %>% 
+    
+      kable_styling(full_width = F, "hover") %>% column_spec(1, width = "8cm") %>%
+      scroll_box(height = "6in")
+  
+
+```
+
+<br>
+
+Here's a sample of the newly pivoted and amended data frame `SITES2`, which has been "styled" using the `KableExtra` package:
+
+```{r HEAD-TAIL-1}
+
+kbl(head(SITES2), align= c('l','r','r', 'r', 'c'), escape=F) %>%  
+    kable_styling(full_width = F) %>% column_spec(1, width = "6cm") %>% 
+    column_spec(2:5, width="0.5cm")
+
+kbl(tail(SITES2), align= c('l','r','r', 'r', 'c'), escape=F) %>%  
+    kable_styling(full_width = F) %>% 
+    column_spec(1, width = "6cm") %>% column_spec(2:5, width="0.5cm")
+
+```
+
+<br>
+
+***
+#### Task 4:  Summarize the Interventions used in the clinical trials referenced in the original file
+
+<br>
+
+```{r INERVENTIONS-SUMMARY, warning=FALSE}
+
+
+ IBD2 %>% 
+   mutate(INTERVENTION = toupper(INTERVENTION) ) %>% 
+   group_by( INTERVENTION ) %>% 
+   summarise( FREQUENCY = n() ) %>% 
+   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %>%
+   arrange ( INTERVENTION )  %>% 
+ 
+   kbl(booktabs = T, format= "html", 
+       caption= "<center><strong>IBD Trials by Type of Intervention Being Investigated</strong></center>",
+       align= c('l','r','r','r','r'), escape=F, 
+       col.names = linebreak(c("Type of Intervention", "Frequency", "Percent"))) %>% 
+  
+       kable_styling(full_width = F, "hover") %>% column_spec(1, width = "8cm") 
+
+```
+
+```{r echo=F}
+
+       rm(INTERV)
+
+```
+
+
+<br>
+
+***
+#### Task 5:  Summarize the Funding Sources used in the clinical trials referenced in the original file
+<br>
+
+
+```{r FUNDING-SUMMARY, warning=FALSE}
+
+require(kableExtra)
+
+
+ IBD2 %>% 
+   group_by( FUNDING ) %>% 
+   summarise( FREQUENCY = n() ) %>% 
+   mutate (PCT = percent( FREQUENCY / sum(FREQUENCY)) ) %>%
+    arrange ( FUNDING )  %>% 
+ 
+    kbl(booktabs = T, format= "html", 
+        caption= "<center><strong>IBD Trials by Funding Source</strong></center>",
+        align= c('l','r','r','r','r'), escape=F, 
+        col.names = linebreak(c("Funding Source", "Frequency", "Percent"))) %>% 
+   
+        kable_styling(full_width = F, "hover") %>% column_spec(1, width = "8cm") 
+   
+```
+ 
+ 
+```{r echo=F}
+
+   rm(INTL)
+
+```
+   
+   
+<br>
+
+***
+#### Task 6:  Summarize the *INTL_SITES* variable to determine how many studies recruited participants from locations outside the US
+
+<br>
+
+```{r INTL-SUMMARY, warning=FALSE}
+ 
+
+   IBD2 %>% 
+     group_by( INTL_SITES ) %>% 
+     summarise( Frequency = n() ) %>% 
+     mutate (Pct = percent( Frequency / sum(Frequency)) ) %>%
+     arrange ( desc(INTL_SITES)  )  %>% 
+   
+     kbl(  booktabs = T, format= "html", 
+           caption= "<center><strong>Percentage of IBD Trials Recruiting Subjects Internationally</strong></center>",
+           align= c('l','r','r','r','r'), escape=F, 
+          col.names = linebreak(c("International<br>Sites ?", "Frequency", "Percent"))) %>% 
+        
+          kable_styling(full_width = F, "hover") %>% column_spec(1, width = "5cm")  
+     
+```  
+  
+
+```{r echo=F}
+
+   rm(INTLPCT)
+
+```
+   
+
+<br>
+
+***
+#### Task 7:  Import Excel file containing global ISO values. Use this file `WORLD_ISO_CODES` to append ISO codes to the `SITES` file as `SITES2`, which can then be merged with a `WORLDMAP` dataset from the **sf** geospacial package.  `WORLDMAP` can now be plotted using **ggplot2** and colored according to the QUANTILES variable that was appended from the `SITES2` file.
+
+<br>
+
+
+
+
+
+```{r WORLD-MAP-WITH-QUARTILES, fig.align='center', fig.dim= c(12,6) }
+
+
+
+require(ggplot2)
+require(sf)
+require(rnaturalearth)
+
+
+#import a global map from the sf package
+
+
+WORLDMAP <- ne_countries(scale = "medium", returnclass = "sf")
+class(WORLDMAP)
+
+WORLDMAP <- 
+    WORLDMAP %>% 
+    filter( admin != "Antarctica") %>%
+    mutate (name_sort = toupper( name_sort) )
+
+
+#append our IBD survey count based on the ISO3 value
+
+WORLD_ISO_CODES <- read_excel("world postal codes.xlsx", sheet = "world postal codes")
+
+WORLD_ISO_CODES <- 
+    WORLD_ISO_CODES %>% 
+       mutate( ISO3C = str_pad( ISO3N, 3, pad="0") )
+
+
+
+#update SITES with ISO codes, but you have to remove the format from the PERCENT variable first -- SQL doesn't allow "formattable" text
+
+#reconvert PERCENT back to a numeric, unstylized variable
+
+SITES2$PERCENT <- as.numeric(SITES2$PERCENT)
+
+
+
+SITES3 <-  sqldf(  "select a.*,
+                    case a.COUNTRY when 'USA' then 'USA'
+                                   when 'RUSSIA' then 'RUS'
+                                   when 'UK' then 'GBR'
+                                   when 'KOREA' then 'KOR'
+                                   when 'BOSNIA-HERZEGOVINA' then 'BIH' else b.ISO3 end as ISO3,
+                                   
+                                   
+                    case a.COUNTRY when 'USA' then '840'
+                                   when 'RUSSIA' then '643'
+                                   when 'UK' then '826'
+                                   when 'KOREA' then '410'
+                                   when 'BOSNIA-HERZEGOVINA' then '070' else b.ISO3C end as ISO3C
+             from SITES2 as a left join
+                  WORLD_ISO_CODES as b on (a.COUNTRY = b. CAPNAME)"  )
+
+
+# replace the desired format
+
+SITES2$PERCENT <- percent(SITES2$PERCENT)
+
+
+
+################################################################
+
+
+#append the COUNT and PERCENTILE from the SITES data frame as variables to the  WORLDMAP sf file  
+
+#str(SITES)
+
+
+WORLDMAP <- left_join( WORLDMAP, SITES3[, -6], 
+                              by = c("iso_n3" = "ISO3C"))
+
+WORLDMAP <-
+    WORLDMAP %>% 
+    mutate( QRTL = as.factor(QUARTILE) )
+
+
+cols <- c("1" = "#d7fcd2", "2" = "#7ecdbb", "3" = "#368fc0", "4" = "#045a8d")
+
+ggplot(data = WORLDMAP, aes( fill= QRTL)) +
+  
+  geom_sf(  ) +
+  
+  scale_color_manual("Quantiles",
+                     values = cols,
+                     aesthetics = c("color", "fill"),
+                     na.value = "#d2dee0") +
+  
+# guides( fill= guide_legend( "Quartile") ) 
+# scale_fill_viridis_c( option = "plasma", trans = "sqrt", begin=1, end=0,  na.value='lightgrey' )+
+  
+  theme_bw()+
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("World Map", subtitle = paste0("(", length(unique(SITES$COUNTRY)), " participating countries)")) +  
+  theme(plot.title =   element_text(color = "black", size = 18, face = "bold", hjust= 0))+
+  theme(plot.subtitle= element_text(color = "black", size = 14,  hjust= 0))+
+  theme(legend.position= "bottom")  +
+  
+# annotation_scale(location = "bl", width_hint = 0.25) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+                         style = north_arrow_fancy_orienteering ) + 
+  coord_sf( expand= F)
+
+```
+
+
+<br>
+
+***
+#### Task 8:  Determine the number of female participants as a percentage of total participants for each CATEGORY of clinical trial (CD, UC, COMBO, etc.).
+
+<br>
+
+
+
+```{r FEMALE-SUMMARY, warning=FALSE, results='asis'}
+ 
+
+    IBD2  %>%
+      select( CATEGORY, ANALYZED, FEMALES) %>%
+        group_by( CATEGORY )  %>%
+          summarise( Trials_N = n(), Total_Subjects_N = sum(ANALYZED), Female_N = sum(FEMALES) , 
+                     Pct_Female = Female_N / Total_Subjects_N ) %>%
+            arrange( as.character(CATEGORY) ) %>%
+            rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Grand Total"))  %>%
+            mutate( Pct_Female = case_when ( CATEGORY == "Grand Total" ~ Female_N / Total_Subjects_N,
+                                             TRUE ~ Pct_Female )) %>%
+
+            mutate( Total_Subjects_N = prettyNum(Total_Subjects_N, big.mark=","),
+                    Female_N = prettyNum( Female_N, big.mark=","),
+                    Pct_Female = percent( Pct_Female ) )   %>% 
+
+
+  
+      kbl( booktabs = T, format= "html", 
+           caption = "<center><strong>IBD Trials Participation by Gender & Trial Type</strong></center>",
+           align= c('l','r','r','r','r'), escape=F, 
+           col.names = linebreak(c("Category", 
+                                   "Trials<br>N", 
+                                   "Total<br>Subjects<br>N", 
+                                   "Female<br>N", 
+                                   "Pct<br>Female"))) %>% 
+                                              
+           kable_styling(full_width = F, "hover") %>% 
+                         column_spec(1, width = "8cm") %>% 
+                          row_spec( 5, bold=T ) 
+            
+```  
+
+```{r echo=F}
+
+   rm(FEMPCT)
+
+```
+
+
+<br>
+
+
+***
+
+#### Task 9:  Produce a cross tabulation to determine the number and percentage of trials where pregnant women were exlcuded using the **sjPlot** package.  (Determine which output is preferable, Table or Stacked Bar.)
+
+<br>
+ 
+
+
+
+```{r PREGNANCY-SUMMARY, fig.align= 'center', warning= F}
+
+require(sjPlot)
+
+#Test first sjPlot cross-tabulation option using all levels of the CATEGORY factor
+
+tab_xtab(var.row = as.character(IBD2$CATEGORY), var.col = IBD2$PREGNANT_EXCL, 
+         title = "Trials Excluding Pregnant Women", show.row.prc = TRUE) 
+
+
+#Test second sjPlot option by collapsing two levels of the CATEGORY factor into one: 3.IBDU & 4.COMBO into 3.OTHER
+
+IBD2$CAT2 <-  factor(as.character(IBD2$CATEGORY))
+str(IBD2$CAT2)
+levels(IBD2$CAT2) <- c("1. CD", "2. UC", "3. OTHER", "3. OTHER")
+str(IBD2$CAT2)
+
+             
+plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row", bar.pos = "stack", coord.flip = TRUE, 
+          title = "Trials Excluding Pregnant Women",
+           axis.titles = c('Clinical Trials Category', 'Percentages'), legend.title= "Excluded?",
+          geom.colors = c("#006cc5","#cbcccb"), show.summary = TRUE )+theme_classic()
+
+```
+
+
+<br>
+
+***
+#### Task 10:  Determine the racial and ethnic composition of clinical trials where race was reported.  (Note that not all trials that reported on race or ethnicty, did so in exactly the same manner.  Race may have been limited to as few as three categories or as many as seven, with no real way to identify the methodology used by each study.)
+
+<br>
+
+
+
+
+
+
+```{r RACIAL-COMPOSITION-MASTER, warning=FALSE, message=F, error=F}
+
+# Use a FOR LOOP to iterate through the `IBD2` data frame that filters it for each discrete category of race or ethnicity (8).  
+#Pipe those table into an ASSIGN statement that populates each intot he Global Environement.  
+#Once there, those tables can be concatenated together and piped into the gt package for beautification/formatting.
+
+
+racecap <-    c('WHT','BLK','ASN','AIA','HPI','MIX','UNK','HIS')
+
+rm(MASTER)
+
+
+MASTER<- data.frame( RACE_REPORTED= character(0), CATEGORY= character(0), TRIALS_N = numeric(0), TOTAL_SUBJECTS_N = numeric(0),RACE_N = numeric(0), 
+                     NONRACE_N = numeric(0), PCT_RACE= numeric(0), RACE = character(0) )
+
+for (j in 1: length(racecap) ){
+  for (i in 1:3){ 
+    
+    rm(X)
+    
+    #create temporary datafram "X and conditionally populate it with three-levels of stats for each racial/ethnic group
+    X<-
+      if(i==1){
+        
+        (    IBD2  %>%
+               select( RACE_REPORTED, CATEGORY, ANALYZED, racecap[j] ) %>%
+               mutate( NONRACE = ANALYZED - get(racecap[j]) )  %>%
+               group_by( RACE_REPORTED, CATEGORY )  %>%
+               summarise( TRIALS_N = n(), 
+                          TOTAL_SUBJECTS_N = sum(ANALYZED, na.rm=T ), 
+                          RACE_N = sum( get(racecap[j]), na.rm=T ) , 
+                          NONRACE_N = sum( NONRACE, na.rm=T  ),
+                          PCT_RACE = RACE_N / (RACE_N+NONRACE_N) )  %>%
+               
+               arrange( desc(RACE_REPORTED), as.character(CATEGORY)  ) %>%
+               filter( RACE_REPORTED == "Y")  %>%
+               
+               rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Subtotal"))  %>% 
+               mutate( PCT_RACE = case_when ( CATEGORY == "Subtotal" ~ RACE_N / (RACE_N+NONRACE_N),
+                                              TRUE ~ PCT_RACE )) %>% 
+               mutate( RACE = str_sub(deparse(racecap[j]),2,4)  ) %>% tbl_df   )
+        
+        
+      }else if(i==2){
+        
+        (    IBD2  %>%
+               select( RACE_REPORTED, CATEGORY, ANALYZED, racecap[j] ) %>%
+               mutate( NONRACE = ANALYZED - get(racecap[j]) )  %>%
+               group_by( RACE_REPORTED, CATEGORY )  %>%
+               summarise( TRIALS_N = n(), 
+                          TOTAL_SUBJECTS_N = sum(ANALYZED, na.rm=T ), 
+                          RACE_N = sum( get(racecap[j]), na.rm=T ) , 
+                          NONRACE_N = sum( NONRACE , na.rm=T ),
+                          PCT_RACE = RACE_N / (RACE_N+NONRACE_N) )  %>%
+               
+               arrange( desc(RACE_REPORTED), as.character(CATEGORY)  ) %>%
+               filter( RACE_REPORTED == "N")  %>%
+               
+               rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Subtotal"))  %>% 
+               mutate( PCT_RACE = case_when ( CATEGORY == "Subtotal" ~ RACE_N / (RACE_N+NONRACE_N),
+                                              TRUE ~ PCT_RACE )) %>% 
+               mutate( RACE = str_sub(deparse(racecap[j]),2,4)  ) %>% tbl_df   ) 
+        
+        
+        
+      }else if(i==3){
+        
+        
+        ( IBD2  %>%
+            select( RACE_REPORTED, CATEGORY, ANALYZED, racecap[j] ) %>%
+            mutate( NONRACE = ANALYZED - get(racecap[j]) )  %>%
+            mutate( RACE_REPORTED = replace(RACE_REPORTED, RACE_REPORTED !="X", "X"),  CATEGORY= replace(as.character(CATEGORY), as.character(CATEGORY) != "X", "Grand Total")) %>%
+            group_by( RACE_REPORTED, CATEGORY )  %>%
+            summarise( TRIALS_N = n(), 
+                       TOTAL_SUBJECTS_N = sum(ANALYZED, na.rm=T ), 
+                       RACE_N = sum( get(racecap[j]), na.rm=T ) , 
+                       NONRACE_N = sum( NONRACE, na.rm=T),
+                       PCT_RACE = RACE_N / TOTAL_SUBJECTS_N ) %>% 
+            mutate( RACE = str_sub(deparse(racecap[j]),2,4)  ) %>%tbl_df )  
+        
+      }
+    
+    
+    
+    #create sequential data frames based on RACE [RACE1-RACE3] to Global Environment populated with the values obtained from the X for loop above
+    assign( paste0(racecap[j], i, sep='') , value=  X , envir = .GlobalEnv )
+    
+    #confirm the assignment name
+ #   print( paste0(racecap[j], i, sep='') )
+    
+    X<- as.data.frame(X)
+    
+    
+    #rowbind X with a MASTER dataframe that will collect info for all races
+    
+    MASTER = rbind( MASTER, X )
+    
+    
+  }
+  
+  MASTER[ MASTER$RACE_REPORTED=="X", 1] <- ""
+  MASTER[ MASTER$RACE_REPORTED=="N", 5:7] <- NA
+  
+}
+
+```
+
+
+<br>
+
+Here's a glimpse of the modified, concatenated data frame, which was named `MASTER` (without any post-processing styling):
+
+```{r HEAD-TAIL-2}
+
+head(MASTER)
+tail(MASTER)
+
+```
+
+
+```{r echo=F}
+
+   rm( WHT1,WHT2,WHT3,  BLK1, BLK2, BLK3,  ASN1,ASN2,ASN3,  AIA1,AIA2,AIA3,  HPI1,HPI2,HPI3,  HIS1,HIS2,HIS3,  MIX1,MIX2,MIX3,  UNK1,UNK2,UNK3  )
+
+```
+
+
+
+<br>
+
+
+```{r GT-RACE-TABLE-BEAUTIFICATION, warning=FALSE, results= 'asis'}
+
+
+
+require(gt)
+
+
+#Iterative table production using the gt table beautification package
+
+raceshort <-  c("White","Black","Asian","AIA", "HPI", "Mixed","Unknown","Hispanic")
+racelong  <-  c("WHITE","BLACK","ASIAN","AMER INDIAN/ALASKAN NATIVE", "HAWAIIAN/PACIFIC ISLANDER","MIXED RACE","UNKNOWN","HISPANIC ETHNICITY")
+
+
+# j=1
+# X<- paste( paste('md("**', raceshort[j], sep=''), 'N**")', sep="<br>")
+
+# install.packages("extrafont")
+# extrafont::font_import(pattern = "Calibri")
+# extrafont::font_import(pattern = "Josin")
+
+
+
+for (j in 1: length(racecap)  ){
+  
+  cat("\n\n#####  -", "\n")
+  cat("\n\n#### Report ",j," = ", racecap[j], "\n")
+  cat("\n\n#####  -", "\n")
+ 
+RACE<-   
+  
+  gt(  MASTER[MASTER$RACE== racecap[j] , ],
+       groupname_col = "RACE_REPORTED"
+       
+  )  %>%  
+    tab_header(
+      title = md("**Race Reported ?**"),
+      subtitle = paste("Race =", racelong[j], sep=" ")
+    )  %>%
+  
+    # tab_footnote(
+    #   footnote = paste( paste("Highlights only trials where the race ", racelong[j], sep=" "), "was reported", sep= " "),
+    #   locations = cells_title( groups="subtitle")
+    # )   %>%    
+    
+    cols_hide(
+      columns = c("RACE")
+    ) %>% 
+    
+    #sets the font for the entire table      
+    opt_table_font(
+      font = c(
+        "Helvetica",
+        default_fonts()
+      )
+    ) %>%
+    
+    cols_label(
+      RACE_REPORTED =     md("**Race<br>Reported**"),
+      CATEGORY =          md("**Category**"),
+      TRIALS_N =          md("**Trials N**"),
+      TOTAL_SUBJECTS_N =  md("**Total Subjects N**"),
+      RACE_N =            paste( raceshort[j], "N", sep=' ') ,
+      NONRACE_N =         paste(paste("Non-", raceshort[j], sep=""), "N", sep=' ') ,
+      PCT_RACE =          paste("Percent", raceshort[j], sep=' ')
+    ) %>% 
+
+tab_options(
+  heading.title.font.weight = "bold",
+  heading.title.font.size = "20pt",
+  heading.subtitle.font.size = "12pt",
+  footnotes.padding = "12pt",
+  footnotes.border.bottom.style = NULL,
+  heading.padding = "4pt",
+  column_labels.font.weight = "bold",
+  stub.background.color="#E6EFFC"
+) %>% 
+  #font for Column Labels - redundant
+  tab_style(
+    style = cell_text(font = "Helvetica"),
+    locations= cells_column_labels( columns= everything())
+  ) %>%
+  
+  #cell formats (does not affect Header & Caption)  >
+  tab_style(
+    style = cell_text( font =  "Helvetica"),
+    locations = cells_body(columns = c(1:7) )
+  )  %>%
+  #number formats    
+  fmt_number( columns= c(3:6), decimals=0, sep_mark=",")  %>% 
+  fmt_percent( columns= 7, decimals=1 )  %>% 
+  
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = cells_column_labels(columns = c(3:7))
+  ) %>%
+  #cell alignment
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = cells_body(columns = c(3:7))
+  ) %>%
+  #italicizing Subtotal rows    
+  tab_style(
+    style = cell_text(style = "italic"),
+    locations = cells_body( rows = c(5, 10) )
+  )%>%
+  #bold Grand Total
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body( rows = c(11) )
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body( columns =1 )
+  ) %>%
+  #adjust columnn widths
+  cols_width(
+    starts_with("CATEGORY") ~ px(150),
+    everything() ~ px(100)
+  )  %>%
+  #handle missing data NA = em dash
+  fmt_missing(
+    columns = c(4:7),
+    missing_text = "---",
+  )   
+  
+  print(RACE) 
+  
+  }
+
+
+```
+
+
+<br>
+
+***
+#### Task 11:  Determine the Simltaneous Confidence Intervals for Multinomial Proportions (SCIMP) [as proposed by Sison & Glaz](https://www.tandfonline.com/doi/abs/10.1080/01621459.1995.10476521) for the R programming language.
+
+<br>
+
+
+```{r SCIMP-SIMULTANEOUS-CI-MULTINOMIAL-PROPORTIONS}
+
+require("MultinomialCI")
+
+
+# Calculate SCIMP on PARTICIPANTS (no correction indicated, e.g., Bonferroni, Scheffe, Tukey)
+
+A <- sqldf( "select RACE,
+                       sum(RACE_N) as  PARTICIPANTS,
+                       sum(RACE_N) /sum(sum(RACE_N)) OVER() as PROPORTION
+               
+               
+               from MASTER 
+                where RACE not in ('HIS','UNK') and RACE_REPORTED = 'Y' and CATEGORY != 'Subtotal'
+                group by 1 " )
+
+
+#A<- aggregate( RACE_N ~ RACE, data= MASTER, FUN= sum)
+A1<- as.vector(A[ ,2])  #distribution
+A2<- as.vector(A[ ,1])  #race names
+
+
+
+#Simultaneous CI for multinomial proportions
+
+B<- as.data.frame(multinomialCI( A1, alpha=0.05, verbose=T))
+    
+```
+
+
+```{r echo=F}
+
+B$RACE <- A2
+
+rm(A1,A2)
+
+```
+
+
+```{r SCIMP-SUMMARY-TABLE-AFTER-KABLE, results='asis' }
+
+
+#append SCIMP data onto original summary table A
+
+SCIMP <-
+  
+  sqldf( "select  A.*,
+                    B.v1 as LCL,
+                    B.v2 as UCL
+                    
+            from A, B
+            where A.RACE = B.RACE " )  
+
+
+
+#append Census Distribution from 2019
+
+census <- c( 0.013, 0.059, .134, 0.002, 0.028, 0.763)
+
+SCIMP$CENSUS <- census
+SCIMP$CONDLABEL <- ifelse( SCIMP$PROPORTION <= SCIMP$CENSUS, T,F)
+SCIMP$CONDVJUST <- ifelse( SCIMP$RACE== "WHT", -1, 
+                   ifelse(SCIMP$RACE== "BLK", -1, 
+                   ifelse(SCIMP$RACE== "ASN", 1.75,
+                   ifelse( SCIMP$RACE== "MIX", -2,
+                   ifelse( SCIMP$RACE %in% c("AIA","HPI"), -2, -5)))))
+
+SCIMP$CONDHJUST <- ifelse( SCIMP$RACE== "MIX", 1.2, NA)
+SCIMP$RACELABEL <- c("Amer Indian\nAlaskan Native", "Asian", "Black", "Hawaiian\nPacific Islander", "Mixed\nRace", "White")
+
+
+
+
+  SCIMP %>% 
+  select( RACELABEL, PARTICIPANTS, PROPORTION, LCL, UCL) %>% 
+  mutate( RACELABEL = str_replace(RACELABEL, "\\n", ' '),
+          PARTICIPANTS = prettyNum(PARTICIPANTS, big.mark=","),
+          PROPORTION =  percent( PROPORTION, digits=2),
+          LCL = percent(LCL, digits=2),
+          UCL = percent(UCL, digits=2) )  %>% 
+
+
+      kbl( booktabs = T, format= "html",
+           align= c('l','r','r','r', 'r'), escape=F, 
+           caption = "<center><strong>IBD Trials Participatin Distribution by Race with Confidence Intervals</strong></center>",
+           col.names = linebreak(c("Race", "Participants<br>N", "Proportion<br>%", "Lower<br>CI", "Upper<br>CI"))) %>% 
+    
+           kable_styling(full_width = F, "hover") %>% column_spec(1, width = "2")  %>% column_spec(2:5, width="1.5cm")  
+  
+```
+
+
+
+<br>
+
+***
+#### Task 12:  Produce a bar chart plotting the Proportion of enrollment in  IBD clinical trials by race, and then overlay a line chart representing the 2019 census proportion for each race.
+
+<br>
+
+
+```{r GGPLOT-BAR-CHART-RACE-IBD-VS-CENSUS, warning = F, fig.align= 'center', fig.dim= c(10,6) }
+
+
+#plot participation and BAR CHART and overlay Census Data as a LINE CHART
+
+ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
+  geom_bar( stat='identity', alpha=0.3, position = "dodge", aes(fill= RACE ), fill='black', color='black', ymin=0, ymax=1) +
+  geom_line(  aes(x= RACE, y=CENSUS ), color= 'darkred', lwd=2)+
+  geom_errorbar(   aes(x= RACE, y=PROPORTION, ymin= LCL , ymax= UCL ,width=0.1), color='blue') +
+  geom_label( aes( y=PROPORTION, label= paste0(round(PROPORTION*100,1),'%') ), color='black', size= 3.5 ) +
+  scale_y_continuous( labels = scales::percent ) +
+  
+  geom_text(  aes( y=CENSUS, label= paste0(round(CENSUS*100,1),'%'), color= CONDLABEL, vjust= CONDVJUST, hjust= CONDHJUST), size=4, fontface="bold") +
+  
+  #set up so that races where the IBD-Census ratio is negative could be darkred and those that are positive are darkgreen - set now so that both plot identically
+  scale_color_manual( values= c("TRUE" = "darkred", "FALSE" = "darkred"), guide="none") +
+  ggtitle("IBD Clinical Trials Enrollment by Race", subtitle = "(Compared with 2019 Census Data)")+ 
+  scale_x_discrete( labels= my_labels) +
+  labs( x="Race",y="Proportion of Enrollees", size=10, fontface="bold") +
+  theme_linedraw()+
+  theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
+  theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0))+
+  
+  annotate("segment", x = 'BLK', xend = 5.1, y = .50, yend = .26, colour = "darkred", size=1.5, alpha=1, hjust=2, arrow=arrow() ) + 
+  geom_text( aes( x= "BLK", y= 0.53, label= "2019 Census"), color="darkred",  size=5 , angle=0, fontface="bold" )
+
+
+```
+
+
+```{r KABLE-CENSUS-COMPARISON, echo=T, results= 'asis'}
+
+
+ tibble(Race = c('White','Asian','All Others'),
+                 IBD  = c(percent(.886, digits=1), percent(0.076, digits=1), percent(0.038, digits=1)),
+                 Census  = c(percent(0.763, digits=1), percent(0.059, digits=1), percent(0.177, digits=1)),
+                 Delta = c("+12.3", "+1.7", "-13.9") ) %>% 
+   
+   kbl(booktabs = T, format= "html", align= c('l','r','r','r'), escape=F, 
+       caption = "<center><strong>IBD Trials Participation vs. 2019 US Census Distribution</strong></center>", 
+       col.names = linebreak(c("Race", "IBD<br>Trials<br>Pct", "Census<br>2019<br>Pct", "Delta"))) %>% 
+   
+       kable_styling(full_width = F, "hover") %>% 
+                     column_spec(1, width = "2in")  %>% 
+                     column_spec(2:4, width="1in") %>% 
+                     row_spec(3, bold=T)
+
+
+
+```
+
+
+<br>
+
+***
+#### Task 13:  Produce another bar chart plotting the Proportion of enrollment in  IBD clinical trials by gender, and then overlay a line chart representing the 2019 census proportion for each gender.  (This is essentially a reprise of the previous task.)
+
+<br>
+
+
+```{r warning = F, fig.align= 'center', fig.dim= c(10,6)}
+
+#This code pipes from the original data frame IBD2 to the ggplot graphics package without creating any interim data frames - most R programmmers prefer this
+
+#Female-Male census data from 2019
+census2 <- c( 0.508, 0.492)
+
+
+IBD2 %>% 
+    select(FEMALES, ANALYZED) %>% 
+    mutate( MALES = (ANALYZED - FEMALES))  %>% 
+    select( -ANALYZED) %>% 
+    pivot_longer( cols= c("FEMALES","MALES"),
+                  names_to = "GENDER",
+                  values_to = "COUNT" ) %>% 
+    group_by (GENDER) %>% 
+    summarise ( COUNT = sum(COUNT) ) %>% 
+    mutate( PCT = COUNT / sum(COUNT),
+            CENSUS = ifelse( GENDER== "FEMALES", census2[1], census2[2]),
+            CONDVJUST = ifelse( GENDER== "FEMALES", 2.3, -1.5) ,
+            SEX= ifelse( GENDER=="FEMALES", "Female", "Male"),
+            GENDLABEL = paste( SEX, "\n(N=", prettyNum( COUNT, big.mark=","), ")", sep = "" ) )  %>% 
+  
+  
+  ggplot( aes(x= GENDLABEL, y= PCT, color= GENDLABEL, group= 1)) +
+  geom_bar( stat='identity', alpha=0.3, position = "dodge", aes(fill= GENDLABEL ), fill='black', color='black',  width=0.575) +
+  geom_line(  aes(x= GENDLABEL, y=CENSUS ), color= 'darkred', lwd=2) +
+  geom_text(  aes( y= CENSUS, label= paste0(round(CENSUS*100,1),'%'), vjust= CONDVJUST ),  color= 'darkred', size=4, fontface="bold") +
+  geom_label( aes( y= PCT, label= paste0(round( PCT*100,1),'%') ), color='black', size= 3.5 ) +
+  scale_y_continuous( labels = scales::percent )+
+  labs( x="Gender",y="Proportion of Enrollees", size=10, fontface="bold") +
+  theme_linedraw()+
+  ggtitle("IBD Clinical Trials Enrollment by Gender", subtitle = "(Compared with 2019 Census Data)")+ 
+  theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
+  theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0)) +
+  
+  annotate("segment", x = 1.5, xend = 1.5, y = .15, yend = .48, colour = "darkred", size=1.5, alpha=1, arrow=arrow() ) + 
+  geom_text( aes( x=1.5, y= 0.135, label= "2019 Census"), color="darkred",  size=5 , angle=0, fontface="bold" ) 
+
+```
+<br>
+
+***
+
+<br>
+
+
+Here's a second version of the Gender bar plot that uses the side-by-side aesthetic:
+
+```{r warning = F, fig.align= 'center', fig.dim= c(10,6)}
+
+
+   IBD2 %>% 
+    select(FEMALES, ANALYZED) %>% 
+    mutate( MALES = (ANALYZED - FEMALES))  %>% 
+    select( -ANALYZED) %>% 
+    pivot_longer( cols= c("FEMALES","MALES"),
+                  names_to = "GENDER",
+                  values_to = "COUNT" ) %>% 
+    group_by (GENDER) %>% 
+    summarise ( COUNT = sum(COUNT) ) %>% 
+    mutate( PCT = COUNT / sum(COUNT),
+            CENSUS = ifelse( GENDER== "FEMALES", census2[1], census2[2]),
+            CONDVJUST = ifelse( GENDER== "FEMALES", 2.3, -1.5) ,
+            SEX= ifelse( GENDER=="FEMALES", "Female", "Male"),
+            GENDLABEL = paste( SEX, "\n(N=", prettyNum( COUNT, big.mark=","), ")", sep = "" ) )  %>% 
+  
+    pivot_longer( cols= c('PCT', 'CENSUS'),
+                  names_to = 'METRIC',
+                  values_to= 'PCT') %>% 
+    select ( -COUNT, -CONDVJUST)  %>% 
+    mutate( CONDFILL = ifelse( METRIC== "PCT", T, F), 
+            GENDER = factor(GENDER),
+            GENDLABEL = factor(GENDLABEL),
+            METRIC =  factor(METRIC, levels= c('PCT','CENSUS') ) ) %>% 
+    
+    
+    ggplot( aes(x= GENDLABEL, y= PCT, color= METRIC )) + 
+    geom_bar( stat='identity',  position = "dodge", aes(fill= METRIC, color=METRIC ), color="black", alpha=0.75, width=0.575) +
+    geom_label(aes(x= GENDLABEL, label= paste0(round( PCT*100,1),'%') ), color="black",position=position_dodge2(width=0.5), vjust=0.25, size = 4) +
+
+    #since x axis is a character variable, factorize it first!!!
+    scale_fill_manual( values= c("darkgrey", "darkred"), labels= c('IBD Trials', 'Census 2019')) +
+    scale_y_continuous( labels = scales::percent )+
+    labs( x="Gender",y="Proportion of Enrollees", size=10, fontface="bold") +
+    theme_linedraw()+
+    ggtitle("IBD Clinical Trials Enrollment by Gender", subtitle = "(Compared with 2019 Census Data)")+ 
+    theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
+    theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0)) +
+    theme(legend.position = "top", legend.title = element_blank() )+
+    theme(legend.background = element_rect(size=0.25, linetype="solid", color ="black"))
+  
+```
+
