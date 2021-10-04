@@ -19,7 +19,6 @@ output:
         countIncrementalSlides: false  
     
     css: 
-      - "xaringan-themer.css"
       - "libs/_css/kevin_css.css"
       
     lib_dir: libs
