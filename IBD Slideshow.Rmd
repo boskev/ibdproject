@@ -20,6 +20,7 @@ output:
     
     css: 
       - "libs/_css/kevin_css.css"
+      - default
       
     lib_dir: libs
     
