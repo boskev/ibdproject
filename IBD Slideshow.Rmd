@@ -24,32 +24,10 @@ output:
     
     lib_dir: libs
     
----
+---   
 class: title-slide, bottom, left, inverse, hide-count
 background-image: url(_images/cells-unsplash.jpeg)
 background-size: cover
-
-# Investigating IBD Clinical Trial Disparities
-### (Rabinowitz, Silver et al.)
-### <br>
-### USING THE R PROGRAMMING LANGUAGE
-##### Prepared by Kevin Williams  | Preliminary Findings   |   September 14, 2021
-#### <br>
-#### <br>
-
-
-```{r xaringan-themer, include=FALSE, warning=FALSE}
-library(xaringanthemer)
-
-style_duo_accent(
-  primary_color = "#006cc5",
-  secondary_color = "#FF961C",
-  inverse_header_color = "#FFFFFF",
-  header_background_color = #006cc5"
-)
-
-```
-
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
@@ -67,8 +45,17 @@ knitr::opts_chunk$set(
   
 )
 ```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
 
+style_duo_accent(
+  primary_color = "#006cc5",
+  secondary_color = "#FF961C",
+  inverse_header_color = "#FFFFFF",
+  header_background_color = #006cc5"
+)
 
+```
 ```{css echo=FALSE}
 .hide-count .remark-slide-number {
   display: none;
@@ -77,15 +64,21 @@ knitr::opts_chunk$set(
 .hide-count-title .title-slide-number {
   display: none;
 }
-
 ```
-
-
 ```{r xaringanExtra, echo=FALSE}
 xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "tile"))
 
 # xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "tile", "scribble"))
 ```
+
+
+# Investigating IBD Clinical Trial Disparities
+### (Rabinowitz, Silver et al.)
+### <br>
+### USING THE R PROGRAMMING LANGUAGE
+##### Prepared by Kevin Williams  | Preliminary Findings   |   September 14, 2021
+#### <br>
+#### <br>
 
 ---
 layout: true
