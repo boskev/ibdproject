@@ -18,9 +18,11 @@ output:
         slideNumberFormat: "%current%"  # Slide number format
         countIncrementalSlides: false  
     
+    css: 
+      - "xaringan-themer.css"
+      - "libs/_css/kevin_css.css"
+      
     lib_dir: libs
-    css: ["libs/_css/kevin_css.css"]
-    
     
 ---
 class: title-slide, bottom, left, inverse, hide-count
