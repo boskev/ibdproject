@@ -517,7 +517,7 @@ require(kableExtra)
       align= c('l','r','r','r','r'), escape=F, 
       col.names = linebreak(c("Country", "Trials<br>N", "Percent", "Percentile", "Quartile"))) %>% 
     
-      kable_material(full_width = F, "hover", font_size=18) %>% column_spec(1, width = "8cm") %>% column_spec(2:5, "3cm") %>% 
+      kable_paper(full_width = F, "hover", font_size=18) %>% column_spec(1, width = "8cm") %>% column_spec(2:5, "3cm") %>% 
       scroll_box(height = "4.25in")
 
 ```
@@ -650,7 +650,7 @@ background-size: cover
 ### Report the <font color="#ef8de4">race/ethnicity demographics</font color> obtained from those IBD trials where such information was collected.
 
 ---
-### Did Most Studies Collect Race Data?
+## Did Most Studies Collect Race Data?
 
 ```{r echo=F}
 require(treemap)
@@ -702,7 +702,7 @@ treemap(
 
 
 ---
-### <font color="#006cc5">How Was Race/Ethnicity Reported?</font color>
+## <font color="#006cc5">How Was Race/Ethnicity Reported?</font color>
 .pull-left[
 ```{r echo=F}
 library(gt)
@@ -923,7 +923,7 @@ tab_header(
 
 
 ---
-### <font color="#006cc5">How Was Race/Ethnicty Reported, cont.?</font color>
+## <font color="#006cc5">How Was Race/Ethnicty Reported, cont.?</font color>
 .pull-left[
 ```{r echo=F}
 library(gt)
@@ -1139,12 +1139,13 @@ tab_header(
 ]
 
 ---
-### Racial Composition of IBD Clinical Trials Compared to US Census
+## Racial Composition of Clinical Trials Compared to US Census
 
 .panelset[
 .panel[.panel-name[Census Comparison]
 
-```{r echo=F}
+```{r echo=F, out.width="96%", fig.align= "center"}
+
 ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
   geom_bar( stat='identity', alpha=0.3, position = "dodge", aes(fill= RACE ), fill='black', color='black', ymin=0, ymax=1) +
   geom_line(  aes(x= RACE, y=CENSUS ), color= '#006cc5', lwd=2)+
@@ -1166,6 +1167,8 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
             plot.background = element_rect(fill = "transparent", color = NA) )+
   annotate("segment", x = 'BLK', xend = 5.1, y = .50, yend = .26, colour = "#006cc5", size=1.25, alpha=1, hjust=2, arrow=arrow() ) + 
   geom_text( aes( x= "BLK", y= 0.56, label= "2019 Census"), color="#006cc5",  size=5 , angle=0, fontface="bold" )
+  
+
 ```
 ]
 .panel[.panel-name[Adjusted Confidence Intervals]
@@ -1188,16 +1191,16 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
            # caption = "<center><strong>IBD Trials Participatin Distribution by Race with Confidence Intervals</strong></center>",
            col.names = linebreak(c("Race", "Participants<br>N", "Proportion<br>%", "Lower<br>CI", "Upper<br>CI"))) %>% 
     
-           kable_material(full_width = F, "hover") %>% column_spec(1, width = "4cm")  %>% column_spec(2:5, width="1cm")  
+           kable_paper(full_width = F, "hover") %>% column_spec(1, width = "6cm")  %>% column_spec(2:5, width="2cm")  
 ```
 
 
 ]
 ]
 ---
-### No Apparent Gender Gap was Noted in the Trials Examined
+## No Apparent Gender Gap was Noted in the Trials Examined
 
-```{r echo=F}
+```{r echo=F, out.width="95%", fig.align= "center"}
 
 census2 <- c( 0.508, 0.492)
 
@@ -1242,7 +1245,7 @@ census2 <- c( 0.508, 0.492)
     theme(legend.position = "top", legend.title = element_blank() )+
     theme(legend.background = element_rect(size=0.25, linetype="solid", color ="black"))
 ```
-<center><small>Women were slightly over-represented, while men were slightly under-represented, relative to census data</small> </center>
+<center><small>Women were slightly over-represented, while men were slightly under-represented relative to census data</small> </center>
 
 ---
 ## Test Slide
@@ -1263,7 +1266,7 @@ IBD2 %>%
        align= c('l','r','r','r','r'), escape=F,  #<<
        col.names= linebreak(c("Type of Intervention", #<<
                               "Frequency","Percent"))) %>%  #<<
-   kable_material(full_width = F, "hover", #<<
+   kable_paper(full_width = F, "hover", #<<
                   font_size=16) %>% #<<
                   column_spec(1, width = "7cm") #<<
 ```
@@ -1290,9 +1293,9 @@ IBD2 %>%
         align= c('l','r','r','r','r'), escape=F, #<<
         col.names= linebreak(c("Funding Source", #<<
                      "Frequency", "Percent"))) %>%  #<<
-       kable_material(full_width = F, "hover", #<<
+       kable_paper(full_width = F, "hover", #<<
                       font_size=16) %>%  #<<
-                      column_spec(1, width = "7cm") #<<
+                      column_spec(1, width = "6cm") #<<
 ```
 ]
 .pull-right[
@@ -1306,7 +1309,7 @@ IBD2 %>%
 .panel[.panel-name[Female Representation]
 .pull-left[
 #### <font color="#006cc5">Female Representation in IBD Trials</font color\>
-```{r plot-females, eval=F}
+```{r plot-females, echo=F, eval=F}
   IBD2  %>%
     select( CATEGORY, ANALYZED, FEMALES) %>%
       group_by( CATEGORY )  %>%
@@ -1326,12 +1329,34 @@ IBD2 %>%
                                  "Total<br>Subjects<br>N", 
                                  "Female<br>N", 
                                  "Pct<br>Female"))) %>% 
-         kable_material(full_width = F, "hover") %>% 
-                        column_spec(1, width = "8cm") %>% 
+         kable_paper(full_width = F, "hover",  font_size=16) %>% 
+                        column_spec(1, width = "6cm") %>% 
                         row_spec( 5, bold=T ) 
 ```
+
+
+```{r eval=F}
+  IBD2  %>%
+    select( CATEGORY, ANALYZED, FEMALES) %>%
+      group_by( CATEGORY )  %>%
+      summarise( Trials_N = n(), Total_Subjects_N = sum(ANALYZED), Female_N = sum(FEMALES) , 
+                   Pct_Female = Female_N / Total_Subjects_N ) %>%
+      arrange( as.character(CATEGORY) ) %>%
+      rbind(summarise_all(., ~if(is.numeric(.)) sum(.) else "Grand Total"))  %>%
+      mutate( Pct_Female = case_when ( CATEGORY == "Grand Total" ~ Female_N / Total_Subjects_N, TRUE ~ Pct_Female )) %>%
+      mutate( Total_Subjects_N = prettyNum(Total_Subjects_N, big.mark=","),
+                  Female_N = prettyNum( Female_N, big.mark=","),
+                  Pct_Female = percent( Pct_Female ) )   %>% 
+                  
+      . . . additional Kable Statements  #<<
+      
+```
+
+
+
 ]
 .pull-right[
+<br>
 ```{r plot-females-out, ref.label = 'plot-females', echo=F}
 ```
 ]
