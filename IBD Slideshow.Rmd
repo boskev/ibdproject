@@ -126,7 +126,7 @@ background-size: 110px 65px
 ## So why Redo this in R?
 
 
-<center><img src="https://i.imgur.com/5zM2QoC.jpg" height="350px" /></center>
+<center><img src="https://i.imgur.com/U0Hotjh.png" height="350px" /></center>
 
 ---
 ## So why Redo this in R?
@@ -150,11 +150,11 @@ background-size: 110px 65px
 
 <!-- ![](_images/dsVSpap.png) -->
 
-<center><img src="_images/dsVSpap3.png" height="330px" /></center>
+<center><img src="https://i.imgur.com/N6FkliI.jpg" height="330px" /></center>
 
 ---
 class: hide-count, inverse
-background-image: url(_images/keyboard-unsplash.jpeg)
+background-image: url(https://i.imgur.com/DpaJ4lX.jpg)
 background-size: cover
 
 
@@ -323,7 +323,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 glimpse (IBD2)
 ```
 
-<center><img src="_images/IBD2-clean.png" height="410px" /></center>
+<center><img src="https://i.imgur.com/rNcr6fS.png" height="410px" /></center>
 ]
 
 .panel[.panel-name[Sample Summary Stats]
@@ -349,7 +349,7 @@ require(kableExtra)
 <!-- # knitr::include_graphics("_images/skinny-arrow.png") -->
 <!-- # ``` -->
 
-<center><img src="_images/Kable-summary1.png" height="180px" /></center>
+<center><img src="https://i.imgur.com/rNcr6fS.png" height="180px" /></center>
 <!-- <img src="_images/skinny-arrow.png" height="50px",  background-position= 0%, 100% /> -->
 ]
 
@@ -357,7 +357,7 @@ require(kableExtra)
 
 ---
 class: hide-count, inverse
-background-image: url(_images/codeblue-unsplash.jpeg)
+background-image: url(https://i.imgur.com/RFgeoi4.jpg)
 background-size: cover
 
 
@@ -384,7 +384,7 @@ background-size: cover
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary2.png" height="410px" style="padding-top: 55px" /></center>  ]
+<center><img src="https://i.imgur.com/56RjtET.png" height="410px" style="padding-top: 55px" /></center>  ]
 ]
 
 .panel[.panel-name[Funding Sources]
@@ -428,7 +428,7 @@ IBD2  %>%
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary5.png" height="320px" width="700px" style="padding-top: 25px"/></center>  ]
+<center><img src="https://i.imgur.com/EJvgLR3.png" height="320px" width="700px" style="padding-top: 25px"/></center>  ]
 ]
 
 .panel[.panel-name[Pregnancy Exclusion]
