@@ -50,7 +50,7 @@
   --text-bold-color: #006cc5;
   --code-highlight-color: rgb(0, 108, 197, 0.2);
   --inverse-text-color: #000000;
-  --inverse-background-color: #f9e8d4;
+  --inverse-background-color: #ccdbee;
   --inverse-header-color: #FFFFFF;
   --inverse-link-color: #ef8de4;
   --title-slide-background-color: #006cc5;
@@ -58,7 +58,7 @@
   --header-background-color: #006cc5;
   --header-background-text-color: #006cc5;
   --primary: #006cc5;
-  --secondary: #f9e8d4;
+  --secondary: #ccdbee;
   --white: #FFFFFF;
   --black: #000000;
 }
@@ -179,7 +179,7 @@ img, video, iframe {
   max-width: 100%;
 }
 blockquote {
-  border-left: solid 5px #f9e8d480;
+  border-left: solid 5px #ccdbee80;
   padding-left: 1em;
 }
 .remark-slide table {
@@ -194,7 +194,7 @@ th, td {
   padding: 5px;
 }
 .remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) {
-  background: #FDFAF6;
+  background: #F4F7FB;
 }
 table.dataTable tbody {
   background-color: var(--background-color);
@@ -204,7 +204,7 @@ table.dataTable.display tbody tr.odd {
   background-color: var(--background-color);
 }
 table.dataTable.display tbody tr.even {
-  background-color: #FDFAF6;
+  background-color: #F4F7FB;
 }
 table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.5);
