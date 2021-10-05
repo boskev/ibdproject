@@ -26,7 +26,7 @@ output:
     
 --- 
 class: title-slide, bottom, left, inverse, hide-count
-background-image: url("_images/cells-unsplash.jpeg")
+background-image: url(_cells-unsplash.jpeg)
 background-size: cover
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 
@@ -118,7 +118,7 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "til
 
 ---
 layout: true
-background-image: url("_images/harvard-bil.png")
+background-image: url(_harvard-bil.png)
 background-position: 3% 98.5%
 background-size: 110px 65px
 
@@ -126,7 +126,7 @@ background-size: 110px 65px
 ## So why Redo this in R?
 
 
-<center><img src="_images/Rlogo.png" height="350px" /></center>
+<center><img src="_Rlogo.png" height="350px" /></center>
 
 ---
 ## So why Redo this in R?
@@ -150,11 +150,11 @@ background-size: 110px 65px
 
 <!-- ![](_images/dsVSpap.png) -->
 
-<center><img src="_images/dsVSpap3.png" height="330px" /></center>
+<center><img src="_dsVSpap3.png" height="330px" /></center>
 
 ---
 class: hide-count, inverse
-background-image: url("_images/keyboard-unsplash.jpeg")
+background-image: url(_keyboard-unsplash.jpeg)
 background-size: cover
 
 
@@ -323,7 +323,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 glimpse (IBD2)
 ```
 
-<center><img src="_images/IBD2-clean.png" height="410px" /></center>
+<center><img src="_IBD2-clean.png" height="410px" /></center>
 ]
 
 .panel[.panel-name[Sample Summary Stats]
@@ -349,7 +349,7 @@ require(kableExtra)
 <!-- # knitr::include_graphics("_images/skinny-arrow.png") -->
 <!-- # ``` -->
 
-<center><img src="_images/Kable-summary1.png" height="180px" /></center>
+<center><img src="_Kable-summary1.png" height="180px" /></center>
 <!-- <img src="_images/skinny-arrow.png" height="50px",  background-position= 0%, 100% /> -->
 ]
 
@@ -384,7 +384,7 @@ background-size: cover
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary2.png" height="410px" style="padding-top: 55px" /></center>  ]
+<center><img src="_Kable-summary2.png" height="410px" style="padding-top: 55px" /></center>  ]
 ]
 
 .panel[.panel-name[Funding Sources]
@@ -402,7 +402,7 @@ background-size: cover
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary3.png" height="220px" style="padding-top: 55px"/></center>  ]
+<center><img src="_Kable-summary3.png" height="220px" style="padding-top: 55px"/></center>  ]
 ]
 
 
@@ -428,7 +428,7 @@ IBD2  %>%
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary5.png" height="320px" width="700px" style="padding-top: 25px"/></center>  ]
+<center><img src="_Kable-summary5.png" height="320px" width="700px" style="padding-top: 25px"/></center>  ]
 ]
 
 .panel[.panel-name[Pregnancy Exclusion]
@@ -454,7 +454,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ]
 .pull-right[
 
-<center><img src="_images/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
+<center><img src="_kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
 
 ]
 
@@ -482,7 +482,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary4.png" height="200px" style="padding-top: 55px"/></center>  ]
+<center><img src="_Kable-summary4.png" height="200px" style="padding-top: 55px"/></center>  ]
 ]
 
 
