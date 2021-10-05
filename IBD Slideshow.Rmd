@@ -323,7 +323,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 glimpse (IBD2)
 ```
 
-<center><img src="https://i.imgur.com/rNcr6fS.png" height="410px" /></center>
+<center><img src="https://i.imgur.com/6ckNCi7.png" height="410px" /></center>
 ]
 
 .panel[.panel-name[Sample Summary Stats]
@@ -402,7 +402,7 @@ background-size: cover
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary3.png" height="220px" style="padding-top: 55px"/></center>  ]
+<center><img src="https://i.imgur.com/emjcXvy.png" height="220px" style="padding-top: 55px"/></center>  ]
 ]
 
 
@@ -454,7 +454,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ]
 .pull-right[
 
-<center><img src="_images/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
+<center><img src="https://i.imgur.com/czS4FIr.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
 
 ]
 
@@ -482,7 +482,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ```
 ]
 .pull-right[
-<center><img src="_images/Kable-summary4.png" height="200px" style="padding-top: 55px"/></center>  ]
+<center><img src="https://i.imgur.com/VSAStJW.png" height="200px" style="padding-top: 55px"/></center>  ]
 ]
 
 
@@ -1430,9 +1430,9 @@ ggplot(gapminder) +
 ---
 ## Square Animated .gif
 
-<!-- <center><img src="_images/Gapminder.gif" height="400px" /></center> -->
+<center><img src="https://i.imgur.com/SrZcGSS.gifv" height="400px" /></center>
 
-![](_images/Gapminder.gif")
+<!-- ![](https://i.imgur.com/SrZcGSS.gifv") -->
 
 .footnote[<center>GitHub Octocat</center>]
 
@@ -1445,7 +1445,7 @@ layout: false
 ]
 
 .pull-right[
-<img src="_images/kevinround.jpg" height="400px" />
+<img src="https://i.imgur.com/0Xlxqy4.jpg height="400px" />
 ]
 
 
