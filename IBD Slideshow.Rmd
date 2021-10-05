@@ -26,7 +26,7 @@ output:
     
 --- 
 class: title-slide, bottom, left, inverse, hide-count
-background-image: url(https://i.imgur.com/gA6x2Xb.jpg)
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
 background-size: cover
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 
