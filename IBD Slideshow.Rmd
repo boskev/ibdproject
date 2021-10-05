@@ -26,7 +26,7 @@ output:
     
 --- 
 class: title-slide, bottom, left, inverse, hide-count
-background-image: url(_images/cells-unsplash.jpeg)
+background-image: url( /_images/cells-unsplash.jpeg )
 background-size: cover
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 
@@ -60,6 +60,7 @@ style_duo_accent(
   title_slide_background_color=   "#a3a3a3",
   header_background_color=        "#006cc5",
   header_background_text_color=   "#006cc5",
+  header_color=                   "#006cc5",
   link_color =                    "#ef8de4",
   black = "#000000",
   white = "#FFFFFF"
