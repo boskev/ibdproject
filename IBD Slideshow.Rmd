@@ -107,6 +107,13 @@ knitr::opts_chunk$set(
   scroll-snap-align: start;
 }
 
+table.center {
+  margin-left: auto; 
+  margin-right: auto;
+}
+
+
+
 ```
 
 ```{r xaringanExtra, echo=FALSE}
@@ -1330,7 +1337,7 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
            # caption = "<center><strong>IBD Trials Participatin Distribution by Race with Confidence Intervals</strong></center>",
            col.names = linebreak(c("Race", "Participants<br>N", "Proportion<br>%", "Lower<br>CI", "Upper<br>CI"))) %>% 
     
-           kable_paper(full_width = F, "hover", html_font= "Helvetica Neue") %>% column_spec(1, width = "6cm")  %>% column_spec(2:5, width="2cm")  
+           kable_paper(full_width = F, "hover", html_font= "Helvetica Neue") %>% column_spec(1, width = "8cm")  %>% column_spec(2:5, width="2cm")  
 ```
 
 
