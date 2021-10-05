@@ -782,13 +782,13 @@ tab_header(
      ) %>% 
      #font for Column Labels - redundant
      tab_style(
-          style = cell_text(font = "Cabin"),
+          style = cell_text(font = "Helvetica Neue"),
           locations= cells_column_labels( columns= everything())
      ) %>%
      
      #cell formats (does not affect Header & Caption)  >
      tab_style(
-          style = cell_text( font =  "Cabin"),
+          style = cell_text( font =  "Helvetica Neue"),
           locations = cells_body(columns = c(1:7) )
      )  %>%
      
@@ -890,13 +890,13 @@ tab_header(
      ) %>% 
      #font for Column Labels - redundant
      tab_style(
-          style = cell_text(font = "Cabin"),
+          style = cell_text(font = "Helvetica Neue"),
           locations= cells_column_labels( columns= everything())
      ) %>%
      
      #cell formats (does not affect Header & Caption)  >
      tab_style(
-          style = cell_text( font =  "Cabin"),
+          style = cell_text( font =  "Helvetica Neue"),
           locations = cells_body(columns = c(1:7) )
      )  %>%
      
@@ -954,7 +954,7 @@ tab_header(
 
 
 ---
-## <font color="#006cc5">How Was Race/Ethnicty Reported, cont.?</font color>
+## <font color="#006cc5">How Was Race/Ethnicity Reported, cont.?</font color>
 .pull-left[
 ```{r echo=F}
 library(gt)
@@ -999,13 +999,13 @@ tab_header(
      ) %>% 
      #font for Column Labels - redundant
      tab_style(
-          style = cell_text(font = "Cabin"),
+          style = cell_text(font = "Helvetica Neue"),
           locations= cells_column_labels( columns= everything())
      ) %>%
      
      #cell formats (does not affect Header & Caption)  >
      tab_style(
-          style = cell_text( font =  "Cabin"),
+          style = cell_text( font =  "Helvetica Neue"),
           locations = cells_body(columns = c(1:7) )
      )  %>%
      
@@ -1107,13 +1107,13 @@ tab_header(
      ) %>% 
      #font for Column Labels - redundant
      tab_style(
-          style = cell_text(font = "Cabin"),
+          style = cell_text(font = "Helvetica Neue"),
           locations= cells_column_labels( columns= everything())
      ) %>%
      
      #cell formats (does not affect Header & Caption)  >
      tab_style(
-          style = cell_text( font =  "Cabin"),
+          style = cell_text( font =  "Helvetica Neue"),
           locations = cells_body(columns = c(1:7) )
      )  %>%
      
@@ -1441,7 +1441,7 @@ ggplot(gapminder) +
 ## Two images
 
 .pull-left[
-![](https://octodex.github.com/images/motherhubbertocat.png)
+<center><img src="https://i.imgur.com/SrZcGSS.gif" height="400px" /></center>
 ]
 
 .pull-right[
