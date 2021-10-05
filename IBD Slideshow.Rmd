@@ -26,7 +26,7 @@ output:
     
 --- 
 class: title-slide, bottom, left, inverse, hide-count
-background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
+background-image: url(https://i.imgur.com/gA6x2Xb.jpg)
 background-size: cover
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 
@@ -118,7 +118,7 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "til
 
 ---
 layout: true
-background-image: url(_images/harvard-bil.png)
+background-image: url(https://i.imgur.com/5rlX8bi.png)
 background-position: 3% 98.5%
 background-size: 110px 65px
 
@@ -126,7 +126,7 @@ background-size: 110px 65px
 ## So why Redo this in R?
 
 
-<center><img src="_images/Rlogo.png" height="350px" /></center>
+<center><img src="https://i.imgur.com/5zM2QoC.jpg" height="350px" /></center>
 
 ---
 ## So why Redo this in R?
