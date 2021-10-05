@@ -9,8 +9,8 @@ output:
   
   xaringan::moon_reader: 
     css: 
-      - default
-      - _css/kevin_css.css
+       - "xaringan-themer.css"
+#       - "_css/kevin_css.css"
       
     seal: false                     # Prevents Moonreader from Generating a title page
     nature: 
@@ -24,10 +24,51 @@ output:
     
     lib_dir: libs
     
----   
+--- 
 class: title-slide, bottom, left, inverse, hide-count
 background-image: url(_images/cells-unsplash.jpeg)
 background-size: cover
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+
+library(xaringanthemer)
+
+style_duo_accent(
+  
+  primary_color = "#006cc5",
+  secondary_color = "#a3a3a3",
+    
+  # fonts
+  header_font_google = google_font("Helvetica Neue"),
+  text_font_google = google_font("Helvetica Neue"),
+  code_font_google = google_font("Fira Mono"),
+  
+  # H1-H3 font sizes
+  header_h1_font_size= "2.5rem",
+  header_h2_font_size = "2.0rem",
+  header_h3_font_size = "1.85rem",
+  base_font_size =      "1.15rem",
+  
+  code_font_size=       "0.65rem",
+  code_inline_background_color =  "0.65rem",
+  code_highlight_color = "rgb(0, 108, 197, 0.2)",
+
+  
+  #colors
+  inverse_header_color=           "#FFFFFF",
+  inverse_link_color=             "#ef8de4",
+  title_slide_text_color=         "#FFFFFF",
+  title_slide_background_color=   "#a3a3a3",
+  header_background_color=        "#006cc5",
+  header_background_text_color=   "#006cc5",
+  link_color =                    "#ef8de4",
+  black = "#000000",
+  white = "#FFFFFF"
+  
+)
+  
+  
+```
+
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
@@ -45,26 +86,20 @@ knitr::opts_chunk$set(
   
 )
 ```
-```{r xaringan-themer, include=FALSE, warning=FALSE}
-library(xaringanthemer)
 
-style_duo_accent(
-  primary_color = "#006cc5",
-  secondary_color = "#FF961C",
-  inverse_header_color = "#FFFFFF",
-  header_background_color = #006cc5"
-)
-
-```
 ```{css echo=FALSE}
+
+
 .hide-count .remark-slide-number {
   display: none;
 }
 
-.hide-count-title .title-slide-number {
+.hide-count-title  .title-slide-number {
   display: none;
 }
+
 ```
+
 ```{r xaringanExtra, echo=FALSE}
 xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "tile"))
 
@@ -76,7 +111,7 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "til
 ### (Rabinowitz, Silver et al.)
 ### <br>
 ### USING THE R PROGRAMMING LANGUAGE
-##### Prepared by Kevin Williams  | Preliminary Findings   |   September 14, 2021
+#### Prepared by Kevin Williams  | Preliminary Findings   |   September 14, 2021
 #### <br>
 #### <br>
 
@@ -152,7 +187,7 @@ names(IBD)<-  make.names( names(IBD), unique = TRUE ) #<<
 
 .panel[.panel-name[Cleanse Data]
 
-Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that helped clean our data
+Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that helped clean our data:
 ```{r eval=F}
 require(dplyr)
 require(broom)  
@@ -271,10 +306,10 @@ IBD2 <-
 IBD2 <-  # the <- operator assigns what follows to the new dataset name on the opposite side
   
   IBD %>%
-     select(  # select variables of interest from IBD file ) %>%
-     rename(  # rename theses variables to suit your working style)  %>%
-     mutate(  # [1] mutate existing variables to change their content or structure, or
-              # [2] create brand new variables based on existing variables ))
+     select(  # select variables of interest from IBD file ) %>%  #<<
+     rename(  # rename theses variables to suit your working style)  %>%  #<<
+     mutate(  # [1] mutate existing variables to change their content or structure, or  #<<
+              # [2] create brand new variables based on existing variables ))    #<<
 
 ```
 
@@ -320,7 +355,7 @@ require(kableExtra)
 ]
 
 ---
-class: inverse, hide-count
+class: hide-count, inverse
 background-image: url(_images/codeblue-unsplash.jpeg)
 background-size: cover
 
@@ -422,7 +457,16 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 
 ]
 
-.panel[.panel-name[Intl Sites]
+]
+
+
+---
+## Select Summary Tables, cont.
+
+.panelset[
+
+
+.panel[.panel-name[International Sites]
 .pull-left[
 #### <font color="#006cc5">IBD Trials Recruiting Internationally</font color\>
 ```{r eval=F}
@@ -482,14 +526,6 @@ for (j in 1: nrow(LOCATIONS) ){
 
 
 ```
-```
-
-
-
-
-
-
-
 
 
 .panel[.panel-name[Site List & Percentiles]
@@ -518,9 +554,8 @@ require(kableExtra)
 ```
 ]
 
-
-
 ]
+
 ---
 
 ## <font color="#006cc5">Site Map</font color\>
@@ -1240,7 +1275,7 @@ census2 <- c( 0.508, 0.492)
     theme(legend.position = "top", legend.title = element_blank() )+
     theme(legend.background = element_rect(size=0.25, linetype="solid", color ="black"))
 ```
-<center><small>Women were slightly over-represented, while men were slightly under-represented relative to census data</small> </center>
+<center>Women were slightly over-represented, while men were slightly under-represented relative to census data </center>
 
 ---
 ## Test Slide

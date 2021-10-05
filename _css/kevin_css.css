@@ -1,65 +1,4 @@
 
-@import url(https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700,700i&display=swap);
-@import url(https://fonts.googleapis.com/css?family=Cabin:600,600i&display=swap);
-@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700&display=swap);
-
-
-:root {
- 
-  /* Fonts */
-  --text-font-family: 'Cabin';
-  --text-font-is-google: 1;
-  --text-font-family-fallback: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial;
-  --text-font-base: sans-serif;
-  --header-font-family: 'Cabin';
-  --header-font-is-google: 1;
-  --header-font-family-fallback: Georgia, serif;
-  --code-font-family: 'Source Code Pro';
-  --code-font-is-google: 1;
-  --base-font-size: 20px;
-  --text-font-size: 1.2rem;
-  --code-font-size: 0.75rem;
-  --code-inline-font-size: 1em;
-  --header-h1-font-size: 2.5rem;
-  --header-h2-font-size: 2.0rem;
-  --header-h3-font-size: 1.85rem;
-
-
-
-  
-  /* Colors */
-    --text-color: #000000;   /* the majority of text on the slide */
-    --header-color: #006cc5;
-    --background-color: #FFFFFF;
-    --link-color: #ef8de4;
-    --text-bold-color: #006cc5;
-    --code-highlight-color: rgba(6,108,186,0.25);
-    --span-highlight-color: rgba(6,108,186,0.25);
-    --inverse-text-color: #000000;
-    --inverse-background-color: #FFFFF;
-    --header-background-color: #FFFFFF;
-    --inverse-header-color: #FFFFFF;
-    --inverse-link-color: #ef8de4;
-    --title-slide-background-color: #FFFFFF;
-    --title-slide-text-color: #FFFFFF;
-    --header-background-color: #006cc5;
-    --header-background-text-color: #006cc5;
-    --base: #FFFFFF;
-    --white: #FFFFFF;
-    --black: #000000;
-}
-
-html {
-  font-size: var(--base-font-size);
-}
-
-body {
-  font-family: var(--text-font-family), var(--text-font-family-fallback), var(--text-font-base);
-  font-weight: normal;
-  color: var(--text-color);
-}
-
-
 
 /* Slide Header Background for h2 (slide title) elements */
 
@@ -74,7 +13,6 @@ h2{
 }
 
 
-
 .remark-slide-content.header_background {
   padding-top: 0rem;
 }
@@ -85,16 +23,6 @@ h2{
   padding-right: 10px;
   padding-bottom: 10px;
 }
-
-}
-.footnote {
-  position: absolute;
-  bottom: 3em;
-  padding-right: 4em;
-  font-size: 90%;
-}
-
-
 
 
 
@@ -108,56 +36,14 @@ h2{
 
 
 
-strong {
-  font-weight: bold;
-  color: var(--text-bold-color);
-}
-a, a > code {
-  color: var(--link-color);
-  text-decoration: none;
-}
-.footnote {
-  position: absolute;
-  bottom: 60px;
-  padding-right: 4em;
-  font-size: 0.9em;
-}
-
 .remark-code-line-highlighted {
   background-color: var(--code-highlight-color);
 }
 
 
 
-.remark-code {
-  font-size:  0.75em;
-  background-color: var(--code-highlight-color);
-}
 
 
-
-.inverse {
-  background-color: var(--inverse-background-color);
-  color: var(--inverse-text-color);
-  
-}
-.inverse h1, .inverse h2, .inverse h3 {
-  color: var(--inverse-header-color);
-}
-
-.inverse a, .inverse a > code {
-  color: var(--inverse-link-color);
-}
-
-.title-slide, .title-slide h1, .title-slide h2, .title-slide h3 {
-  color: var(--title-slide-text-color);
-}
-.title-slide {
-  background-color: var(--title-slide-background-color);
-}
-.title-slide .remark-slide-number {
-  display: none;
-}
 /* Two-column layout */
 .left-column {
   width: 20%;
@@ -173,8 +59,11 @@ a, a > code {
 .right-column {
   width: 75%;
   float: right;
-  padding-top: 1em;
+  padding-top: 0em;
 }
+
+
+
 .pull-left {
   float: left;
   width: 47%;
@@ -186,13 +75,13 @@ a, a > code {
 .pull-right + * {
   clear: both;
 }
+
+
 img, video, iframe {
   max-width: 100%;
 }
-blockquote {
-  border-left: solid 5px #1c525380;
-  padding-left: 1em;
-}
+
+
 .remark-slide table {
   margin: auto;
   border-top: 1px solid #666;
@@ -203,28 +92,6 @@ blockquote {
 }
 th, td {
   padding: 5px;
-}
-.remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) {
-  background: #F0F0F0;
-}
-table.dataTable tbody {
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-table.dataTable.display tbody tr.odd {
-  background-color: var(--background-color);
-}
-table.dataTable.display tbody tr.even {
-  background-color: #F0F0F0;
-}
-table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
-  color: var(--text-color);
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  color: var(--text-color) !important;
 }
 
 /* Slide Header Background for h1 elements */
@@ -256,39 +123,6 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
 
 
 
-
-
-
-
-@page { margin: 0; }
-@media print {
-  .remark-slide-scaler {
-    width: 100% !important;
-    height: 100% !important;
-    transform: scale(1) !important;
-    top: 0 !important;
-    left: 0 !important;
-  }
-}
-
-.base {
-  color: var(--base);
-}
-.bg-base {
-  background-color: var(--base);
-}
-.white {
-  color: var(--white);
-}
-.bg-white {
-  background-color: var(--white);
-}
-.black {
-  color: var(--black);
-}
-.bg-black {
-  background-color: var(--black);
-}
 
 
 .remark-slide-content.full-slide-fig{
