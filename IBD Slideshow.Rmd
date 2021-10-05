@@ -35,7 +35,7 @@ library(xaringanthemer)
 style_duo_accent(
   
   primary_color = "#006cc5",
-  secondary_color = "#a3a3a3",
+  secondary_color = "#f9e8d4",
     
   # fonts
   header_font_google = google_font("Helvetica Neue"),
@@ -48,8 +48,8 @@ style_duo_accent(
   header_h3_font_size = "1.85rem",
   base_font_size =      "1.15rem",
   
-  code_font_size=       "0.65rem",
-  code_inline_background_color =  "0.65rem",
+  code_font_size=       "0.55rem",
+  code_inline_background_color =  "0.55rem",
   code_highlight_color = "rgb(0, 108, 197, 0.2)",
 
   
@@ -139,7 +139,7 @@ background-size: 110px 65px
 
 --
 
-- R provides a wider variety of add-on packages that can enhance prelminary output - <font color="#006cc5">**makes sharing with collaborators fun**</font color>
+- R provides a wider variety of add-on packages that can enhance preliminary output - <font color="#006cc5">**makes sharing with collaborators fun**</font color>
 
 --
 
@@ -188,7 +188,7 @@ names(IBD)<-  make.names( names(IBD), unique = TRUE ) #<<
 
 .panel[.panel-name[Cleanse Data]
 
-Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that helped clean our data:
+Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that we used to wrangle our data:
 ```{r eval=F}
 require(dplyr)
 require(broom)  
@@ -432,9 +432,8 @@ IBD2  %>%
 ]
 
 .panel[.panel-name[Pregnancy Exclusion]
-
-#### <font color="#006cc5">IBD Trials Excluding Pregnant Subjects</font color\>
 .pull-left[
+#### <font color="#006cc5">IBD Trials Excluding Pregnant Subjects</font color\>
 ```{r eval=F}
 require(sjPlot)  #<<
 
@@ -1441,7 +1440,7 @@ ggplot(gapminder) +
 ## Two images
 
 .pull-left[
-<center><img src="https://i.imgur.com/SrZcGSS.gif" height="400px" /></center>
+<center><img src="https://i.imgur.com/0Xlxqy4.jpg" height="400px" /></center>
 ]
 
 .pull-right[
