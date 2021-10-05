@@ -103,7 +103,9 @@ knitr::opts_chunk$set(
   background-color: "#ccdbee";
 }
 
-.t
+.element {
+  scroll-snap-align: start;
+}
 
 ```
 
@@ -395,7 +397,8 @@ IBD2 %>%
    mutate(INTERVENTION = toupper(INTERVENTION) ) %>% 
    group_by( INTERVENTION ) %>% 
    summarise( FREQUENCY = n() ) %>% 
-   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %>%
+   mutate (PCT = round(FREQUENCY / sum(FREQUENCY),3) ) %>%
+   mutate (PCT = percent( substr(PCT,1,5)) ) %>% 
    filter(PCT > 0.01)  %>% arrange( INTERVENTION )  %>% 
    
    kbl(booktabs = T, format= "html", linesep='', padding=0,  #<<
@@ -433,16 +436,18 @@ IBD2 %>%
  IBD2 %>% 
    group_by( FUNDING ) %>% 
    summarise( FREQUENCY = n() ) %>% 
-   mutate (PCT = percent(FREQUENCY / sum(FREQUENCY)) ) %>%
+   mutate (PCT = round(FREQUENCY / sum(FREQUENCY),3) ) %>%
+   mutate (PCT = percent( substr( PCT, 1,5)) ) %>% 
     arrange ( FUNDING )  %>% 
  
     kbl(booktabs = T, format= "html", #<<
         align= c('l','r','r','r','r'), escape=F, #<<
         col.names= linebreak(c("Funding Source", #<<
                      "Frequency", "Percent"))) %>%  #<<
-       kable_paper(html_font= "Helvetica Neue", full_width = F, "hover", #<<
+       kable_paper(html_font= "Helvetica Neue", full_width = F, "hover",
                       font_size=16) %>%  #<<
-                      column_spec(1, width = "6cm") #<<
+                      column_spec(1, width = "6cm") 
+
 ```
 
 ]
@@ -560,9 +565,33 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
    . . .  other statements fed to KableExtra  #<<
           table rendering package  #<<
 ```
+
+```{r plot-intl, echo=F, eval=F}
+ IBD2 %>% 
+   group_by( INTL_SITES ) %>% 
+   summarise( Frequency = n() ) %>% 
+   mutate (Pct = round( Frequency / sum(Frequency),3) ) %>%
+   mutate (Pct = percent(substr(Pct,1,5)) )  %>% 
+   arrange ( desc(INTL_SITES)  )  %>%
+  
+   kbl( booktabs = T, format= "html",
+          align= c('c','c','r'), escape=F, 
+         col.names = linebreak(c("International<br>Sites?", 
+                                 "Frequency", 
+                                 "Percent"))) %>% 
+         kable_paper( html_font= "Helvetica Neue",
+                        full_width = F, "hover",  font_size=16) %>% 
+                        column_spec(1, width = "5cm") %>% 
+                        column_spec(2:3, width= "2.5cm")
+```
+
+
+
 ]
-.pull-right[
-<center><img src="https://i.imgur.com/VSAStJW.png" height="200px" style="padding-top: 55px"/></center>  ]
+.pull-right[<br>
+```{r plot-intl-out, ref.label = 'plot-intl', echo=F}
+```
+]
 ]
 
 
@@ -610,7 +639,6 @@ for (j in 1: nrow(LOCATIONS) ){
 
 
 .panel[.panel-name[Site List & Percentiles]
-
 ```{r echo=F}
 require(kableExtra)
 
@@ -619,18 +647,19 @@ require(kableExtra)
     SITES %>% group_by( COUNTRY ) %>% 
     summarise( COUNT = n()) %>% 
     arrange( desc(COUNT) ) %>% 
-    mutate( PERCENT = percent(COUNT / sum(COUNT)) ) %>% 
-    mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,2) ) %>% 
+    mutate( PERCENT =  round( (COUNT / sum(COUNT)), 3)  ) %>% 
+    mutate( PERCENT = percent( substr(PERCENT,1,5)) ) %>% 
+    mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,1) ) %>% 
     mutate (QUARTILE = ntile( (COUNT ), 4)) %>% 
     arrange ( desc(QUARTILE, COUNT) ) %>% tbl_df
   
   kbl(SITES2, booktabs = T, format= "html", 
       caption = "<br><center><strong>Countries Recruiting Subjects for US-based IBD Clinical Trials</strong></center><br>",
-      align= c('l','r','r','r','r'), escape=F, 
+      align= c('l','r','r','r','c'), escape=F, 
       col.names = linebreak(c("Country", "Trials<br>N", "Percent", "Percentile", "Quartile"))) %>% 
     
-      kable_paper(full_width = F, "hover", font_size=18) %>% column_spec(1, width = "8cm") %>% column_spec(2:5, "3cm") %>% 
-      scroll_box(height = "4.25in")
+      kable_paper(full_width = F, html_font= "Helvetica Neue", "hover", font_size=18) %>% column_spec(1, width = "10cm") %>% column_spec(2:5, "3cm") %>% 
+      scroll_box(height = "4.25in", width= "23cm" )
 
 ```
 ]

@@ -41,7 +41,9 @@ background-size: cover
   background-color: "#ccdbee";
 }
 
-.t
+.element {
+  scroll-snap-align: start;
+}
 
 &lt;/style&gt;
 
@@ -249,37 +251,37 @@ background-size: cover
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; BEHAVIORAL &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.37% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; BIOLOGICAL &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.53% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.5% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; DEVICE &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.48% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.5% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; DIETARY SUPPLEMENT &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.37% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; DRUG &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 113 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 77.40% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77.4% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; OTHER &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.42% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.4% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 7cm; "&gt; PROCEDURE &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.05% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.1% &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -320,17 +322,17 @@ background-size: cover
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 6cm; "&gt; INDUSTRY &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 119 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 81.51% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81.5% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 6cm; "&gt; NIH/HOSPITAL &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 13.70% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.7% &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;width: 6cm; "&gt; NIH/UNIVERSITY &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.79% &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.8% &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -467,9 +469,35 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 *  . . .  other statements fed to KableExtra
 *         table rendering package
 ```
+
+
+
+
+
 ]
-.pull-right[
-&lt;center&gt;&lt;img src="https://i.imgur.com/VSAStJW.png" height="200px" style="padding-top: 55px"/&gt;&lt;/center&gt;  ]
+.pull-right[&lt;br&gt;
+&lt;table class=" lightable-paper lightable-hover" style="font-size: 16px; font-family: Helvetica Neue; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; International&lt;br&gt;Sites? &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Frequency &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;width: 5cm; "&gt; Y &lt;/td&gt;
+   &lt;td style="text-align:center;width: 2.5cm; "&gt; 95 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 2.5cm; "&gt; 65.1% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;width: 5cm; "&gt; N &lt;/td&gt;
+   &lt;td style="text-align:center;width: 2.5cm; "&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 2.5cm; "&gt; 34.9% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
 ]
 
 
@@ -477,8 +505,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 
 
 .panel[.panel-name[Site List &amp; Percentiles]
-
-&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:4.25in; "&gt;&lt;table class=" lightable-paper lightable-hover" style='font-size: 18px; font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'&gt;
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:4.25in; overflow-x: scroll; width:23cm; "&gt;&lt;table class=" lightable-paper lightable-hover" style="font-size: 18px; font-family: Helvetica Neue; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
 &lt;caption style="font-size: initial !important;"&gt;
 &lt;br&gt;&lt;center&gt;&lt;strong&gt;Countries Recruiting Subjects for US-based IBD Clinical Trials&lt;/strong&gt;&lt;/center&gt;
 &lt;br&gt;
@@ -489,401 +516,401 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
    &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Trials&lt;br&gt;N &lt;/th&gt;
    &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Percent &lt;/th&gt;
    &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Percentile &lt;/th&gt;
-   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; Quartile &lt;/th&gt;
+   &lt;th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;"&gt; Quartile &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; USA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; USA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 146 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 12.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 100.00 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 12.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 100.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; CANADA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; CANADA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 82 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 6.88% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 98.21 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 6.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 98.2 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; POLAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; POLAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 58 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4.87% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 96.43 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 96.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; HUNGARY &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; HUNGARY &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 53 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4.45% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 94.64 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.4% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 94.6 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; BELGIUM &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; BELGIUM &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 52 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4.36% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 92.86 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.4% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 92.9 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; GERMANY &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; GERMANY &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 51 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4.28% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 91.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 4.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 91.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; CZECHIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; CZECHIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 46 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3.86% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 89.29 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 89.3 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; FRANCE &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; FRANCE &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 44 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3.69% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 87.50 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.7% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 87.5 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; NETHERLANDS &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; NETHERLANDS &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 42 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3.52% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 85.71 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.5% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 85.7 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; AUSTRALIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; AUSTRALIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 37 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3.10% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 83.04 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.1% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 83.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ISRAEL &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ISRAEL &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 37 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3.10% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 83.04 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 3.1% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 83.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SPAIN &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SPAIN &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 33 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.77% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 80.36 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.8% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 80.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; AUSTRIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; AUSTRIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 32 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 78.57 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.7% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 78.6 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ITALY &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ITALY &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.60% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 76.79 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 76.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 4 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; NEW ZEALAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; NEW ZEALAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.18% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 74.11 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 74.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SLOVAKIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SLOVAKIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.18% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 74.11 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 74.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; RUSSIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; RUSSIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 25 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.10% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 71.43 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.1% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 71.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; BULGARIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; BULGARIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.0% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 67.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; DENMARK &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; DENMARK &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.0% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 67.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SOUTH AFRICA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SOUTH AFRICA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.0% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 67.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; UKRAINE &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; UKRAINE &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 24 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.01% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 66.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.0% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 67.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SERBIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SERBIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 22 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.85% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 62.50 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.8% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 62.5 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; KOREA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; KOREA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 20 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.68% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 60.71 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.7% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 60.7 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; UK &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; UK &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 19 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.59% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 58.93 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 58.9 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ROMANIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ROMANIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.51% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 57.14 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.5% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 57.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; JAPAN &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; JAPAN &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 17 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.43% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 55.36 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.4% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 55.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; BRAZIL &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; BRAZIL &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 15 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.26% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 53.57 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 53.6 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SWEDEN &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SWEDEN &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 14 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.17% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 51.79 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 51.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SWITZERLAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SWITZERLAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 12 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1.01% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 50.00 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 1.0% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 50.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; CROATIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; CROATIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ESTONIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ESTONIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; LATVIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; LATVIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 11 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.92% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 46.43 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.9% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 46.4 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; GREECE &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; GREECE &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 9 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.76% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 41.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.8% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 42.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; NORWAY &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; NORWAY &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 9 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.76% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 41.96 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.8% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 42.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; LITHUANIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; LITHUANIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.67% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 39.29 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.7% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 39.3 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; INDIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; INDIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; IRELAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; IRELAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; MEXICO &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; MEXICO &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; PUERTO RICO &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; PUERTO RICO &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 7 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.59% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 34.82 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.6% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 34.8 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ARGENTINA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ARGENTINA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.42% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 29.46 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.4% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 29.5 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; TAIWAN &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; TAIWAN &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.42% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 29.46 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.4% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 29.5 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SINGAPORE &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SINGAPORE &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; COLOMBIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; COLOMBIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; PORTUGAL &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; PORTUGAL &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.34% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 25.00 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 25.0 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; BELARUS &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; BELARUS &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; BOSNIA-HERZEGOVINA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; BOSNIA-HERZEGOVINA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; GEORGIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; GEORGIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; HONG KONG &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; HONG KONG &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; ICELAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; ICELAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; MALAYSIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; MALAYSIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; TURKEY &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; TURKEY &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.25% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 16.07 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.3% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 16.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; CHILE &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; CHILE &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; MOLDOVA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; MOLDOVA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; SLOVENIA &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; SLOVENIA &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.17% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 7.14 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.2% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 7.1 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; FINLAND &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; FINLAND &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.08% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.1% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.7 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;width: 8cm; "&gt; PERU &lt;/td&gt;
+   &lt;td style="text-align:left;width: 10cm; "&gt; PERU &lt;/td&gt;
    &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 0.08% &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 2.68 &lt;/td&gt;
-   &lt;td style="text-align:right;width: 3cm; "&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 0.1% &lt;/td&gt;
+   &lt;td style="text-align:right;width: 3cm; "&gt; 2.7 &lt;/td&gt;
+   &lt;td style="text-align:center;width: 3cm; "&gt; 1 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
@@ -920,12 +947,12 @@ background-size: cover
 ---
 ## &lt;font color="#006cc5"&gt;How Was Race/Ethnicity Reported?&lt;/font color&gt;
 .pull-left[
-<div id="dcjzqhxzig" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="hzbymqczwi" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#dcjzqhxzig .gt_table {
+#hzbymqczwi .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -950,7 +977,7 @@ background-size: cover
   border-left-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_heading {
+#hzbymqczwi .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -962,7 +989,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_title {
+#hzbymqczwi .gt_title {
   color: #333333;
   font-size: 12pt;
   font-weight: bold;
@@ -972,7 +999,7 @@ background-size: cover
   border-bottom-width: 0;
 }
 
-#dcjzqhxzig .gt_subtitle {
+#hzbymqczwi .gt_subtitle {
   color: #333333;
   font-size: 12pt;
   font-weight: initial;
@@ -982,13 +1009,13 @@ background-size: cover
   border-top-width: 0;
 }
 
-#dcjzqhxzig .gt_bottom_border {
+#hzbymqczwi .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_col_headings {
+#hzbymqczwi .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1003,7 +1030,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_col_heading {
+#hzbymqczwi .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1023,7 +1050,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#dcjzqhxzig .gt_column_spanner_outer {
+#hzbymqczwi .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1035,15 +1062,15 @@ background-size: cover
   padding-right: 4px;
 }
 
-#dcjzqhxzig .gt_column_spanner_outer:first-child {
+#hzbymqczwi .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dcjzqhxzig .gt_column_spanner_outer:last-child {
+#hzbymqczwi .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dcjzqhxzig .gt_column_spanner {
+#hzbymqczwi .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1055,7 +1082,7 @@ background-size: cover
   width: 100%;
 }
 
-#dcjzqhxzig .gt_group_heading {
+#hzbymqczwi .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1077,7 +1104,7 @@ background-size: cover
   vertical-align: middle;
 }
 
-#dcjzqhxzig .gt_empty_group_heading {
+#hzbymqczwi .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1092,15 +1119,15 @@ background-size: cover
   vertical-align: middle;
 }
 
-#dcjzqhxzig .gt_from_md > :first-child {
+#hzbymqczwi .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dcjzqhxzig .gt_from_md > :last-child {
+#hzbymqczwi .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dcjzqhxzig .gt_row {
+#hzbymqczwi .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1119,7 +1146,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#dcjzqhxzig .gt_stub {
+#hzbymqczwi .gt_stub {
   color: #333333;
   background-color: #E6EFFC;
   font-size: 100%;
@@ -1131,7 +1158,7 @@ background-size: cover
   padding-left: 12px;
 }
 
-#dcjzqhxzig .gt_summary_row {
+#hzbymqczwi .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1141,7 +1168,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#dcjzqhxzig .gt_first_summary_row {
+#hzbymqczwi .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1151,7 +1178,7 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_grand_summary_row {
+#hzbymqczwi .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1161,7 +1188,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#dcjzqhxzig .gt_first_grand_summary_row {
+#hzbymqczwi .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1171,11 +1198,11 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_striped {
+#hzbymqczwi .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dcjzqhxzig .gt_table_body {
+#hzbymqczwi .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1184,7 +1211,7 @@ background-size: cover
   border-bottom-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_footnotes {
+#hzbymqczwi .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1198,13 +1225,13 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_footnote {
+#hzbymqczwi .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 8pt;
 }
 
-#dcjzqhxzig .gt_sourcenotes {
+#hzbymqczwi .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1218,41 +1245,41 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#dcjzqhxzig .gt_sourcenote {
+#hzbymqczwi .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#dcjzqhxzig .gt_left {
+#hzbymqczwi .gt_left {
   text-align: left;
 }
 
-#dcjzqhxzig .gt_center {
+#hzbymqczwi .gt_center {
   text-align: center;
 }
 
-#dcjzqhxzig .gt_right {
+#hzbymqczwi .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dcjzqhxzig .gt_font_normal {
+#hzbymqczwi .gt_font_normal {
   font-weight: normal;
 }
 
-#dcjzqhxzig .gt_font_bold {
+#hzbymqczwi .gt_font_bold {
   font-weight: bold;
 }
 
-#dcjzqhxzig .gt_font_italic {
+#hzbymqczwi .gt_font_italic {
   font-style: italic;
 }
 
-#dcjzqhxzig .gt_super {
+#hzbymqczwi .gt_super {
   font-size: 65%;
 }
 
-#dcjzqhxzig .gt_footnote_marks {
+#hzbymqczwi .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -1356,12 +1383,12 @@ background-size: cover
 </table>
 </div>
 ].pull-right[
-<div id="ppmzmjtggc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="mtvfxktvbt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ppmzmjtggc .gt_table {
+#mtvfxktvbt .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1386,7 +1413,7 @@ background-size: cover
   border-left-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_heading {
+#mtvfxktvbt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1398,7 +1425,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_title {
+#mtvfxktvbt .gt_title {
   color: #333333;
   font-size: 12pt;
   font-weight: bold;
@@ -1408,7 +1435,7 @@ background-size: cover
   border-bottom-width: 0;
 }
 
-#ppmzmjtggc .gt_subtitle {
+#mtvfxktvbt .gt_subtitle {
   color: #333333;
   font-size: 12pt;
   font-weight: initial;
@@ -1418,13 +1445,13 @@ background-size: cover
   border-top-width: 0;
 }
 
-#ppmzmjtggc .gt_bottom_border {
+#mtvfxktvbt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_col_headings {
+#mtvfxktvbt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1439,7 +1466,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_col_heading {
+#mtvfxktvbt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1459,7 +1486,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#ppmzmjtggc .gt_column_spanner_outer {
+#mtvfxktvbt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1471,15 +1498,15 @@ background-size: cover
   padding-right: 4px;
 }
 
-#ppmzmjtggc .gt_column_spanner_outer:first-child {
+#mtvfxktvbt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ppmzmjtggc .gt_column_spanner_outer:last-child {
+#mtvfxktvbt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ppmzmjtggc .gt_column_spanner {
+#mtvfxktvbt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1491,7 +1518,7 @@ background-size: cover
   width: 100%;
 }
 
-#ppmzmjtggc .gt_group_heading {
+#mtvfxktvbt .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1513,7 +1540,7 @@ background-size: cover
   vertical-align: middle;
 }
 
-#ppmzmjtggc .gt_empty_group_heading {
+#mtvfxktvbt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1528,15 +1555,15 @@ background-size: cover
   vertical-align: middle;
 }
 
-#ppmzmjtggc .gt_from_md > :first-child {
+#mtvfxktvbt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ppmzmjtggc .gt_from_md > :last-child {
+#mtvfxktvbt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ppmzmjtggc .gt_row {
+#mtvfxktvbt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1555,7 +1582,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#ppmzmjtggc .gt_stub {
+#mtvfxktvbt .gt_stub {
   color: #333333;
   background-color: #E6EFFC;
   font-size: 100%;
@@ -1567,7 +1594,7 @@ background-size: cover
   padding-left: 12px;
 }
 
-#ppmzmjtggc .gt_summary_row {
+#mtvfxktvbt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1577,7 +1604,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#ppmzmjtggc .gt_first_summary_row {
+#mtvfxktvbt .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1587,7 +1614,7 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_grand_summary_row {
+#mtvfxktvbt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1597,7 +1624,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#ppmzmjtggc .gt_first_grand_summary_row {
+#mtvfxktvbt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1607,11 +1634,11 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_striped {
+#mtvfxktvbt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ppmzmjtggc .gt_table_body {
+#mtvfxktvbt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1620,7 +1647,7 @@ background-size: cover
   border-bottom-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_footnotes {
+#mtvfxktvbt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1634,13 +1661,13 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_footnote {
+#mtvfxktvbt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 8pt;
 }
 
-#ppmzmjtggc .gt_sourcenotes {
+#mtvfxktvbt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1654,41 +1681,41 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#ppmzmjtggc .gt_sourcenote {
+#mtvfxktvbt .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#ppmzmjtggc .gt_left {
+#mtvfxktvbt .gt_left {
   text-align: left;
 }
 
-#ppmzmjtggc .gt_center {
+#mtvfxktvbt .gt_center {
   text-align: center;
 }
 
-#ppmzmjtggc .gt_right {
+#mtvfxktvbt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ppmzmjtggc .gt_font_normal {
+#mtvfxktvbt .gt_font_normal {
   font-weight: normal;
 }
 
-#ppmzmjtggc .gt_font_bold {
+#mtvfxktvbt .gt_font_bold {
   font-weight: bold;
 }
 
-#ppmzmjtggc .gt_font_italic {
+#mtvfxktvbt .gt_font_italic {
   font-style: italic;
 }
 
-#ppmzmjtggc .gt_super {
+#mtvfxktvbt .gt_super {
   font-size: 65%;
 }
 
-#ppmzmjtggc .gt_footnote_marks {
+#mtvfxktvbt .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -1797,12 +1824,12 @@ background-size: cover
 ---
 ## &lt;font color="#006cc5"&gt;How Was Race/Ethnicity Reported, cont.?&lt;/font color&gt;
 .pull-left[
-<div id="lkpvpzrvih" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="kusedmjkxy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#lkpvpzrvih .gt_table {
+#kusedmjkxy .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1827,7 +1854,7 @@ background-size: cover
   border-left-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_heading {
+#kusedmjkxy .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1839,7 +1866,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_title {
+#kusedmjkxy .gt_title {
   color: #333333;
   font-size: 12pt;
   font-weight: bold;
@@ -1849,7 +1876,7 @@ background-size: cover
   border-bottom-width: 0;
 }
 
-#lkpvpzrvih .gt_subtitle {
+#kusedmjkxy .gt_subtitle {
   color: #333333;
   font-size: 12pt;
   font-weight: initial;
@@ -1859,13 +1886,13 @@ background-size: cover
   border-top-width: 0;
 }
 
-#lkpvpzrvih .gt_bottom_border {
+#kusedmjkxy .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_col_headings {
+#kusedmjkxy .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1880,7 +1907,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_col_heading {
+#kusedmjkxy .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1900,7 +1927,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#lkpvpzrvih .gt_column_spanner_outer {
+#kusedmjkxy .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1912,15 +1939,15 @@ background-size: cover
   padding-right: 4px;
 }
 
-#lkpvpzrvih .gt_column_spanner_outer:first-child {
+#kusedmjkxy .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lkpvpzrvih .gt_column_spanner_outer:last-child {
+#kusedmjkxy .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lkpvpzrvih .gt_column_spanner {
+#kusedmjkxy .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1932,7 +1959,7 @@ background-size: cover
   width: 100%;
 }
 
-#lkpvpzrvih .gt_group_heading {
+#kusedmjkxy .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1954,7 +1981,7 @@ background-size: cover
   vertical-align: middle;
 }
 
-#lkpvpzrvih .gt_empty_group_heading {
+#kusedmjkxy .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1969,15 +1996,15 @@ background-size: cover
   vertical-align: middle;
 }
 
-#lkpvpzrvih .gt_from_md > :first-child {
+#kusedmjkxy .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lkpvpzrvih .gt_from_md > :last-child {
+#kusedmjkxy .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lkpvpzrvih .gt_row {
+#kusedmjkxy .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1996,7 +2023,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#lkpvpzrvih .gt_stub {
+#kusedmjkxy .gt_stub {
   color: #333333;
   background-color: #E6EFFC;
   font-size: 100%;
@@ -2008,7 +2035,7 @@ background-size: cover
   padding-left: 12px;
 }
 
-#lkpvpzrvih .gt_summary_row {
+#kusedmjkxy .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2018,7 +2045,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#lkpvpzrvih .gt_first_summary_row {
+#kusedmjkxy .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2028,7 +2055,7 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_grand_summary_row {
+#kusedmjkxy .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2038,7 +2065,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#lkpvpzrvih .gt_first_grand_summary_row {
+#kusedmjkxy .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2048,11 +2075,11 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_striped {
+#kusedmjkxy .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lkpvpzrvih .gt_table_body {
+#kusedmjkxy .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2061,7 +2088,7 @@ background-size: cover
   border-bottom-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_footnotes {
+#kusedmjkxy .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2075,13 +2102,13 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_footnote {
+#kusedmjkxy .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 8pt;
 }
 
-#lkpvpzrvih .gt_sourcenotes {
+#kusedmjkxy .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2095,41 +2122,41 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#lkpvpzrvih .gt_sourcenote {
+#kusedmjkxy .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#lkpvpzrvih .gt_left {
+#kusedmjkxy .gt_left {
   text-align: left;
 }
 
-#lkpvpzrvih .gt_center {
+#kusedmjkxy .gt_center {
   text-align: center;
 }
 
-#lkpvpzrvih .gt_right {
+#kusedmjkxy .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lkpvpzrvih .gt_font_normal {
+#kusedmjkxy .gt_font_normal {
   font-weight: normal;
 }
 
-#lkpvpzrvih .gt_font_bold {
+#kusedmjkxy .gt_font_bold {
   font-weight: bold;
 }
 
-#lkpvpzrvih .gt_font_italic {
+#kusedmjkxy .gt_font_italic {
   font-style: italic;
 }
 
-#lkpvpzrvih .gt_super {
+#kusedmjkxy .gt_super {
   font-size: 65%;
 }
 
-#lkpvpzrvih .gt_footnote_marks {
+#kusedmjkxy .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -2233,12 +2260,12 @@ background-size: cover
 </table>
 </div>
 ].pull-right[
-<div id="vsbdbbaplj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="dbymlbwhap" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: Guide, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#vsbdbbaplj .gt_table {
+#dbymlbwhap .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2263,7 +2290,7 @@ background-size: cover
   border-left-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_heading {
+#dbymlbwhap .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2275,7 +2302,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_title {
+#dbymlbwhap .gt_title {
   color: #333333;
   font-size: 12pt;
   font-weight: bold;
@@ -2285,7 +2312,7 @@ background-size: cover
   border-bottom-width: 0;
 }
 
-#vsbdbbaplj .gt_subtitle {
+#dbymlbwhap .gt_subtitle {
   color: #333333;
   font-size: 12pt;
   font-weight: initial;
@@ -2295,13 +2322,13 @@ background-size: cover
   border-top-width: 0;
 }
 
-#vsbdbbaplj .gt_bottom_border {
+#dbymlbwhap .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_col_headings {
+#dbymlbwhap .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2316,7 +2343,7 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_col_heading {
+#dbymlbwhap .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2336,7 +2363,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#vsbdbbaplj .gt_column_spanner_outer {
+#dbymlbwhap .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2348,15 +2375,15 @@ background-size: cover
   padding-right: 4px;
 }
 
-#vsbdbbaplj .gt_column_spanner_outer:first-child {
+#dbymlbwhap .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vsbdbbaplj .gt_column_spanner_outer:last-child {
+#dbymlbwhap .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vsbdbbaplj .gt_column_spanner {
+#dbymlbwhap .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2368,7 +2395,7 @@ background-size: cover
   width: 100%;
 }
 
-#vsbdbbaplj .gt_group_heading {
+#dbymlbwhap .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2390,7 +2417,7 @@ background-size: cover
   vertical-align: middle;
 }
 
-#vsbdbbaplj .gt_empty_group_heading {
+#dbymlbwhap .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2405,15 +2432,15 @@ background-size: cover
   vertical-align: middle;
 }
 
-#vsbdbbaplj .gt_from_md > :first-child {
+#dbymlbwhap .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vsbdbbaplj .gt_from_md > :last-child {
+#dbymlbwhap .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vsbdbbaplj .gt_row {
+#dbymlbwhap .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2432,7 +2459,7 @@ background-size: cover
   overflow-x: hidden;
 }
 
-#vsbdbbaplj .gt_stub {
+#dbymlbwhap .gt_stub {
   color: #333333;
   background-color: #E6EFFC;
   font-size: 100%;
@@ -2444,7 +2471,7 @@ background-size: cover
   padding-left: 12px;
 }
 
-#vsbdbbaplj .gt_summary_row {
+#dbymlbwhap .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2454,7 +2481,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#vsbdbbaplj .gt_first_summary_row {
+#dbymlbwhap .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2464,7 +2491,7 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_grand_summary_row {
+#dbymlbwhap .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2474,7 +2501,7 @@ background-size: cover
   padding-right: 5px;
 }
 
-#vsbdbbaplj .gt_first_grand_summary_row {
+#dbymlbwhap .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2484,11 +2511,11 @@ background-size: cover
   border-top-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_striped {
+#dbymlbwhap .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vsbdbbaplj .gt_table_body {
+#dbymlbwhap .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2497,7 +2524,7 @@ background-size: cover
   border-bottom-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_footnotes {
+#dbymlbwhap .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2511,13 +2538,13 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_footnote {
+#dbymlbwhap .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 8pt;
 }
 
-#vsbdbbaplj .gt_sourcenotes {
+#dbymlbwhap .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2531,41 +2558,41 @@ background-size: cover
   border-right-color: #D3D3D3;
 }
 
-#vsbdbbaplj .gt_sourcenote {
+#dbymlbwhap .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#vsbdbbaplj .gt_left {
+#dbymlbwhap .gt_left {
   text-align: left;
 }
 
-#vsbdbbaplj .gt_center {
+#dbymlbwhap .gt_center {
   text-align: center;
 }
 
-#vsbdbbaplj .gt_right {
+#dbymlbwhap .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vsbdbbaplj .gt_font_normal {
+#dbymlbwhap .gt_font_normal {
   font-weight: normal;
 }
 
-#vsbdbbaplj .gt_font_bold {
+#dbymlbwhap .gt_font_bold {
   font-weight: bold;
 }
 
-#vsbdbbaplj .gt_font_italic {
+#dbymlbwhap .gt_font_italic {
   font-style: italic;
 }
 
-#vsbdbbaplj .gt_super {
+#dbymlbwhap .gt_super {
   font-size: 65%;
 }
 
-#vsbdbbaplj .gt_footnote_marks {
+#dbymlbwhap .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
