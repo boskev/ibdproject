@@ -1437,7 +1437,7 @@ ggplot(gapminder) +
 <!-- .footnote[<center>GitHub Octocat</center>] -->
 
 ---
-layout: false
+
 ## Two images
 
 .pull-left[
