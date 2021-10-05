@@ -585,9 +585,8 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
                         column_spec(2:3, width= "2.5cm")
 ```
 
-
-
 ]
+
 .pull-right[<br>
 ```{r plot-intl-out, ref.label = 'plot-intl', echo=F}
 ```
@@ -662,8 +661,8 @@ require(kableExtra)
       scroll_box(height = "4.25in", width= "23cm" )
 
 ```
-]
 
+]
 ]
 
 ---
