@@ -134,7 +134,8 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "til
 
 ---
 layout: true
-background-image: url(https://i.imgur.com/5rlX8bi.png)
+<!-- background-image: url(https://i.imgur.com/5rlX8bi.png) -->
+background-image: url(IBD-Slideshow_files/figure-html/havard-bil.png)
 background-position: 3% 98.5%
 background-size: 110px 65px
 
@@ -142,7 +143,7 @@ background-size: 110px 65px
 ## So why Redo this in R?
 
 
-<center><img src="https://i.imgur.com/U0Hotjh.png" height="350px" /></center>
+<center><img src="/IBD-Slideshow_files/figure-html/Rlogo.png" height="350px" /></center>
 
 ---
 ## So why Redo this in R?
@@ -166,11 +167,11 @@ background-size: 110px 65px
 
 <!-- ![](_images/dsVSpap.png) -->
 
-<center><img src="https://i.imgur.com/N6FkliI.jpg" height="330px" /></center>
+<center><img src="/IBD-Slideshow_files/figure-html/dsVSpap3.png" height="330px" /></center>
 
 ---
 class: hide-count, inverse
-background-image: url(https://i.imgur.com/DpaJ4lX.jpg)
+background-image: url(/IBD-Slideshow_files/figure-html/keyboard-unsplash.jpeg)
 background-size: cover
 
 
@@ -339,7 +340,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 glimpse (IBD2)
 ```
 
-<center><img src="https://i.imgur.com/6ckNCi7.png" height="410px" /></center>
+<center><img src="/IBD-Slideshow_files/figure-html/IBD2-clean.png" height="410px" /></center>
 ]
 
 .panel[.panel-name[Sample Summary Stats]
@@ -365,7 +366,8 @@ require(kableExtra)
 <!-- # knitr::include_graphics("_images/skinny-arrow.png") -->
 <!-- # ``` -->
 
-<center><img src="https://i.imgur.com/rNcr6fS.png" height="180px" /></center>
+<center><img src="/IBD-Slideshow_files/figure-html/kable-summary1.png" height="180px" /></center>
+<!-- <center><img src="https://i.imgur.com/rNcr6fS.png" height="180px" /></center> -->
 <!-- <img src="_images/skinny-arrow.png" height="50px",  background-position= 0%, 100% /> -->
 ]
 
@@ -373,7 +375,7 @@ require(kableExtra)
 
 ---
 class: hide-count, inverse
-background-image: url(https://i.imgur.com/RFgeoi4.jpg)
+background-image: url(/IBD-Slideshow_files/figure-html/codeblue-unsplash.jpeg)
 background-size: cover
 
 
@@ -546,8 +548,8 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ```
 ]
 .pull-right[
-
-<center><img src="https://i.imgur.com/czS4FIr.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
+<center><img src="/IBD-Slideshow_files/figure-html/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
+<!-- <center><img src="https://i.imgur.com/czS4FIr.png" height="380px" width=700px" style="padding-top:0px"/></center>  ] -->
 
 ]
 
@@ -790,7 +792,7 @@ ggplot(data = WORLDMAP, aes( fill= QRTL)) +
 
 ---
 class: inverse, hide-count
-background-image: url(https://i.imgur.com/RFgeoi4.jpg)
+background-image: url(/IBD-Slideshow_files/figure-html/codeblue-unsplash.jpeg)
 background-size: cover
 
 
@@ -1429,8 +1431,8 @@ ggplot(gapminder) +
 ---
 ## Square Animated .gif
 
-<center><img src="https://i.imgur.com/SrZcGSS.gif" height="400px" /></center>
-
+<center><img src="/IBD-Slideshow_files/figure-html/Gapminder.gif" height="400px" /></center>
+<!-- <center><img src="https://i.imgur.com/SrZcGSS.gif" height="400px" /></center> -->
 <!-- ![](https://i.imgur.com/SrZcGSS.gifv") -->
 
 <!-- .footnote[<center>GitHub Octocat</center>] -->
@@ -1440,11 +1442,11 @@ ggplot(gapminder) +
 ## Two images
 
 .pull-left[
-<center><img src="https://i.imgur.com/0Xlxqy4.jpg" height="400px" /></center>
+<center><img src="/IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" /></center>
 ]
 
 .pull-right[
-<img src="https://i.imgur.com/0Xlxqy4.jpg" height="400px" />
+<img src="/IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" />
 ]
 
 
