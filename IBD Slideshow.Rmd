@@ -104,8 +104,21 @@ knitr::opts_chunk$set(
   background-color: "#ccdbee";
 }
 
-#object-position-1 {
-  object-position: 50% 50%;
+
+.arrow
+{
+  position:absolute;
+  top: 290px;
+  right: 160px;
+  z-index: 2;
+}
+
+.bigx
+{
+  position:absolute;
+  top: 100px;
+  right: 220px;
+  z-index: 2;
 }
 
 ```
@@ -325,7 +338,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 ```
 
 
-<center>Note the use of the pipe <font color="#006cc5">( %>% )</font color>  operator</center> #<<
+<center><bold>Note the use of the pipe <font color="#006cc5"><b>( %>% )</b></font color>  operator</bold></center> #<<
 
 ]
 .panel[.panel-name[Final Data Frame]
@@ -338,7 +351,7 @@ glimpse (IBD2)
 
 .panel[.panel-name[Sample Summary Stats]
 
-<!-- <img id="object-position-1" src="IBD-Slideshow_files/figure-html/skinny-arrow.png" height="50px",   object-position  /> -->
+<img src="IBD-Slideshow_files/figure-html/skinny-arrow.png" height="50px",  class="arrow"  />
 ```{r  Data-Cleanup-SampSum, eval=F}
 require(kableExtra)
 
@@ -1436,9 +1449,8 @@ ggplot(gapminder) +
 <!-- .footnote[<center>GitHub Octocat</center>] -->
 
 ---
-
 ## Two images
-
+<img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="450px",  class="bigx"  />
 .pull-left[
 <center><img src="IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" /></center>
 ]
