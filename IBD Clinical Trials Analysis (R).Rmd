@@ -474,7 +474,7 @@ cols <- c("1" = "#d7fcd2", "2" = "#7ecdbb", "3" = "#368fc0", "4" = "#045a8d")
 
 ggplot(data = WORLDMAP, aes( fill= QRTL)) +
   
-  geom_sf(  ) +
+  geom_sf( lwd=0.1  ) +
   
   scale_color_manual("Quantiles",
                      values = cols,
@@ -490,12 +490,11 @@ ggplot(data = WORLDMAP, aes( fill= QRTL)) +
   theme(plot.title =   element_text(color = "black", size = 18, face = "bold", hjust= 0))+
   theme(plot.subtitle= element_text(color = "black", size = 14,  hjust= 0))+
   theme(legend.position= "bottom")  +
-  
-# annotation_scale(location = "bl", width_hint = 0.25) +
+ annotation_scale(location = "br", width_hint = 0.15, plot_unit = "km" ) +
   annotation_north_arrow(location = "bl", which_north = "true", 
-                         pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+                         pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"), height= unit(0.5, "in") ,
                          style = north_arrow_fancy_orienteering ) + 
-  coord_sf( expand= F)
+  coord_sf( expand= F)  
 
 ```
 
