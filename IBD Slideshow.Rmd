@@ -135,7 +135,7 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "panelset", "til
 ---
 layout: true
 <!-- background-image: url(https://i.imgur.com/5rlX8bi.png) -->
-background-image: url(IBD-Slideshow_files/figure-html/havard-bil.png)
+background-image: url(IBD-Slideshow_files/figure-html/harvard-bil.png)
 background-position: 3% 98.5%
 background-size: 110px 65px
 
