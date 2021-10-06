@@ -599,7 +599,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ]
 
 
-```{r LOCATIONS, echo=F}
+```{r Locations, echo=F}
 
 # Create new data frame with just the LOCATIONS variable
 LOCATIONS <-   as.data.frame(IBD2) %>% select(LOCATIONS) %>% tbl_df
@@ -643,6 +643,7 @@ for (j in 1: nrow(LOCATIONS) ){
 
 
 .panel[.panel-name[Site List & Percentiles]
+<center>
 ```{r Percentiles, echo=F}
 require(kableExtra)
 
@@ -663,13 +664,13 @@ require(kableExtra)
       col.names = linebreak(c("Country", "Trials<br>N", "Percent", "Percentile", "Quartile"))) %>% 
     
  
-      kable_paper(full_width = F, html_font= "Helvetica Neue", "hover", font_size=18) %>% column_spec(1, width = "10cm") %>% 
+      kable_paper(full_width = F, html_font= "Helvetica Neue", "hover", font_size=16) %>% column_spec(1, width = "10cm") %>% 
       column_spec(2:5, "3cm") %>% 
       kable_styling( position = "center") %>% 
       scroll_box(height = "4.25in", width= "23cm" ) 
 
 ```
-
+</center>
 ]
 ]
 
