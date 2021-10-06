@@ -58,7 +58,7 @@ style_duo_accent(
   inverse_header_color=           "#FFFFFF",
   inverse_link_color=             "#ef8de4",
   title_slide_text_color=         "#FFFFFF",
-  title_slide_background_color=   "#006cc5",
+  title_slide_background_color=   "#ec9120",
   header_background_color=        "#006cc5",
   header_background_text_color=   "#006cc5",
   header_color=                   "#006cc5",
@@ -104,16 +104,9 @@ knitr::opts_chunk$set(
   background-color: "#ccdbee";
 }
 
-.element {
-  scroll-snap-align: start;
+#object-position-1 {
+  object-position: 50% 50%;
 }
-
-table.center {
-  margin-left: auto; 
-  margin-right: auto;
-}
-
-
 
 ```
 
@@ -345,6 +338,7 @@ glimpse (IBD2)
 
 .panel[.panel-name[Sample Summary Stats]
 
+<!-- <img id="object-position-1" src="IBD-Slideshow_files/figure-html/skinny-arrow.png" height="50px",   object-position  /> -->
 ```{r  Data-Cleanup-SampSum, eval=F}
 require(kableExtra)
 
@@ -368,7 +362,6 @@ require(kableExtra)
 
 <center><img src="IBD-Slideshow_files/figure-html/kable-summary1.png" height="180px" /></center>
 <!-- <center><img src="https://i.imgur.com/rNcr6fS.png" height="180px" /></center> -->
-<!-- <img src="_images/skinny-arrow.png" height="50px",  background-position= 0%, 100% /> -->
 ]
 
 ]
@@ -531,6 +524,7 @@ IBD2  %>%
 .pull-left[
 #### <font color="#006cc5">IBD Trials Excluding Pregnant Subjects</font color\>
 ```{r Pregnancy-Excl, eval=F}
+
 require(sjPlot)  #<<
 
 IBD2$CAT2 <-  factor(as.character(IBD2$CATEGORY))
@@ -547,12 +541,12 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 
 ```
 ]
+
 .pull-right[
 <center><img src="IBD-Slideshow_files/figure-html/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
 <!-- <center><img src="https://i.imgur.com/czS4FIr.png" height="380px" width=700px" style="padding-top:0px"/></center>  ] -->
 
 ]
-
 ]
 
 
@@ -668,8 +662,11 @@ require(kableExtra)
       align= c('l','r','r','r','c'), escape=F, 
       col.names = linebreak(c("Country", "Trials<br>N", "Percent", "Percentile", "Quartile"))) %>% 
     
-      kable_paper(full_width = F, html_font= "Helvetica Neue", "hover", font_size=18) %>% column_spec(1, width = "10cm") %>% column_spec(2:5, "3cm") %>% 
-      scroll_box(height = "4.25in", width= "23cm" )
+ 
+      kable_paper(full_width = F, html_font= "Helvetica Neue", "hover", font_size=18) %>% column_spec(1, width = "10cm") %>% 
+      column_spec(2:5, "3cm") %>% 
+      kable_styling( position = "center") %>% 
+      scroll_box(height = "4.25in", width= "23cm" ) 
 
 ```
 
@@ -802,7 +799,7 @@ background-size: cover
 ---
 ## Did Most Studies Collect Race Data?
 
-```{r Race-Collection, echo=F}
+```{r Race-Collection, echo=F, out.width="85%", fig.align= "center"}
 require(treemap)
 
 IBD2 %>% 
@@ -836,13 +833,13 @@ treemap(
       vSize= "WCT",
       type = "index",
       fontsize.labels = c(15,10),
-      fontcolor.labels = c("white", "black"),
+      fontcolor.labels = c("white", "white"),
       bg.labels= "transparent",
       align.labels= list(c("left", "top"), c("center", "center")),
       title= "",
       border.col= c("black", "white"),
-      border.lwds = c(3, 1),
-      palette = "Set3"
+      border.lwds = c(1, 1),
+      palette = "Paired"
 
 )
 
@@ -1297,7 +1294,7 @@ tab_header(
 ```{r Trials-vs-Census, echo=F, out.width="96%", fig.align= "center"}
 
 ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
-  geom_bar( stat='identity', alpha=0.3, position = "dodge", aes(fill= RACE ), fill='black', color='black', ymin=0, ymax=1) +
+  geom_bar( stat='identity', alpha=0.75, position = "dodge", aes(fill= RACE ), fill='darkgrey', color='black', lwd=0.25, ymin=0, ymax=1) +
   geom_line(  aes(x= RACE, y=CENSUS ), color= '#006cc5', lwd=2)+
   geom_errorbar(   aes(x= RACE, y=PROPORTION, ymin= LCL , ymax= UCL ,width=0.1), color='blue') +
   geom_label( aes( y=PROPORTION, label= paste0(round(PROPORTION*100,1),'%') ), color='black', size= 3.5) +
@@ -1380,7 +1377,7 @@ census2 <- c( 0.508, 0.492)
     
     
     ggplot( aes(x= GENDLABEL, y= PCT, color= METRIC )) + 
-    geom_bar( stat='identity',  position = "dodge", aes(fill= METRIC, color=METRIC ), color="black", alpha=0.75, width=0.575) +
+    geom_bar( stat='identity',  position = "dodge", aes(fill= METRIC, color=METRIC ), color="black", lwd=0.25, alpha=0.75, width=0.575) +
     geom_label(aes(x= GENDLABEL, label= paste0(round( PCT*100,1),'%') ), color="black",position=position_dodge2(width=0.5), vjust=0.25, size = 4) +
 
     #since x axis is a character variable, factorize it first!!!
