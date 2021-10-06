@@ -799,7 +799,7 @@ background-size: cover
 ---
 ## Did Most Studies Collect Race Data?
 
-```{r Race-Collection, echo=F, out.width="85%", fig.align= "center"}
+```{r Race-Collection, echo=F, out.width="75%", fig.align= "center"}
 require(treemap)
 
 IBD2 %>% 
