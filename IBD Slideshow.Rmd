@@ -677,7 +677,7 @@ require(kableExtra)
 ## <font color="#006cc5">Site Map</font color\>
 #### <center>Countries (56) with Recruitment Sites for US-based IBD Clinical Trials</center>
 
-```{r echo=F}
+```{r plot-world, echo=F}
 
 require(sf)
 require(rnaturalearth)
