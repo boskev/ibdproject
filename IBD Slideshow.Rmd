@@ -803,7 +803,7 @@ ggplot(data = WORLDMAP, aes( fill= QRTL)) +
 
 ---
 class: inverse, hide-count
-background-image: url(IBD-Slideshow_files/figure-html/codeblue-unsplash.jpeg)
+background-image: url(IBD-Slideshow_files/figure-html/blkasian-unsplash.jpg)
 background-size: cover
 
 
