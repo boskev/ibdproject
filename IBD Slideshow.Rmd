@@ -26,7 +26,8 @@ output:
     
 --- 
 class: title-slide, bottom, left, inverse, hide-count
-background-image: url(https://i.imgur.com/gA6x2Xb.jpg)
+<!-- background-image: url(https://i.imgur.com/gA6x2Xb.jpg) -->
+background-image: url(IBD-Slideshow_files/figure-html/cells-unsplash.jpeg)
 background-size: cover
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 
@@ -183,7 +184,7 @@ background-size: cover
 .panelset[
 .panel[.panel-name[Import Data]
 
-```{r eval=F}
+```{r Data-Cleanup-Import, eval=F}
 
 require(readxl)
 require(readr)  # use if importing a comma- or tab-delimited dataset #
@@ -204,7 +205,7 @@ names(IBD)<-  make.names( names(IBD), unique = TRUE ) #<<
 .panel[.panel-name[Cleanse Data]
 
 Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that we used to wrangle our data:
-```{r eval=F}
+```{r Data-Cleanup-Cleanse, eval=F}
 require(dplyr)
 require(broom)  
 require(tidyverse)  
@@ -218,7 +219,7 @@ require(tidyverse)
 
 
 
-```{r echo=F}
+```{r Data-Cleanup-Cleanse1, echo=F}
 
 # Create smaller data table that has only the variables of interest
 
@@ -315,7 +316,7 @@ IBD2 <-
 
 
 
-```{r eval=F}
+```{r Data-Cleanup-Cleanse2, eval=F}
 
 # Create smaller data table that has only the variables of interest
 
@@ -334,7 +335,7 @@ IBD2 <-  # the <- operator assigns what follows to the new dataset name on the o
 
 ]
 .panel[.panel-name[Final Data Frame]
-```{r  eval=F }
+```{r  Data-Cleanup-Glimpse, eval=F }
 glimpse (IBD2)
 ```
 
@@ -343,7 +344,7 @@ glimpse (IBD2)
 
 .panel[.panel-name[Sample Summary Stats]
 
-```{r eval=F}
+```{r  Data-Cleanup-SampSum, eval=F}
 require(kableExtra)
 
  IBD2 %>% 
@@ -386,7 +387,7 @@ background-size: cover
 .panel[.panel-name[Trial Interventions]
 .pull-left[
 #### <font color="#006cc5">IBD Trials by Type of Intervention being Investigated</font color\>
-```{r eval=F}
+```{r Trial-Interv, eval=F}
  IBD2 %>%
    mutate(INTERVENTION = toupper(INTERVENTION) ) %>% 
    group_by( INTERVENTION ) %>% 
@@ -427,7 +428,7 @@ IBD2 %>%
 .panel[.panel-name[Funding Sources]
 .pull-left[
 #### <font color="#006cc5">IBD Trials by Funding Source</font color\>
-```{r eval=F}
+```{r Funding-Source, eval=F}
  IBD2 %>% 
    group_by( FUNDING ) %>% 
    summarise( FREQUENCY = n() ) %>% 
@@ -469,7 +470,7 @@ IBD2 %>%
 .panel[.panel-name[Female Representation]
 .pull-left[
 #### <font color="#006cc5">Female Representation in IBD Trials</font color\>
-```{r eval=F}
+```{r Female-Rep, eval=F}
 IBD2  %>%
   select( CATEGORY, ANALYZED, FEMALES) %>%
     group_by( CATEGORY )  %>%
@@ -527,7 +528,7 @@ IBD2  %>%
 .panel[.panel-name[Pregnancy Exclusion]
 .pull-left[
 #### <font color="#006cc5">IBD Trials Excluding Pregnant Subjects</font color\>
-```{r eval=F}
+```{r Pregnancy-Excl, eval=F}
 require(sjPlot)  #<<
 
 IBD2$CAT2 <-  factor(as.character(IBD2$CATEGORY))
@@ -562,7 +563,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 .panel[.panel-name[International Sites]
 .pull-left[
 #### <font color="#006cc5">IBD Trials Recruiting Internationally</font color\>
-```{r eval=F}
+```{r International-Sites, eval=F}
  IBD2 %>% 
    group_by( INTL_SITES ) %>% 
    summarise( Frequency = n() ) %>% 
@@ -572,6 +573,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
    . . .  other statements fed to KableExtra  #<<
           table rendering package  #<<
 ```
+
 
 ```{r plot-intl, echo=F, eval=F}
  IBD2 %>% 
@@ -601,7 +603,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ]
 
 
-```{r echo=F}
+```{r LOCATIONS, echo=F}
 
 # Create new data frame with just the LOCATIONS variable
 LOCATIONS <-   as.data.frame(IBD2) %>% select(LOCATIONS) %>% tbl_df
@@ -645,7 +647,7 @@ for (j in 1: nrow(LOCATIONS) ){
 
 
 .panel[.panel-name[Site List & Percentiles]
-```{r echo=F}
+```{r Percentiles, echo=F}
 require(kableExtra)
 
  
@@ -677,7 +679,7 @@ require(kableExtra)
 ## <font color="#006cc5">Site Map</font color\>
 #### <center>Countries (56) with Recruitment Sites for US-based IBD Clinical Trials</center>
 
-```{r plot-world, echo=F}
+```{r World-Plot, echo=F}
 
 require(sf)
 require(rnaturalearth)
@@ -798,7 +800,7 @@ background-size: cover
 ---
 ## Did Most Studies Collect Race Data?
 
-```{r echo=F}
+```{r Race-Collection, echo=F}
 require(treemap)
 
 IBD2 %>% 
@@ -850,7 +852,7 @@ treemap(
 ---
 ## <font color="#006cc5">How Was Race/Ethnicity Reported?</font color>
 .pull-left[
-```{r echo=F}
+```{r Race-Report-WHT, echo=F}
 library(gt)
 
 raceshort <-  c("White","Black","Asian","AIA", "HPI", "Mixed","Unknown","Hispanic")
@@ -958,7 +960,7 @@ tab_header(
 
 ```
 ].pull-right[
-```{r echo=F}
+```{r Race-Report-ASN, echo=F}
 library(gt)
 
 raceshort <-  c("White","Black","Asian","AIA", "HPI", "Mixed","Unknown","Hispanic")
@@ -1071,7 +1073,7 @@ tab_header(
 ---
 ## <font color="#006cc5">How Was Race/Ethnicity Reported, cont.?</font color>
 .pull-left[
-```{r echo=F}
+```{r Race-Report-BLK, echo=F}
 library(gt)
 
 
@@ -1175,7 +1177,7 @@ tab_header(
 
 ```
 ].pull-right[
-```{r echo=F}
+```{r Race-Report-HIS, echo=F}
 library(gt)
 
 raceshort <-  c("White","Black","Asian","AIA", "HPI", "Mixed","Unknown","Hispanic")
@@ -1290,7 +1292,7 @@ tab_header(
 .panelset[
 .panel[.panel-name[Census Comparison]
 
-```{r echo=F, out.width="96%", fig.align= "center"}
+```{r Trials-vs-Census, echo=F, out.width="96%", fig.align= "center"}
 
 ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
   geom_bar( stat='identity', alpha=0.3, position = "dodge", aes(fill= RACE ), fill='black', color='black', ymin=0, ymax=1) +
@@ -1321,7 +1323,7 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
 
 <center>Simultaneous confidence intervals for multinomial proportions were computed using the methods proposed by [Sison & Glaz (1995)](https://www.tandfonline.com/doi/abs/10.1080/01621459.1995.10476521), which are similar to those adapted for SAS by [May & Johnson (1997)](https://www.sciencedirect.com/science/article/abs/pii/S0169260797018099)</center>
 <br><br>
-```{r echo=F}
+```{r SCIMP, echo=F}
 
 
   SCIMP %>% 
@@ -1346,7 +1348,7 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
 ---
 ## No Apparent Gender Gap was Noted in the Trials Examined
 
-```{r echo=F, out.width="95%", fig.align= "center"}
+```{r Gender-Gap, echo=F, out.width="95%", fig.align= "center"}
 
 census2 <- c( 0.508, 0.492)
 
