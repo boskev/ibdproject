@@ -121,6 +121,15 @@ knitr::opts_chunk$set(
   z-index: 2;
 }
 
+
+.smallx
+{
+  position:absolute;
+  top: 78px;
+  right: 175px;
+  z-index: 2;
+}
+
 ```
 
 ```{r xaringanExtra, echo=FALSE}
@@ -812,7 +821,7 @@ background-size: cover
 
 ---
 ## Did Most Studies Collect Race Data?
-
+<img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="100px",  class="smallx"  />
 ```{r Race-Collection, echo=F, out.width="75%", fig.align= "center"}
 require(treemap)
 
