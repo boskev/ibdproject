@@ -821,8 +821,11 @@ background-size: cover
 
 ---
 ## Did Most Studies Collect Race Data?
-<img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="100px",  class="smallx"  />
-```{r Race-Collection, echo=F, out.width="75%", fig.align= "center"}
+<center><img src="IBD-Slideshow_files/figure-html/race-prop2.png" width="700px" /></center>
+<!-- <img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="100px",  class="smallx"  /> -->
+<small><br></small>
+<center> Only 43% of studies (n=63) collected race data - and even then, not all races necessarily participated in trials.  It is also unclear from available data whether there was consistency among trials in terms how "race" was defined.</center>
+```{r Race-Collection, eval=F, echo=F}
 require(treemap)
 
 IBD2 %>% 
@@ -868,7 +871,6 @@ treemap(
 
 ```
 
-<center> Only 43% of studies (n=63) collected race data - and even then, not all races necessarily participated in trials.  It is also unclear from available data whether there was consistency among trials in terms how "race" was defined.</center>
 
 
 ---
