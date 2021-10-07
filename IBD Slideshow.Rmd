@@ -1462,6 +1462,24 @@ ggplot(gapminder) +
 <!-- .footnote[<center>GitHub Octocat</center>] -->
 
 ---
+## Math Expressions
+
+#### Chi-Square Test
+
+$$\chi^2 = \sum \frac {(O - E)^2}{E}$$
+#### Standard Regression Equation
+
+$$E(y) = \beta{x}_{0} + \beta{x}_{1} + \beta{x}_{2} + . . . . \beta{x}_{n} + residuals$$
+
+
+<!-- #### Sum of Squares -->
+
+<!-- $$b = \frac {{SS}_{xy}}{{SS}_{xx}} -->
+<!-- $$ -->
+
+
+
+---
 ## Two images
 <img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="450px",  class="bigx"  />
 .pull-left[
@@ -1471,6 +1489,7 @@ ggplot(gapminder) +
 .pull-right[
 <img src="IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" />
 ]
+
 
 
 
