@@ -1471,14 +1471,6 @@ $$\chi^2 = \sum \frac {(O - E)^2}{E}$$
 
 $$E(y) = \beta{x}_{0} + \beta{x}_{1} + \beta{x}_{2} + . . . . \beta{x}_{n} + residuals$$
 
-
-<!-- #### Sum of Squares -->
-
-<!-- $$b = \frac {{SS}_{xy}}{{SS}_{xx}} -->
-<!-- $$ -->
-
-
-
 ---
 ## Two images
 <img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="450px",  class="bigx"  />
