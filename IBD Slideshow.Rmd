@@ -669,12 +669,13 @@ for (j in 1: nrow(LOCATIONS) ){
 ```{r Percentiles, echo=F}
 require(kableExtra)
 
+trialcount<-   sqldf(" select count(distinct(ID)) from SITES ")  %>% pull()
  
   SITES2 <-
     SITES %>% group_by( COUNTRY ) %>% 
     summarise( COUNT = n()) %>% 
     arrange( desc(COUNT) ) %>% 
-    mutate( PERCENT =  round( (COUNT / sum(COUNT)), 3)  ) %>% 
+    mutate( PERCENT =  round( (COUNT / trialcount ), 3)  ) %>% 
     mutate( PERCENT = percent( substr(PERCENT,1,5)) ) %>% 
     mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,1) ) %>% 
     mutate (QUARTILE = ntile( (COUNT ), 4)) %>% 

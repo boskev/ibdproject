@@ -244,11 +244,13 @@ One additional set of "piped" ` %>% ` commands is needed to collapse the newly c
 
 require(kableExtra)
  
+trialcount<-   sqldf(" select count(distinct(ID)) from SITES ")  %>% pull()
+
   SITES2 <-
     SITES %>% group_by( COUNTRY ) %>% 
     summarise( COUNT = n()) %>% 
     arrange( desc(COUNT) ) %>% 
-    mutate( PERCENT = percent(COUNT / sum(COUNT)) ) %>% 
+    mutate( PERCENT = percent(COUNT /  trialcount ) ) %>% 
     mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,2) ) %>% 
     mutate (QUARTILE = ntile( (COUNT ), 4)) %>% 
     arrange ( desc(QUARTILE, COUNT) ) %>% tbl_df
@@ -910,6 +912,7 @@ rm(A1,A2)
 ```
 
 
+
 ```{r SCIMP-SUMMARY-TABLE-AFTER-KABLE, results='asis' }
 
 
@@ -932,10 +935,10 @@ census <- c( 0.013, 0.059, .134, 0.002, 0.028, 0.763)
 
 SCIMP$CENSUS <- census
 SCIMP$CONDLABEL <- ifelse( SCIMP$PROPORTION <= SCIMP$CENSUS, T,F)
-SCIMP$CONDVJUST <- ifelse( SCIMP$RACE== "WHT", -1, 
+SCIMP$CONDVJUST <- ifelse( SCIMP$RACE== "WHT", -0.5, #CHANGE TO 1.0
                    ifelse(SCIMP$RACE== "BLK", -1, 
                    ifelse(SCIMP$RACE== "ASN", 1.75,
-                   ifelse( SCIMP$RACE== "MIX", -2,
+                   ifelse( SCIMP$RACE== "MIX", -1.5,
                    ifelse( SCIMP$RACE %in% c("AIA","HPI"), -2, -5)))))
 
 SCIMP$CONDHJUST <- ifelse( SCIMP$RACE== "MIX", 1.2, NA)
