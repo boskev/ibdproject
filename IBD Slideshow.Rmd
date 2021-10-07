@@ -1317,6 +1317,7 @@ tab_header(
 .panelset[
 .panel[.panel-name[Census Comparison]
 
+
 ```{r Trials-vs-Census, echo=F, out.width="96%", fig.align= "center"}
 
 ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
