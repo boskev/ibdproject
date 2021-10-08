@@ -173,19 +173,19 @@ background-size: 110px 65px
 ---
 ## So why Redo this in R?
 
-- Excellent <font color="#006cc5">**learning opportunity**</font color>
+1. Excellent <font color="#006cc5">**learning opportunity**</font color>
 
 --
 
-- Provides another chance to <font color="#006cc5">**validate SAS results**</font color> prior to publication
+1. Provides another chance to <font color="#006cc5">**validate SAS results**</font color> prior to publication
 
 --
 
-- R provides a wider variety of add-on packages that can enhance preliminary output - <font color="#006cc5">**makes sharing with collaborators fun**</font color>
+1. R provides a wider variety of add-on packages that can enhance preliminary output - <font color="#006cc5">**makes sharing with collaborators fun**</font color>
 
 --
 
-- Data scientists have made a marked <font color="#006cc5">**shift to R and Python**</font color> and away from SAS and SPSS
+1. Data scientists have made a marked <font color="#006cc5">**shift to R and Python**</font color> and away from SAS and SPSS
 
 <br>
 
