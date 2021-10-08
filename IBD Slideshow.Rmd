@@ -130,6 +130,7 @@ knitr::opts_chunk$set(
   z-index: 2;
 }
 
+
 ```
 
 ```{r xaringanExtra, echo=FALSE}
@@ -1422,6 +1423,111 @@ census2 <- c( 0.508, 0.492)
 <center>Women were slightly over-represented, while men were slightly under-represented relative to census data </center>
 
 ---
+class: inverse, hide-count
+background-image: url(IBD-Slideshow_files/figure-html/grandmotherblue-unsplash.jpg)
+background-size: cover
+
+
+## Task No. 4
+### Report the <font color="#ef8de4">age demographics</font color> obtained from those IBD trials where such information was collected.
+---
+## Inclusion of Children & Seniors in IBD Trials
+```{r, Child-Participation, echo=F,eval=F}
+
+# child plot 
+
+IBD2 %>% 
+  select( AGECAT, PLUS65, PLUS85, TITLE) %>% 
+  mutate( CHILD =  ifelse( str_detect( AGECAT, 'Child') == T, "YES", "NO" ),
+          SENIOR = ifelse( PLUS65== 'Y' | PLUS85== 'Y', "YES", "NO" ),
+          ID = paste0('Trial',row_number()) ) %>% 
+  select ( CHILD, SENIOR) %>% 
+  pivot_longer( cols= c(CHILD, SENIOR), names_to= "AGECAT", values_to= "INCL")  %>% 
+  group_by (AGECAT, INCL) %>% 
+  summarize (TRIALS = n() ,
+             PCT = n() / trialcount )  %>% 
+  filter( AGECAT == "CHILD")  %>% 
+  mutate(ypos = ifelse( INCL== 'YES', TRIALS * 0.5, TRIALS * 0.75) ,  
+         INCL = factor(INCL, levels= c('NO',"YES")) ) %>% 
+  mutate( CUSTLABEL = paste( INCL,"\n", percent( substr(round(PCT,3),1,5)) ) ) %>% 
+  
+  # Basic piechart
+  ggplot( aes(x="", y= TRIALS, fill= INCL)) +
+  ggtitle("Percentage of Trials with Child Enrollees")+ 
+  geom_bar(stat="identity", width= 10, color="white", lwd=5) +
+  geom_text( aes( y=ypos, label = CUSTLABEL ), color = "white", size=5, fontface='bold' ) +
+  coord_polar("y", start= 0.95) +
+  
+  theme_void( margin(t=0, l=0 ) ) + 
+  theme(legend.position="none",
+        axis.ticks=element_blank(),
+        plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0.5),
+        axis.text.y=element_blank(),
+        axis.text.x=element_text(colour='black'),
+        axis.title=element_blank() ,
+        plot.background = element_rect(fill= "white", color=NA)  ) +
+  
+  scale_fill_manual( values= c('darkgrey','#006cc5') )  
+
+  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "child-pie.png", plot=last_plot(), width = 5, height = 5, dpi=300)
+
+
+```
+
+.pull-left[
+<img src="IBD-Slideshow_files/figure-html/child-pie.png" height="450px" />
+]
+
+```{r Senior-Participation, echo=F, eval=F}
+
+
+#senior plot
+
+
+IBD2 %>% 
+  select( AGECAT, PLUS65, PLUS85, TITLE) %>% 
+  mutate( CHILD =  ifelse( str_detect( AGECAT, 'Child') == T, "YES", "NO" ),
+          SENIOR = ifelse( PLUS65== 'Y' | PLUS85== 'Y', "YES", "NO" ),
+          ID = paste0('Trial',row_number()) ) %>% 
+  select ( CHILD, SENIOR) %>% 
+  pivot_longer( cols= c(CHILD, SENIOR), names_to= "AGECAT", values_to= "INCL")  %>% 
+  group_by (AGECAT, INCL) %>% 
+  summarize (TRIALS = n() ,
+             PCT = n() / trialcount )  %>% 
+  filter( AGECAT == "SENIOR")  %>% 
+  mutate(ypos = ifelse( INCL== 'YES', TRIALS * 0.5, TRIALS*1.03 ) ,  
+         INCL = factor(INCL, levels= c('NO',"YES")) ) %>% 
+  mutate( CUSTLABEL = paste( INCL,"\n", percent( substr(round(PCT,3),1,5)) ) ) %>% 
+  
+  # Basic piechart
+  ggplot( aes(x="", y= TRIALS, fill= INCL)) +
+  ggtitle("Percentage of Trials with Senior Enrollees")+ 
+  geom_bar(stat="identity", width= 10, color="white", lwd=5) +
+  geom_text( aes( y=ypos, label = CUSTLABEL ), color = "white", size=5, fontface='bold' ) +
+  coord_polar("y", start= 0.5) +
+  
+  theme_void( margin(t=0, l=0 ) ) + 
+  theme(legend.position="none",
+        plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0.5),
+        axis.ticks=element_blank(),
+        axis.text.y=element_blank(),
+        axis.text.x=element_text(colour='black'),
+        axis.title=element_blank() ,
+
+        plot.background = element_rect(fill= "white", color=NA)  ) +
+        scale_fill_manual( values= c('darkgrey','#006cc5') ) 
+
+  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "senior-pie.png", plot=last_plot(), width = 5, height = 5, dpi=300)
+
+
+```
+
+.pull-right[
+<img src="IBD-Slideshow_files/figure-html/senior-pie.png" height="450px" />
+]
+<center>Children were included in 26 studies, while adults over the age of 65 were enrolled in 52 studies</center>
+
+---
 # Left-Column Headings
 
 .left-column[
@@ -1481,7 +1587,6 @@ $$E(y) = \beta{x}_{0} + \beta{x}_{1} + \beta{x}_{2} + . . . . \beta{x}_{n} + res
 .pull-right[
 <img src="IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" />
 ]
-
-
+    
 
 
