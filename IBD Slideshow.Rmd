@@ -196,7 +196,7 @@ background-size: 110px 65px
 
 ---
 class: hide-count, inverse
-background-image: url(IBD-Slideshow_files/figure-html/keyboard-unsplash.jpeg)
+background-image: url(IBD-Slideshow_files/figure-html/keyboard2crop2-unsplash.jpeg)
 background-size: cover
 
 
@@ -575,7 +575,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row",
 ]
 
 .pull-right[
-<center><img src="IBD-Slideshow_files/figure-html/kable-summary6.png" height="380px" width=700px" style="padding-top:0px"/></center>  ]
+<center><img src="IBD-Slideshow_files/figure-html/kable-summary6.png" height="400px" width=750px" style="padding-top:60px"/></center>  ]
 <!-- <center><img src="https://i.imgur.com/czS4FIr.png" height="380px" width=700px" style="padding-top:0px"/></center>  ] -->
 
 ]
