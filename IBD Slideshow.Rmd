@@ -1550,7 +1550,7 @@ IBD2 %>%
              axis.titles = c('', ''), legend.title= "Included?",wrap.labels=5,  legend.labels = c("Children", "Neither", "Seniors"),
             show.summary = TRUE )+theme_classic()
 ```
-<center><small>On a percentage basis, Children and Seniors were largely excluded from trials in the two main IBD trials categories:  Crohn's Disease & Ulcerative Colitis</small></center>
+<center>Children and Seniors were largely excluded from trials in the two main IBD trials categories:<br>Crohn's Disease (CD) & Ulcerative Colitis (UC)</center>
 
 ---
 # Left-Column Headings
