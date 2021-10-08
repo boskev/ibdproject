@@ -131,6 +131,15 @@ knitr::opts_chunk$set(
 }
 
 
+.oval1
+{
+  position:absolute;
+  top: 31px;
+  right: 165px;
+  z-index: 2;
+}
+
+
 ```
 
 ```{r xaringanExtra, echo=FALSE}
@@ -1465,7 +1474,7 @@ IBD2 %>%
         axis.text.y=element_blank(),
         axis.text.x=element_text(colour='black'),
         axis.title=element_blank() ,
-        plot.background = element_rect(fill= "white", color=NA)  ) +
+        plot.background = element_rect(fill= NA, color=NA)  ) +
   
   scale_fill_manual( values= c('darkgrey','#006cc5') )  
 
@@ -1514,8 +1523,8 @@ IBD2 %>%
         axis.text.x=element_text(colour='black'),
         axis.title=element_blank() ,
 
-        plot.background = element_rect(fill= "white", color=NA)  ) +
-        scale_fill_manual( values= c('darkgrey','#006cc5') ) 
+        plot.background = element_rect(fill= NA, color=NA)  ) +
+  scale_fill_manual( values= c('darkgrey','#006cc5') )   
 
   ggsave(path= "IBD-Slideshow_files/figure-html", filename= "senior-pie.png", plot=last_plot(), width = 5, height = 5, dpi=300)
 
@@ -1526,6 +1535,22 @@ IBD2 %>%
 <img src="IBD-Slideshow_files/figure-html/senior-pie.png" height="450px" />
 ]
 <center>Children were included in 26 studies, while adults over the age of 65 were enrolled in 52 studies</center>
+
+---
+## Inclusion of Children & Seniors by Type of Trial
+<img src="IBD-Slideshow_files/figure-html/red-emphasis.png" height="200px",  class="oval1"  />
+```{r Trial-Type-Child-Seniors, echo=F}
+  require(sjPlot)
+    # tab_xtab(var.row = as.character(X$CAT2), var.col = X$INCL, 
+    #          title = "Trials Children & Seniors", show.row.prc = TRUE)
+  
+    plot_xtab(X$CAT2, X$INCL, margin = "row", bar.pos = "stack", coord.flip = TRUE,
+             # title = "Trials Children & Seniors",
+             # geom.colors = c("#006cc5","#a6e17f", "#cbcccb"),
+             axis.titles = c('', ''), legend.title= "Included?",wrap.labels=5,  legend.labels = c("Children", "Neither", "Seniors"),
+            show.summary = TRUE )+theme_classic()
+```
+<center><small>On a percentage basis, Children and Seniors were largely excluded from trials in the two main IBD trials categories:  Crohn's Disease & Ulcerative Colitis</small></center>
 
 ---
 # Left-Column Headings

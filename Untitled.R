@@ -15,8 +15,11 @@ IBD2 %>%
     
     
     install.packages("plotly")
-
+    
+    install.packages("highcharter")
+    
     library(plotly)
+    library(highcharter)
     
     
     IBD2 %>% 
@@ -152,3 +155,139 @@ levels(X$RACE)
     # 
     # 
     # 
+
+
+
+
+
+
+# child plot 
+
+IBD2 %>% 
+  select( AGECAT, PLUS65, PLUS85, TITLE) %>% 
+  mutate( CHILD =  ifelse( str_detect( AGECAT, 'Child') == T, "YES", "NO" ),
+          SENIOR = ifelse( PLUS65== 'Y' | PLUS85== 'Y', "YES", "NO" ),
+          ID = paste0('Trial',row_number()) ) %>% 
+  select ( CHILD, SENIOR) %>% 
+  pivot_longer( cols= c(CHILD, SENIOR), names_to= "AGECAT", values_to= "INCL")  %>% 
+  group_by (AGECAT, INCL) %>% 
+  summarize (TRIALS = n() ,
+             PCT = n() / trialcount )  %>% 
+  filter( AGECAT == "CHILD")  %>% 
+  mutate(ypos = ifelse( INCL== 'YES', TRIALS * 0.5, TRIALS * 0.75) ,  
+         INCL = factor(INCL, levels= c('NO',"YES")) ) %>% 
+  mutate( CUSTLABEL = paste( INCL,"\n", percent( substr(round(PCT,3),1,5)) ) ) %>% 
+  
+  # Basic piechart
+  ggplot( aes(x="", y= TRIALS, fill= INCL)) +
+  ggtitle("Percentage of Trials with Child Enrollees")+ 
+  geom_bar(stat="identity", width= 10, color="white", lwd=5) +
+  geom_text( aes( y=ypos, label = CUSTLABEL ), color = "white", size=5, fontface='bold' ) +
+  coord_polar("y", start= 0.95) +
+  
+  theme_void( margin(t=0, l=0 ) ) + 
+  theme(legend.position="none",
+        axis.ticks=element_blank(),
+        plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0.5),
+        axis.text.y=element_blank(),
+        axis.text.x=element_text(colour='black'),
+        axis.title=element_blank() ,
+        plot.background = element_rect(fill= "white", color=NA)  ) +
+  
+  scale_fill_manual( values= c('darkgrey','#006cc5') )  
+
+  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "child-pie.png", plot=last_plot(), width = 5, height = 5, dpi=300)
+
+
+#senior plot
+
+
+IBD2 %>% 
+  select( AGECAT, PLUS65, PLUS85, TITLE) %>% 
+  mutate( CHILD =  ifelse( str_detect( AGECAT, 'Child') == T, "YES", "NO" ),
+          SENIOR = ifelse( PLUS65== 'Y' | PLUS85== 'Y', "YES", "NO" ),
+          ID = paste0('Trial',row_number()) ) %>% 
+  select ( CHILD, SENIOR) %>% 
+  pivot_longer( cols= c(CHILD, SENIOR), names_to= "AGECAT", values_to= "INCL")  %>% 
+  group_by (AGECAT, INCL) %>% 
+  summarize (TRIALS = n() ,
+             PCT = n() / trialcount )  %>% 
+  filter( AGECAT == "SENIOR")  %>% 
+  mutate(ypos = ifelse( INCL== 'YES', TRIALS * 0.5, TRIALS*1.03 ) ,  
+         INCL = factor(INCL, levels= c('NO',"YES")) ) %>% 
+  mutate( CUSTLABEL = paste( INCL,"\n", percent( substr(round(PCT,3),1,5)) ) ) %>% 
+  
+  # Basic piechart
+  ggplot( aes(x="", y= TRIALS, fill= INCL)) +
+  ggtitle("Percentage of Trials with Senior Enrollees")+ 
+  geom_bar(stat="identity", width= 10, color="white", lwd=5) +
+  geom_text( aes( y=ypos, label = CUSTLABEL ), color = "white", size=6, fontface='bold' ) +
+  coord_polar("y", start= 0.5) +
+  
+  theme_void( margin(t=0, l=0 ) ) + 
+  theme(legend.position="none",
+        plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0.5),
+        axis.ticks=element_blank(),
+        axis.text.y=element_blank(),
+        axis.text.x=element_text(colour='black'),
+        axis.title=element_blank() ,
+
+        plot.background = element_rect(fill= "white", color=NA)  ) +
+        scale_fill_manual( values= c('darkgrey','#006cc5') ) 
+
+  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "senior-pie.png", plot=last_plot(), width = 5, height = 5, dpi=300)
+
+
+  
+  
+  X<- 
+  
+  IBD2 %>% 
+    select( AGECAT, PLUS65, PLUS85, TITLE) %>% 
+    mutate( CHILD =  ifelse( str_detect( AGECAT, 'Child') == T, "YES", "NO" ),
+            SENIOR = ifelse( PLUS65== 'Y' | PLUS85== 'Y', "YES", "NO" ),
+            ID = paste0('Trial',row_number()) ) %>% 
+    select ( CHILD, SENIOR) %>% 
+    pivot_longer( cols= c(CHILD, SENIOR), names_to= "AGECAT", values_to= "INCL") 
+
+  
+  
+  chiSquare( AGECAT ~ INCL, data = X)
+  
+  
+  
+  
+  library(ggstatsplot)
+  
+  X<-
+  IBD2 %>% 
+    select( AGECAT, PLUS65, PLUS85, TITLE, CAT2) %>% 
+    mutate( ID = paste0('Trial',row_number()),
+            CATEGORY = CAT2,
+                                                            
+            INCL =  ifelse( str_detect( AGECAT, 'Child') == T & (  PLUS65== 'Y' | PLUS85== 'Y' ), 'BOTH',
+                    ifelse( str_detect( AGECAT, 'Child') == T, 'CHILD',
+                    ifelse( PLUS65== 'Y' | PLUS85== 'Y', 'SENIOR', "NEITHER"))) ) %>% 
+                    filter( INCL != 'BOTH')  %>% 
+    select( CAT2, INCL) %>% tbl_df()
+    
+  require(sjPlot)
+    tab_xtab(var.row = as.character(X$CAT2), var.col = X$INCL, 
+             title = "Trials Children & Seniors", show.row.prc = TRUE)
+  
+    plot_xtab(X$CAT2, X$INCL, margin = "row", bar.pos = "stack", coord.flip = TRUE,
+             # title = "Trials Children & Seniors",
+             axis.titles = c('Clinical Trials Category', 'Percentages'), legend.title= "Included?",
+             legend.labels = c("Children", "Neither", "Seniors"),
+            show.summary = TRUE )+theme_classic()
+    
+                            
+  
+    ?plot_xtab
+    
+  chisq.test( X$AGECAT, X$INCL, correct=FALSE)
+  
+  
+  CrossTable(X$AGECAT, X$INCL, prop.chisq=F, prop.t=F)  #rows then/over columns
+  
+  
