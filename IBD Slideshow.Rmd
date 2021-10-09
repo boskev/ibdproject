@@ -1407,7 +1407,7 @@ ggplot( KPNC, aes( x= RACE , y=PREV )) +
         axis.title=  element_text(size=12)  )  
 ```
 
-- In her abstract, <b>[Delisser et al. (2018)](https://journals.lww.com/ajg/Fulltext/2018/10001/Variation_in_IBD_Prevalence_by_Race_Ethnicity.607.aspx)</b> used claims data from CY14 from  8,064 members of the Kaiser-Permanente Northern California health plan to compute Prevalence Rates.
+- In her abstract, <b>[DeLisser et al. (2018)](https://journals.lww.com/ajg/Fulltext/2018/10001/Variation_in_IBD_Prevalence_by_Race_Ethnicity.607.aspx)</b> used claims data from CY14 from  8,064 members of the Kaiser-Permanente Northern California health plan to compute Prevalence Rates.
 
 - Their findings showed statistically significant higher rates among Whites relative to all other races (depicted above, <i>p= <0.001</i>), as well as among women and the elderly.
 
