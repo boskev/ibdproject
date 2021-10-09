@@ -712,7 +712,7 @@ trialcount<-   sqldf(" select count(distinct(ID)) from SITES ")  %>% pull()
 ## <font color="#006cc5">Site Map</font color\>
 #### <center>Countries (56) with Recruitment Sites for US-based IBD Clinical Trials</center>
 
-```{r World-Plot, echo=F}
+```{r World-Plot, echo=F }
 
 require(sf)
 require(rnaturalearth)
@@ -815,7 +815,9 @@ ggplot(data = WORLDMAP, aes( fill= QRTL)) +
   annotation_north_arrow(location = "bl", which_north = "true", 
                          pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"), height= unit(0.5, "in"),
                          style = north_arrow_fancy_orienteering ) + 
-  coord_sf( expand= F)
+    coord_sf( expand= F)
+
+  # coord_sf( crs= " +proj=merc", expand= F)
 
 ```
 
@@ -1407,7 +1409,7 @@ ggplot( KPNC, aes( x= RACE , y=PREV )) +
         axis.title=  element_text(size=12)  )  
 ```
 
-- In her abstract, <b>[DeLisser et al. (2018)](https://journals.lww.com/ajg/Fulltext/2018/10001/Variation_in_IBD_Prevalence_by_Race_Ethnicity.607.aspx)</b> used claims data from CY14 from  8,064 members of the Kaiser-Permanente Northern California health plan to compute Prevalence Rates.
+- In their abstract, <b>[DeLisser et al. (2018)](https://journals.lww.com/ajg/Fulltext/2018/10001/Variation_in_IBD_Prevalence_by_Race_Ethnicity.607.aspx)</b> used claims data from CY14 from  8,064 members of the Kaiser-Permanente Northern California health plan to compute Prevalence Rates.
 
 - Their findings showed statistically significant higher rates among Whites relative to all other races (depicted above, <i>p= <0.001</i>), as well as among women and the elderly.
 
