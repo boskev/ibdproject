@@ -283,6 +283,9 @@ IBD2 %>%
     
                             
   
+ggbetweenstats(data=X, x= CAT2, y=INCL, type="nonparametric")
+    
+    
     ?plot_xtab
     
   chisq.test( X$AGECAT, X$INCL, correct=FALSE)

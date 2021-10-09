@@ -117,7 +117,7 @@ knitr::opts_chunk$set(
 {
   position:absolute;
   top: 100px;
-  right: 220px;
+  right: 200px;
   z-index: 2;
 }
 
@@ -1382,6 +1382,37 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
 ]
 ]
 ---
+## Sample of IBD Prevalence Rates from another Study
+
+```{r KPNC-Prevalence, echo=F, out.width= "85%", fig.align="center"}
+
+KPNC <- data.frame(  RACE= c('ASN','BLK','HIS','WHT','OTH'),
+                       PREV= c( 131, 271, 182, 388, 128),
+                       CUSTLABEL = c('Asian','Black','Hispanic', 'White', 'Other') )
+
+KPNC$RACE <- factor( KPNC$RACE, levels= c('ASN','BLK','HIS','WHT', 'OTH') )
+
+
+ggplot( KPNC, aes( x= RACE , y=PREV )) +
+  geom_col(     aes( x= factor(RACE, level= c('OTH','WHT','HIS','BLK','ASN')) , y=PREV ), width=0.25, color="darkgrey", fill="green", alpha=0.5 ) +
+  geom_segment( aes(  x=RACE, xend= RACE, y=0, yend=PREV), linetype = 'dotted', lwd=0.75, color="#006cc5", alpha=0.5)+
+  scale_x_discrete( labels= c('Other', 'White', 'Hispanic', 'Black', 'Asian') ) +
+  geom_point( aes(x=RACE), size=12, color="#006cc5" )+
+  geom_text(  aes( x= RACE , label=PREV ),hjust=0.5, vjust=0.5, color="white", fontface="bold", size=4 ) +
+  coord_flip() +
+  theme_bw()+
+  ylab("Prevalence Rate per 100,000")+ 
+  xlab("") +
+  theme(axis.text=  element_text(size=12),
+        axis.title=  element_text(size=12)  )  
+```
+
+- In her abstract, <b>[Delisser et al. (2018)](https://journals.lww.com/ajg/Fulltext/2018/10001/Variation_in_IBD_Prevalence_by_Race_Ethnicity.607.aspx)</b> used claims data from CY14 from  8,064 members of the Kaiser-Permanente Northern California health plan to compute Prevalence Rates.
+
+- Their findings showed statistically significant higher rates among Whites relative to all other races (depicted above, <i>p= <0.001</i>), as well as among women and the elderly.
+
+
+---
 ## No Apparent Gender Gap was Noted in the Trials Examined
 
 ```{r Gender-Gap, echo=F, out.width="95%", fig.align= "center"}
@@ -1604,13 +1635,14 @@ $$\chi^2 = \sum \frac {(O - E)^2}{E}$$
 $$Y_{i} = \beta_{0} + \beta_{1}{X}_{1}  +  \beta_{2}{X}_{2}  +  . . . . \beta_{n}{X}_{n} +  \epsilon_{i}$$
 
 ---
-## Two images
-<img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="450px",  class="bigx"  />
+## Two images & a superimposition
+<img src="IBD-Slideshow_files/figure-html/big-red-x.png" height="500px",  class="bigx"  />
 .pull-left[
-<center><img src="IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" /></center>
+<center><img src="IBD-Slideshow_files/figure-html/loren-oval.jpg" height="500px", width= "400px" /></center>
 ]
 
 .pull-right[
-<img src="IBD-Slideshow_files/figure-html/kevinround.jpg" height="400px" />
+<!-- <img src="IBD-Slideshow_files/figure-html/kevin-oval.jpg" height="500px", width= "400px" /> -->
+<img src="IBD-Slideshow_files/figure-html/blurry-kevin.jpg" height="500px", width= "400px" />
 ]
 
