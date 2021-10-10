@@ -297,3 +297,5 @@ ggbetweenstats(data=X, x= CAT2, y=INCL, type="nonparametric")
   CrossTable(X$AGECAT, X$INCL, prop.chisq=F, prop.t=F)  #rows then/over columns
   
   
+  
+?? t.test

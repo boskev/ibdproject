@@ -1396,8 +1396,8 @@ KPNC$RACE <- factor( KPNC$RACE, levels= c('ASN','BLK','HIS','WHT', 'OTH') )
 
 
 ggplot( KPNC, aes( x= RACE , y=PREV )) +
-  geom_col(     aes( x= factor(RACE, level= c('OTH','WHT','HIS','BLK','ASN')) , y=PREV ), width=0.25, color="darkgrey", fill="green", alpha=0.5 ) +
-  geom_segment( aes(  x=RACE, xend= RACE, y=0, yend=PREV), linetype = 'dotted', lwd=0.75, color="#006cc5", alpha=0.5)+
+  geom_col(     aes( x= factor(RACE, level= c('OTH','WHT','HIS','BLK','ASN')) , y=PREV ), width=0.25, color="#006cc5", fill="green", alpha=0.5 ) +
+  geom_segment( aes(  x=RACE, xend= RACE, y=0, yend=PREV), linetype = 'dotted', lwd=0.5, color="#006cc5", alpha=0.5)+
   scale_x_discrete( labels= c('Other', 'White', 'Hispanic', 'Black', 'Asian') ) +
   geom_point( aes(x=RACE), size=12, color="#006cc5" )+
   geom_text(  aes( x= RACE , label=PREV ),hjust=0.5, vjust=0.5, color="white", fontface="bold", size=4 ) +
