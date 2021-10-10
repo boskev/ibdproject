@@ -68,6 +68,8 @@ options(warn=-1)
     suppressMessages(library(xaringan))
     suppressMessages(library(xaringanthemer))
     suppressMessages(library(leaflet))
+    suppressMessages(library(vroom))
+    suppressMessages(library(tidylog))
     
     
     suppressMessages(detach("package:dplyr", unload=F))
