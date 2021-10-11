@@ -73,7 +73,7 @@ style_duo_accent(
 
 
 ```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE, warning= FALSE, message= F)
 
 knitr::opts_chunk$set(
   fig.width=9, fig.height=3.5, 

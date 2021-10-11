@@ -5,14 +5,16 @@ lab:    "Barbados Nutrition Study"
 date:   "September 14, 2021"
 output: 
   html_document:
+    code_folding: "show"
     theme: default
+    
 
 
 
 ---
 
 ```{r SETUP-KNITR, setup, include=FALSE}
-      knitr::opts_chunk$set(echo = TRUE)
+      knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message= FALSE)
 
 ```
   
