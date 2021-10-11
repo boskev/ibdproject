@@ -230,7 +230,7 @@ names(IBD)<-  make.names( names(IBD), unique = TRUE ) #<<
 
 .panel[.panel-name[Cleanse Data]
 
-Here's area few codes nippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that we used to wrangle our data:
+Here's area few code snippets from the  <font color="#006cc5">**dplyr**</font color> and <font color="#006cc5">**broom**</font color> packages that we used to wrangle our data:
 ```{r Data-Cleanup-Cleanse, eval=F}
 require(dplyr)
 require(broom)  
