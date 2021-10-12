@@ -73,7 +73,7 @@ style_duo_accent(
 
 
 ```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE, warning= FALSE, message= F)
+options(htmltools.dir.version = FALSE, warning= FALSE)
 
 knitr::opts_chunk$set(
   fig.width=9, fig.height=3.5, 
@@ -139,6 +139,22 @@ knitr::opts_chunk$set(
   z-index: 2;
 }
 
+.childemoji
+{
+  position:absolute;
+  top: 180px;
+  left: 250px;
+  z-index: 2;
+}
+
+
+.senioremoji
+{
+  position:absolute;
+  top: 180px;
+  right: 300px;
+  z-index: 2;
+}
 
 ```
 
@@ -1516,8 +1532,48 @@ IBD2 %>%
 
 ```
 
+
+
+```{r, Child-Participation-Revised, echo=F,eval=F}
+
+require(plotrix)
+
+# child plot2 
+
+csurvey <- c(NO=.8220, YES=.1780 )
+cpielabels <- paste(names(csurvey),"\n",percent(substr(round(csurvey,3),1,5)))
+
+childpie2<-
+  pie3D(csurvey,
+        col=c("darkgrey", "#006cc5"),
+        start = .35,
+        labelcex = 2,
+        radius = 1.5,
+        explode=0.2,
+        theta = 1.1)
+
+childpie2[1] <- 3.05
+childpie2[2] <- 6.25
+
+pie3D.labels(childpie2,
+             labels = cpielabels,
+             labelcol="white",
+             labelcex = 2,
+             labelrad= 1,
+             radius=1
+)
+
+
+#  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "child-pie2.png", plot= last_plot(), width = 5, height = 5, dpi=300)
+
+
+```
+
+
 .pull-left[
-<img src="IBD-Slideshow_files/figure-html/child-pie.png" height="450px" />
+<center><b>Percentage of Trials with Child Enrollees</b></center>
+<img src="IBD-Slideshow_files/figure-html/child-pie2.png" height="400px" />
+<img src="IBD-Slideshow_files/figure-html/child-emoji.png" height="75px",  class="childemoji"  />
 ]
 
 ```{r Senior-Participation, echo=F, eval=F}
@@ -1564,8 +1620,49 @@ IBD2 %>%
 
 ```
 
+
+
+
+```{r Senior-Participation-Revised, echo=F, eval=F}
+
+require(plotrix)
+
+#senior plot
+
+
+ssurvey <- c(NO=.6440, YES=.3560 )
+spielabels <- paste(names(ssurvey),"\n",percent(substr(round(ssurvey,3),1,5)))
+
+seniorpie2<-
+  pie3D(ssurvey2,
+        col=c("darkgrey", "#006cc5"),
+        start = .95,
+        labelcex = 2,
+        radius = 1.5,
+        explode=0.1,
+             labelpos= seniorpie2,
+        theta = 1.1)
+
+seniorpie2[1]<- 3.05
+seniorpie2[2] <- 6.25
+
+pie3D.labels(seniorpie2,
+             labels = spielabels,
+             labelcol="white",
+             labelcex = 2,
+             labelrad= 0.85,
+             radius=1
+                  ) 
+
+#  ggsave(path= "IBD-Slideshow_files/figure-html", filename= "senior-pie2.png", plot=last_plot(), width = 5, height = 5, dpi=300)
+
+
+```
+
 .pull-right[
-<img src="IBD-Slideshow_files/figure-html/senior-pie.png" height="450px" />
+<center><b>Percentage of Trials with Senior Enrollees</b></center>
+<img src="IBD-Slideshow_files/figure-html/senior-pie2.png" height="400px" />
+<img src="IBD-Slideshow_files/figure-html/senior-emoji.png" height="75px",  class="senioremoji"  />
 ]
 <center>Children were included in 26 studies, while adults over the age of 65 were enrolled in 52 studies</center>
 
