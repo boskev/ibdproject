@@ -154,7 +154,7 @@ knitr::opts_chunk$set(
   position:absolute;
   top: 180px;
   right: 300px;
-  opacity: 0.75;
+  opacity: 1;
   z-index: 2;
 }
 
@@ -1575,7 +1575,7 @@ pie3D.labels(childpie2,
 .pull-left[
 <center><b>Percentage of Trials with Child Enrollees</b></center>
 <img src="IBD-Slideshow_files/figure-html/child-pie2.png" height="400px" />
-<img src="IBD-Slideshow_files/figure-html/child-emoji.png" height="75px",  class="childemoji"  />
+<img src="IBD-Slideshow_files/figure-html/childbw-emoji.png" height="75px",  class="childemoji"  />
 ]
 
 ```{r Senior-Participation, echo=F, eval=F}
@@ -1664,7 +1664,7 @@ pie3D.labels(seniorpie2,
 .pull-right[
 <center><b>Percentage of Trials with Senior Enrollees</b></center>
 <img src="IBD-Slideshow_files/figure-html/senior-pie2.png" height="400px" />
-<img src="IBD-Slideshow_files/figure-html/senior2-emoji.png" height="75px",  class="senioremoji"  />
+<img src="IBD-Slideshow_files/figure-html/senior2bw-emoji.png" height="75px",  class="senioremoji"  />
 ]
 <center>Children were included in 26 studies, while adults over the age of 65 were enrolled in 52 studies</center>
 
