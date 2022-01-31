@@ -1,4 +1,4 @@
----
+git---
 title: "IBD Analysis - Reviewer Questions"
 author: "Kevin Williams"
 lab:    "Barbados Nutrition Study"
@@ -6,8 +6,6 @@ date:   "January 31, 2021"
 output: 
   html_document:
     theme: default
-
-
 
 ---
 
