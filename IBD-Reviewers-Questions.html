@@ -188,8 +188,8 @@ pre code {
 </ul>
 <p><br></p>
 <hr />
-<div id="task-1-remediate-the-r-data-frame-ibd-to-include-a-factor-variable-called-phases2---a-recasting-of-the-phases-variable-as-factor-with-five-levels-including-na-values" class="section level4">
-<h4>Task 1: Remediate the R data frame, “IBD” to include a factor variable called PHASES2 - a recasting of the PHASES variable as factor with five levels, including NA values</h4>
+<div id="task-1-remediate-the-r-data-frame-ibd2-to-include-a-factor-variable-called-phases2---a-recasting-of-the-phases-variable-as-a-factor-with-five-levels-including-na-values" class="section level4">
+<h4>Task 1: Remediate the R data frame, <strong><em>IBD2</em></strong> to include a factor variable called <strong><em>PHASES2</em></strong> - a recasting of the <strong><em>PHASES</em></strong> variable as a factor with five levels, including NA values</h4>
 <p><br></p>
 <pre class="r"><code>require(broom)
 require(dplyr)
@@ -214,7 +214,7 @@ IBD3  &lt;-
 <hr />
 </div>
 <div id="task-2-create-cross-tabulations-that-show-the-distribution-of-studies-by-values-of-the-phases2-factor-variable." class="section level4">
-<h4>Task 2: Create cross-tabulations that show the distribution of studies by values of the ‘PHASES2’ factor variable.</h4>
+<h4>Task 2: Create cross-tabulations that show the distribution of studies by values of the <strong><em>PHASES2</em></strong> factor variable.</h4>
 <p><br></p>
 <pre class="r"><code>require(gmodels)
   
@@ -306,8 +306,8 @@ IBD3 %&gt;% filter( PHASES2 != &quot;PNA&quot;)
 ## </code></pre>
 <hr />
 </div>
-<div id="task-3-create-cross-tabulations-based-on-a-subset-of-the-values-of-the-phases2-factor-variable---one-that-includes-only-phase-3-phase-4-trials" class="section level4">
-<h4>Task 3: Create cross-tabulations based on a subset of the values of the ‘PHASES2’ factor variable - one that includes ONLY Phase 3 &amp; Phase 4 trials</h4>
+<div id="task-3-create-cross-tabulations-based-on-a-subset-of-the-values-of-the-phases2-factor-variable---one-that-includes-only-phase-3-phase-4-clinicial-trials" class="section level4">
+<h4>Task 3: Create cross-tabulations based on a subset of the values of the <strong><em>PHASES2</em></strong> factor variable - one that includes ONLY Phase 3 &amp; Phase 4 clinicial trials</h4>
 <p><br></p>
 <pre class="r"><code>require(gmodels)
   
@@ -348,7 +348,7 @@ IBD3 %&gt;% filter( PHASES2 %in% c(&#39;P3&#39;, &#39;P4&#39;))
 <hr />
 </div>
 <div id="task-4-previously-run-cross-tabulations-provide-only-frequency-statistics-for-trials.-in-case-summary-stats-are-requires-based-on-the-number-of-participants-create-a-series-of-summary-tables-that-provide-this-metric." class="section level4">
-<h4>Task 4: Previously run cross-tabulations provide only frequency statistics for trials. In case summary stats are requires based on the number of participants, create a series of summary tables that provide this metric.</h4>
+<h4>Task 4: Previously run cross-tabulations provide only frequency statistics for trials. In case summary stats are requires based on the number of <em>participants,</em> create a series of summary tables that provide this metric.</h4>
 <p><br></p>
 <pre class="r"><code>require(kableExtra)
   

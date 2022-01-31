@@ -33,7 +33,7 @@ This is a brief workflow highlighting the follow-up analysis to address reviewer
 
 ***
 
-#### Task 1:  Remediate the R data frame, "IBD" to include a factor variable called PHASES2 - a recasting of the PHASES variable as factor with five levels, including NA values
+#### Task 1:  Remediate the R data frame, ***IBD2*** to include a factor variable called ***PHASES2*** - a recasting of the ***PHASES*** variable as a factor with five levels, including NA values
 
 <br>
 
@@ -69,7 +69,7 @@ glimpse(IBD3)
 
 ***
 
-#### Task 2:  Create cross-tabulations that show the distribution of studies by values of the 'PHASES2' factor variable.
+#### Task 2:  Create cross-tabulations that show the distribution of studies by values of the ***PHASES2*** factor variable.
 
 <br>
 
@@ -94,7 +94,7 @@ IBD3 %>% filter( PHASES2 != "PNA")
 
 ***
 
-#### Task 3:  Create cross-tabulations based on a subset of the values of the 'PHASES2' factor variable - one that includes ONLY Phase 3 & Phase 4 trials
+#### Task 3:  Create cross-tabulations based on a subset of the values of the ***PHASES2*** factor variable - one that includes ONLY Phase 3 & Phase 4 clinicial trials
 
 <br>
 
@@ -113,7 +113,7 @@ IBD3 %>% filter( PHASES2 %in% c('P3', 'P4'))
 
 ***
 
-#### Task 4:  Previously run cross-tabulations provide only frequency statistics for trials.  In case summary stats are requires based on the number of participants, create a series of summary tables that provide this metric.
+#### Task 4:  Previously run cross-tabulations provide only frequency statistics for trials.  In case summary stats are requires based on the number of *participants,* create a series of summary tables that provide this metric.
 
 <br>
 
