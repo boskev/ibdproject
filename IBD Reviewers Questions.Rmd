@@ -173,7 +173,7 @@ kbl(IBD3A_SUMMARY, booktabs = T, format= "html",
 kbl(IBD3B_SUMMARY, booktabs = T, format= "html", 
     caption = "<center><strong>IBD Phase 3/4 Clinical Trials by Pregnancy Status</strong></center>",
     align= c('l','c','r','r','r','r'), escape=F, 
-    col.names = linebreak(c("Phase", "Includes<br>Pregnant?", "Count<br>N", "Subjects<br>N", "Trials<br>Pct", "Subjects<br>Pct"))) %>% 
+    col.names = linebreak(c("Phase", "Excludes<br>Pregnant?", "Count<br>N", "Subjects<br>N", "Trials<br>Pct", "Subjects<br>Pct"))) %>% 
   
   kable_styling(full_width = F, "hover") %>% column_spec(1, width = "4cm") %>%
   scroll_box(height = "6in")
