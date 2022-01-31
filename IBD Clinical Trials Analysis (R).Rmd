@@ -5,16 +5,14 @@ lab:    "Barbados Nutrition Study"
 date:   "September 14, 2021"
 output: 
   html_document:
-    code_folding: "show"
     theme: default
-    
 
 
 
 ---
 
 ```{r SETUP-KNITR, setup, include=FALSE}
-      knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message= FALSE)
+      knitr::opts_chunk$set(echo = TRUE)
 
 ```
   
@@ -47,12 +45,12 @@ This is a synopsis of the steps undertaken to remediate the SAS code used in the
 
 ```{r IMPORT-DATA-FROM-EXCEL}
 
-require(xlsx)
+require(readxl)
 require(tidyverse)
 require(dplyr)
 require(broom)
 
-IBD <- read_excel("~/Documents/R/IBD Clinical Trials Paper/IBD Disparities 5-30.xlsx")
+IBD <- read_excel("IBD Disparities 5-30.xlsx")
 
 
 # make.names function essentially replaces all spaces and non-standard characters (parens, brackets, etc.) with a series of periods
@@ -91,7 +89,7 @@ IBD2 <-
   
   
   select( "Title", "Category..CD..UC..IBD.", "Interventions", 
-          "Funded.By", "Age.Continuous..Mean.", 
+          "Funded.By", "Phases.Paired", "Age.Continuous..Mean.", 
           "Analyzed", "Female.N", "Included.International.Sites..Y.N.",
           "Race.Reported..Y.N...Race..American.Indian.or.Alaska.Native..Asian..Black.or.African.American..Native.Hawaiian.or.Other.Pacific.Islander..and.White..",
           'Were.pregnant.breastfeeding.women.excluded.from.trial.',
@@ -108,6 +106,7 @@ IBD2 <-
 
 
       rename( CATEGORY = "Category..CD..UC..IBD.", 
+              PHASES = "Phases.Paired",
               Funding = "Funded.By", Intervention= "Interventions", 
               CONT_MEAN = "Age.Continuous..Mean.", 
               FEMALES = "Female.N" , 
@@ -173,6 +172,7 @@ IBD2 <-
   # reorder the factor levels of categorical variable "CATEGORY"
 
   IBD2$CATEGORY <- factor( IBD2$CATEGORY, levels= c("1. CD", '2. UC', '3. IBDU', '4. COMBO')) 
+  IBD2 <- as.data.frame(IBD2)
 
         
 
@@ -246,13 +246,11 @@ One additional set of "piped" ` %>% ` commands is needed to collapse the newly c
 
 require(kableExtra)
  
-trialcount<-   sqldf(" select count(distinct(ID)) from SITES ")  %>% pull()
-
   SITES2 <-
     SITES %>% group_by( COUNTRY ) %>% 
     summarise( COUNT = n()) %>% 
     arrange( desc(COUNT) ) %>% 
-    mutate( PERCENT = percent(COUNT /  trialcount ) ) %>% 
+    mutate( PERCENT = percent(COUNT / sum(COUNT)) ) %>% 
     mutate( PERCENTILE = round( rank( COUNT )/length( COUNT )*100,2) ) %>% 
     mutate (QUARTILE = ntile( (COUNT ), 4)) %>% 
     arrange ( desc(QUARTILE, COUNT) ) %>% tbl_df
@@ -478,7 +476,7 @@ cols <- c("1" = "#d7fcd2", "2" = "#7ecdbb", "3" = "#368fc0", "4" = "#045a8d")
 
 ggplot(data = WORLDMAP, aes( fill= QRTL)) +
   
-  geom_sf( lwd=0.1  ) +
+  geom_sf(  ) +
   
   scale_color_manual("Quantiles",
                      values = cols,
@@ -494,11 +492,12 @@ ggplot(data = WORLDMAP, aes( fill= QRTL)) +
   theme(plot.title =   element_text(color = "black", size = 18, face = "bold", hjust= 0))+
   theme(plot.subtitle= element_text(color = "black", size = 14,  hjust= 0))+
   theme(legend.position= "bottom")  +
- annotation_scale(location = "br", width_hint = 0.15, plot_unit = "km" ) +
-  annotation_north_arrow(location = "bl", which_north = "true", 
-                         pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"), height= unit(0.5, "in") ,
-                         style = north_arrow_fancy_orienteering ) + 
-  coord_sf( expand= F)  
+  
+# annotation_scale(location = "bl", width_hint = 0.25) +
+  annotation_north_arrow(location = "bl", which_north = "true",
+                         pad_x = unit(0.05, "in"), pad_y = unit(0.05, "in"),
+                         style = north_arrow_fancy_orienteering ) +
+  coord_sf( expand= F)
 
 ```
 
@@ -611,6 +610,7 @@ plot_xtab(IBD2$CAT2, IBD2$PREGNANT_EXCL, margin = "row", bar.pos = "stack", coor
 
 
 racecap <-    c('WHT','BLK','ASN','AIA','HPI','MIX','UNK','HIS')
+
 
 rm(MASTER)
 
@@ -823,7 +823,8 @@ tab_options(
   )  %>%
   #number formats    
   fmt_number( columns= c(3:6), decimals=0, sep_mark=",")  %>% 
-  fmt_percent( columns= 7, decimals=1 )  %>% 
+ 
+  gt::fmt_percent( columns= 7, decimals=1 )  %>% 
   
   tab_style(
     style = cell_text(align = "right"),
@@ -914,7 +915,6 @@ rm(A1,A2)
 ```
 
 
-
 ```{r SCIMP-SUMMARY-TABLE-AFTER-KABLE, results='asis' }
 
 
@@ -937,10 +937,10 @@ census <- c( 0.013, 0.059, .134, 0.002, 0.028, 0.763)
 
 SCIMP$CENSUS <- census
 SCIMP$CONDLABEL <- ifelse( SCIMP$PROPORTION <= SCIMP$CENSUS, T,F)
-SCIMP$CONDVJUST <- ifelse( SCIMP$RACE== "WHT", -0.5, #CHANGE TO 1.0
+SCIMP$CONDVJUST <- ifelse( SCIMP$RACE== "WHT", -1, 
                    ifelse(SCIMP$RACE== "BLK", -1, 
                    ifelse(SCIMP$RACE== "ASN", 1.75,
-                   ifelse( SCIMP$RACE== "MIX", -1.5,
+                   ifelse( SCIMP$RACE== "MIX", -2,
                    ifelse( SCIMP$RACE %in% c("AIA","HPI"), -2, -5)))))
 
 SCIMP$CONDHJUST <- ifelse( SCIMP$RACE== "MIX", 1.2, NA)
@@ -980,6 +980,10 @@ SCIMP$RACELABEL <- c("Amer Indian\nAlaskan Native", "Asian", "Black", "Hawaiian\
 ```{r GGPLOT-BAR-CHART-RACE-IBD-VS-CENSUS, warning = F, fig.align= 'center', fig.dim= c(10,6) }
 
 
+my_labels <- paste( SCIMP$RACELABEL, "\n(N=", prettyNum( SCIMP$PARTICIPANTS, big.mark=","), ")", sep = "" )
+
+
+
 #plot participation and BAR CHART and overlay Census Data as a LINE CHART
 
 ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
@@ -996,7 +1000,7 @@ ggplot( data= SCIMP, aes(x=RACE, y=PROPORTION, color=RACE, group= 1)) +
   ggtitle("IBD Clinical Trials Enrollment by Race", subtitle = "(Compared with 2019 Census Data)")+ 
   scale_x_discrete( labels= my_labels) +
   labs( x="Race",y="Proportion of Enrollees", size=10, fontface="bold") +
-  theme_linedraw()+
+  theme_minimal()+
   theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
   theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0))+
   
@@ -1068,7 +1072,7 @@ IBD2 %>%
   geom_label( aes( y= PCT, label= paste0(round( PCT*100,1),'%') ), color='black', size= 3.5 ) +
   scale_y_continuous( labels = scales::percent )+
   labs( x="Gender",y="Proportion of Enrollees", size=10, fontface="bold") +
-  theme_linedraw()+
+  theme_minimal()+
   ggtitle("IBD Clinical Trials Enrollment by Gender", subtitle = "(Compared with 2019 Census Data)")+ 
   theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
   theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0)) +
@@ -1120,12 +1124,20 @@ Here's a second version of the Gender bar plot that uses the side-by-side aesthe
 
     #since x axis is a character variable, factorize it first!!!
     scale_fill_manual( values= c("darkgrey", "darkred"), labels= c('IBD Trials', 'Census 2019')) +
-    scale_y_continuous( labels = scales::percent )+
+    scale_y_continuous( labels = scales::percent, limits= c(0,0.55) )+
     labs( x="Gender",y="Proportion of Enrollees", size=10, fontface="bold") +
-    theme_linedraw()+
+    theme_bw()+
     ggtitle("IBD Clinical Trials Enrollment by Gender", subtitle = "(Compared with 2019 Census Data)")+ 
     theme(plot.title =   element_text(color = "black", size = 14, face = "bold", hjust= 0))+
     theme(plot.subtitle= element_text(color = "black", size = 12,  hjust= 0)) +
+#    theme(plot.= element_text(color = "black", size = 12,  hjust= 0)) +
+  
+     # theme(   panel.grid.major.x = element_line( color="lightgrey"), +        # Vertical major grid lines
+     #          panel.grid.major.y = element_line( color="lightgrey"),          # Horizontal major grid lines
+     #          panel.grid.minor.x = element_line( color="lightgrey"),          # Vertical minor grid lines
+     #          panel.grid.minor.y = element_line( color="lightgrey") )+        # Vertical major grid lines
+
+
     theme(legend.position = "top", legend.title = element_blank() )+
     theme(legend.background = element_rect(size=0.25, linetype="solid", color ="black"))
   

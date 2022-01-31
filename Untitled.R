@@ -299,3 +299,18 @@ ggbetweenstats(data=X, x= CAT2, y=INCL, type="nonparametric")
   
   
 ?? t.test
+  
+  
+  
+  
+LRACE <-
+  
+SCIMP %>% 
+  select( RACE, PARTICIPANTS) %>% 
+  mutate( LPAR = log(PARTICIPANTS),
+          LPROP = LPAR / sum(LPAR) ) %>% 
+  pull(var=LPAR, name=RACE)
+
+
+multinomialCI( LRACE, alpha=0.05, verbose=T)
+
