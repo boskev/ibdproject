@@ -27,7 +27,7 @@ This is a brief workflow highlighting the follow-up analysis to address reviewer
 ### Main Questions
 
 * What is the distribution of IBD clinical trials by "Phase?"
-* For Phase 3 and Phase 4 IBD Clinical trials, how many included pregnant subjects?
+* For Phase 3 and Phase 4 IBD clinical trials, how many included pregnant subjects?
 
 <br>
 
