@@ -94,7 +94,7 @@ IBD3 %>% filter( PHASES2 != "PNA")
 
 ***
 
-#### Task 3:  Create cross-tabulations based on a subset of the values of the ***PHASES2*** factor variable - one that includes ONLY Phase 3 & Phase 4 clinicial trials
+#### Task 3:  Create cross-tabulations based on a subset of the values of the ***PHASES2*** factor variable - one that includes *only* Phase 3 & Phase 4 clinicial trials
 
 <br>
 
@@ -102,7 +102,6 @@ IBD3 %>% filter( PHASES2 != "PNA")
 
 require(gmodels)
   
-
 
 IBD3B <-
 IBD3 %>% filter( PHASES2 %in% c('P3', 'P4')) 
@@ -122,7 +121,6 @@ IBD3 %>% filter( PHASES2 %in% c('P3', 'P4'))
 require(kableExtra)
   
 
-  
 IBD3_SUMMARY <- 
   
     IBD3 %>% group_by( PHASES2 ) %>% 
@@ -140,7 +138,6 @@ IBD3A_SUMMARY <-
           PCT_SUBJ = percent(SUBJECTS / sum(SUBJECTS))) %>%   tibble::as_tibble()
 
 
-
 IBD3B_SUMMARY <- 
   
   IBD3B %>% group_by( PHASES2, PREGNANT_EXCL ) %>% 
@@ -151,6 +148,7 @@ IBD3B_SUMMARY <-
 
 
 
+
 kbl(IBD3_SUMMARY, booktabs = T, format= "html", 
     caption = "<center><strong>IBD Clinical Trials by Phase Type</strong></center>",
     align= c('l','r','r','r','r'), escape=F, 
@@ -158,7 +156,6 @@ kbl(IBD3_SUMMARY, booktabs = T, format= "html",
   
   kable_styling(full_width = F, "hover") %>% column_spec(1, width = "4cm") %>%
   scroll_box(height = "6in")
-
 
 
 kbl(IBD3A_SUMMARY, booktabs = T, format= "html", 

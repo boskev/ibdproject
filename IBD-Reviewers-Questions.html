@@ -307,11 +307,10 @@ IBD3 %&gt;% filter( PHASES2 != &quot;PNA&quot;)
 <hr />
 </div>
 <div id="task-3-create-cross-tabulations-based-on-a-subset-of-the-values-of-the-phases2-factor-variable---one-that-includes-only-phase-3-phase-4-clinicial-trials" class="section level4">
-<h4>Task 3: Create cross-tabulations based on a subset of the values of the <strong><em>PHASES2</em></strong> factor variable - one that includes ONLY Phase 3 &amp; Phase 4 clinicial trials</h4>
+<h4>Task 3: Create cross-tabulations based on a subset of the values of the <strong><em>PHASES2</em></strong> factor variable - one that includes <em>only</em> Phase 3 &amp; Phase 4 clinicial trials</h4>
 <p><br></p>
 <pre class="r"><code>require(gmodels)
   
-
 
 IBD3B &lt;-
 IBD3 %&gt;% filter( PHASES2 %in% c(&#39;P3&#39;, &#39;P4&#39;)) 
@@ -353,7 +352,6 @@ IBD3 %&gt;% filter( PHASES2 %in% c(&#39;P3&#39;, &#39;P4&#39;))
 <pre class="r"><code>require(kableExtra)
   
 
-  
 IBD3_SUMMARY &lt;- 
   
     IBD3 %&gt;% group_by( PHASES2 ) %&gt;% 
@@ -369,7 +367,6 @@ IBD3A_SUMMARY &lt;-
              SUBJECTS = sum(ANALYZED)) %&gt;% 
   mutate( PCT_N = percent(COUNT / sum(COUNT)),
           PCT_SUBJ = percent(SUBJECTS / sum(SUBJECTS))) %&gt;%   tibble::as_tibble()
-
 
 
 IBD3B_SUMMARY &lt;- 
