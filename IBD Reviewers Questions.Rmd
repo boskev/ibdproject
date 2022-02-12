@@ -101,18 +101,30 @@ IBD3 %>% filter( PHASES2 != "PNA")
 ```{r CROSSTAB-2 }
 
 require(gmodels)
+require(sjPlot)
   
 
 IBD3B <-
-IBD3 %>% filter( PHASES2 %in% c('P3', 'P4')) 
+IBD3 %>% filter( PHASES2 %in% c('P3', 'P4')) %>% droplevels()
   CrossTable( IBD3B$PHASES2, IBD3B$PREGNANT_EXCL, prop.chisq=F, prop.t=F)  #rows then/over columns
+  
+
+#SJPlot cross tabulation with Chi-Square/df
+  
+plot_xtab(IBD3B$PHASES2, IBD3B$PREGNANT_EXCL, margin = "row", 
+          bar.pos = "stack", coord.flip = TRUE, 
+          axis.titles = c('Phase 3 & 4 Clinical Trials'), 
+          legend.title= "Excluded?",
+          geom.colors = c("#006cc5","#cbcccb"), 
+          show.summary = TRUE )+ 
+  set_theme(base= theme_classic())
 
 
 ```
 
 ***
 
-#### Task 4:  Previously run cross-tabulations provide only frequency statistics for trials.  In case summary stats are requires based on the number of *participants,* create a series of summary tables that provide this metric.
+#### Task 4:  Previously run cross-tabulations provide only frequency statistics for trials.  In case summary stats are required based on the number of *participants,* create a series of summary tables that provide this metric.
 
 <br>
 
