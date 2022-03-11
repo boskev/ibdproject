@@ -6,6 +6,8 @@ load(file=".RData")
 options(warn=-1)
 #dev.set(2)
 
+assign(".lib.loc", "/Library/Frameworks/R.framework/Versions/4.1/Resources/library", envir = environment(.libPaths))
+
 .First <- function(){
 	
   
@@ -31,6 +33,7 @@ options(warn=-1)
     suppressMessages(library(ggplot2))
     suppressMessages(library(ggtext))
     suppressMessages(library(ggforce))
+    suppressMessages(library(ggpubr))
     suppressMessages(library(gghighlight))
     suppressMessages(library(ggrepel))
     suppressMessages(library(ggspatial))

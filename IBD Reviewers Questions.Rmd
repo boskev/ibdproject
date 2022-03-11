@@ -18,7 +18,7 @@ output:
 
 ## Introduction
 
-This is a brief workflow highlighting the follow-up analysis to address reviewer concerns related to the pending manuscript, ***"Assessment of the inclusion of female racial/ethnic minority, female, and older individuals in inflammatory bowel disease clinical trials"*** **(Rabinowitz, Silver et al.)**. Where appropriate, samples of the exact R syntax used will be displayed, along with the corresponding output (tabular data, graphical plots, maps, etc.).
+This is a brief workflow highlighting the follow-up analysis to address reviewer concerns related to the pending manuscript, ***"Disparities persist in inclusion of female, pregnant, lactating, and older individuals in inflammatory bowel disease clinical trials "*** **(Rabinowitz, Silver et al.)**. Where appropriate, samples of the exact R syntax used will be displayed, along with the corresponding output (tabular data, graphical plots, maps, etc.).
 
 <br>
 
